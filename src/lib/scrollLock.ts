@@ -1,3 +1,5 @@
+import { markProgrammaticScroll } from "./programmaticScroll";
+
 type LockedState = {
   y: number;
   overflow: string;
@@ -56,5 +58,8 @@ export function unlockScroll(): void {
 
   const { y } = locked;
   locked = null;
+  // Возврат на прежнюю позицию — тоже программная прокрутка: без отметки хук
+  // скрытия шапки прочитал бы прыжок вниз как жест и убрал бы шапку.
+  markProgrammaticScroll();
   window.scrollTo({ top: y, behavior: "auto" });
 }

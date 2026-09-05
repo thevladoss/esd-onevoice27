@@ -1,3 +1,4 @@
+import { isProgrammaticScroll } from "./programmaticScroll";
 import { lockScroll, unlockScroll } from "./scrollLock";
 
 function setScrollY(value: number) {
@@ -26,6 +27,16 @@ describe("scrollLock", () => {
     expect(document.body.style.position).toBe("fixed");
     expect(document.body.style.top).toBe("-640px");
     expect(document.body.style.width).toBe("100%");
+  });
+
+  it("отмечает возврат позиции программной прокруткой", () => {
+    setScrollY(640);
+    lockScroll();
+    expect(isProgrammaticScroll()).toBe(false);
+
+    // Прыжок обратно на 640px без отметки хук скрытия шапки прочёл бы как жест вниз.
+    unlockScroll();
+    expect(isProgrammaticScroll()).toBe(true);
   });
 
   it("возвращает прежние стили и позицию прокрутки", () => {

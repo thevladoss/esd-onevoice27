@@ -1,4 +1,5 @@
 import { act, renderHook } from "@testing-library/react";
+import { markProgrammaticScroll } from "./programmaticScroll";
 import { useHeaderHide } from "./useHeaderHide";
 
 function setScrollY(value: number) {
@@ -68,6 +69,28 @@ describe("useHeaderHide", () => {
 
     scrollTo(152);
     expect(result.current).toBe(false);
+  });
+
+  it("не прячет шапку, пока идёт переход по пункту меню", () => {
+    // Плавный переход шлёт десятки событий scroll: без окна молчания хук читал бы
+    // их как жест вниз и убирал шапку посреди перехода.
+    const now = vi.spyOn(performance, "now").mockReturnValue(0);
+
+    try {
+      const { result } = renderHook(() => useHeaderHide({ menuOpen: false }));
+
+      markProgrammaticScroll();
+      scrollTo(300);
+      scrollTo(600);
+      expect(result.current).toBe(false);
+
+      // За окном молчания жест снова главный, и считается он от последней позиции.
+      now.mockReturnValue(1000);
+      scrollTo(900);
+      expect(result.current).toBe(true);
+    } finally {
+      now.mockRestore();
+    }
   });
 
   it("держит шапку на экране, пока открыто меню", () => {

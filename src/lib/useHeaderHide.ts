@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import type { RefObject } from "react";
+import { isProgrammaticScroll } from "./programmaticScroll";
 
 /** Ниже этой отметки шапка всегда на экране: там она стоит над первым экраном. */
 const THRESHOLD = 80;
@@ -72,6 +73,13 @@ export function useHeaderHide({ menuOpen, header, threshold = THRESHOLD }: Optio
     const apply = () => {
       scheduled = false;
       const y = window.scrollY;
+
+      if (isProgrammaticScroll()) {
+        // Переход по пункту меню: положение шапки не трогаем, но точку отсчёта
+        // двигаем — жест после перехода считается уже от новой позиции.
+        lastY = y;
+        return;
+      }
 
       if (y <= threshold) {
         setHidden(false);

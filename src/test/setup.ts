@@ -1,6 +1,7 @@
 import "@testing-library/jest-dom/vitest";
 
 import { IntersectionObserverMock } from "./intersection";
+import { resetProgrammaticScroll } from "../lib/programmaticScroll";
 
 class ResizeObserverMock implements ResizeObserver {
   observe(): void {}
@@ -27,3 +28,7 @@ HTMLCanvasElement.prototype.getContext = (() =>
 
 Element.prototype.scrollIntoView = vi.fn();
 window.scrollTo = vi.fn() as unknown as typeof window.scrollTo;
+
+// Отметка программной прокрутки живёт 700 мс реального времени: между сценариями
+// её нужно снимать, иначе переход одного теста глушит скролл следующего.
+beforeEach(resetProgrammaticScroll);

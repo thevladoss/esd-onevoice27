@@ -1,4 +1,5 @@
 import { headerOffset } from "./headerOffset";
+import { markProgrammaticScroll } from "./programmaticScroll";
 
 const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
 
@@ -20,11 +21,16 @@ function prefersReducedMotion(): boolean {
  *
  * Якорь `#top` возвращает страницу в самый верх. Если секции нет в документе,
  * функция молча возвращает `false`: страница не дёргается, хеш не меняется.
+ *
+ * Перед каждым переходом ставится отметка программной прокрутки: иначе десятки
+ * событий плавного перехода хук `useHeaderHide` прочитал бы как жест вниз и убрал
+ * бы шапку посреди перехода.
  */
 export function scrollToSection(hash: string, offset: number = headerOffset()): boolean {
   const behavior: ScrollBehavior = prefersReducedMotion() ? "auto" : "smooth";
 
   if (hash === "#top" || hash === "top") {
+    markProgrammaticScroll();
     window.scrollTo({ top: 0, behavior });
     return true;
   }
@@ -36,6 +42,7 @@ export function scrollToSection(hash: string, offset: number = headerOffset()): 
 
   const documentTop = target.getBoundingClientRect().top + window.scrollY;
   const top = Math.max(0, documentTop - offset);
+  markProgrammaticScroll();
   window.scrollTo({ top, behavior });
   return true;
 }

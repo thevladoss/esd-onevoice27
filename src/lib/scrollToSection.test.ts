@@ -1,4 +1,5 @@
 import { HEADER_OFFSET_FALLBACK } from "./headerOffset";
+import { isProgrammaticScroll } from "./programmaticScroll";
 import { scrollToSection } from "./scrollToSection";
 
 function setScrollY(value: number) {
@@ -28,6 +29,25 @@ describe("scrollToSection", () => {
     document.body.innerHTML = "";
     vi.restoreAllMocks();
     window.matchMedia = defaultMatchMedia;
+  });
+
+  it("отмечает переход программной прокруткой, чтобы шапка не уехала посреди него", () => {
+    addSection("about", 1200);
+    expect(isProgrammaticScroll()).toBe(false);
+
+    scrollToSection("#about", 104);
+    expect(isProgrammaticScroll()).toBe(true);
+  });
+
+  it("отмечает и возврат наверх по якорю #top", () => {
+    scrollToSection("#top");
+
+    expect(isProgrammaticScroll()).toBe(true);
+  });
+
+  it("не отмечает ничего, когда секции нет в документе", () => {
+    expect(scrollToSection("#nowhere")).toBe(false);
+    expect(isProgrammaticScroll()).toBe(false);
   });
 
   it("прокручивает к секции по формуле позиция минус отступ header", () => {
