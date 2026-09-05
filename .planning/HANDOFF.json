@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "timestamp": "2026-09-05T17:27:24.790Z",
+  "timestamp": "2026-09-05T19:28:38.213Z",
   "source": "auto-postool",
   "partial": true,
   "phase": "05",
@@ -8,46 +8,51 @@
   "phase_dir": ".planning/phases/05-polish-and-release",
   "plan": null,
   "task": null,
-  "total_tasks": 7,
+  "total_tasks": 8,
   "status": "auto-checkpoint",
-  "completed_tasks": [],
-  "remaining_tasks": [
+  "completed_tasks": [
     {
       "id": "01",
       "name": "Task 1: Контракт Reveal: константы, компоненты, тесты на reduced motion",
-      "status": "not_started"
+      "status": "done"
     },
     {
       "id": "02",
       "name": "Task 1: Токены reveal, единый блок reduced motion и защита от горизонтального скролла в global.css",
-      "status": "not_started"
+      "status": "done"
     },
     {
       "id": "03",
       "name": "Task 1: aria-labelledby и иерархия заголовков для hero, map, light-form, about, involve",
-      "status": "not_started"
+      "status": "done"
     },
     {
       "id": "04",
       "name": "Task 1: Один видео-фасад: слияние VideoFacade в VideoEmbed и его aria-контракт",
-      "status": "not_started"
+      "status": "done"
     },
     {
       "id": "05",
       "name": "Task 1: App.test.tsx: восемь секций, skip-link, ландмарки",
-      "status": "not_started"
+      "status": "done"
     },
     {
       "id": "06",
       "name": "Task 1: Чанк vendor-map, зачистка console.* и сборка без предупреждений",
-      "status": "not_started"
+      "status": "done"
     },
     {
       "id": "07",
       "name": "Task 1: Предполётные проверки, деплой, сверка прода с локальной сборкой",
-      "status": "not_started"
+      "status": "done"
+    },
+    {
+      "id": "08",
+      "name": "Task 1: Убрать shadowBlur из drawGlobe, ореолы плоскими кругами, тесты",
+      "status": "done"
     }
   ],
+  "remaining_tasks": [],
   "blockers": [
     {
       "description": "Фаза 2: производительность огоньков и проекция карты на реальном билде (антимеридиан, ≤40 анимированных огоньков)",
@@ -101,9 +106,24 @@
       "decision": "[Phase 01]: ожидание прогона Actions на macOS делается циклом gh run view --json status,conclusion с паузой: timeout для обёртки gh run watch недоступен",
       "rationale": "",
       "phase": "05"
+    },
+    {
+      "decision": "[Phase 05]: приём деплоя = код 200 + пустой diff списка ассетов + совпадение sha256 живых файлов и локального dist",
+      "rationale": "",
+      "phase": "05"
+    },
+    {
+      "decision": "[Phase 05]: права workflow разложены по джобам (build без OIDC-токена) — строже единого блока permissions, приводить к плану не стали",
+      "rationale": "",
+      "phase": "05"
+    },
+    {
+      "decision": "[Phase 05]: ореолы точек глобуса плоскими кругами без shadowBlur: тень стоила 533 мс на кадр на GPU, без неё 4 мс; FPS в Playwright-Chrome мерить при закрытых WebGL-вкладках",
+      "rationale": "",
+      "phase": "05"
     }
   ],
   "uncommitted_files": [],
-  "next_action": "Ready to plan",
-  "context_notes": "Status: Ready to plan\n\nStopped at: Phase 04 complete (4/4) — ready to discuss Phase 05"
+  "next_action": "Milestone complete",
+  "context_notes": "Status: Milestone complete\n\nStopped at: Milestone complete (Phase 05 was final phase)"
 }
