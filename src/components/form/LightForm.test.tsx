@@ -29,21 +29,43 @@ function renderForm() {
   );
 }
 
+/** id полей теперь уникальны на экземпляр формы (useId), поэтому контролы ищем по name. */
 function control(name: string): HTMLInputElement {
-  const element = document.getElementById(`light-form-${name}`);
+  const element = document.querySelector<HTMLInputElement>(`[name="${name}"]`);
   if (!element) {
-    throw new Error(`Нет контрола light-form-${name}`);
+    throw new Error(`Нет контрола ${name}`);
   }
 
-  return element as HTMLInputElement;
+  return element;
+}
+
+function countrySelect(): HTMLSelectElement {
+  const element = document.querySelector<HTMLSelectElement>('select[name="countryId"]');
+  if (!element) {
+    throw new Error("Нет select страны");
+  }
+
+  return element;
+}
+
+/** Текст ошибки поля: связь идёт через aria-describedby, а не через угаданный id. */
+function errorFor(name: string): HTMLElement | null {
+  const errorId = control(name).getAttribute("aria-describedby");
+
+  return errorId === null ? null : document.getElementById(errorId);
 }
 
 function errorNodes(): HTMLElement[] {
-  return Array.from(document.querySelectorAll<HTMLElement>('[id^="light-form-"][id$="-error"]'));
+  return Array.from(document.querySelectorAll<HTMLElement>(".lf-error"));
 }
 
 function submitButton(): HTMLButtonElement {
-  return document.getElementById("light-form-submit") as HTMLButtonElement;
+  const element = document.querySelector<HTMLButtonElement>('button[type="submit"]');
+  if (!element) {
+    throw new Error("Нет кнопки отправки");
+  }
+
+  return element;
 }
 
 function clickSubmit() {
@@ -64,7 +86,7 @@ function fillValidForm() {
   fireEvent.click(screen.getByRole("radio", { name: /Групповой маяк/ }));
   fireEvent.change(control("firstName"), { target: { value: "Иван" } });
   fireEvent.change(control("lastName"), { target: { value: "Иванов" } });
-  fireEvent.change(control("countryId"), { target: { value: "643" } });
+  fireEvent.change(countrySelect(), { target: { value: "643" } });
   fireEvent.change(control("city"), { target: { value: "Москва" } });
   fireEvent.change(control("email"), { target: { value: "ivan@example.org" } });
   fireEvent.click(control("consent"));
@@ -118,7 +140,7 @@ describe("LightForm: структура секции", () => {
   it("даёт select из двенадцати стран дивизиона с плейсхолдером", () => {
     renderForm();
 
-    const select = document.getElementById("light-form-countryId") as HTMLSelectElement;
+    const select = countrySelect();
     expect(select.options).toHaveLength(13);
     expect(select.options[0].value).toBe("");
     expect(select.options[0].textContent).toBe("Выберите страну");
@@ -126,6 +148,27 @@ describe("LightForm: структура секции", () => {
 
     const russia = Array.from(select.options).find((option) => option.value === "643");
     expect(russia?.textContent).toBe("Россия");
+  });
+
+  it("даёт двум формам на странице непересекающиеся id", () => {
+    render(
+      <LightsProvider>
+        <LightForm />
+        <LightForm />
+      </LightsProvider>,
+    );
+
+    // Подпись и описание ошибки должны вести к своему контролу, а не к первой форме.
+    const names = screen.getAllByLabelText(formCopy.fields.firstName.label);
+    expect(names).toHaveLength(2);
+    expect(names[0].id).not.toBe(names[1].id);
+
+    // Якорь секции #light-form общий по замыслу, а вот id контролов пересекаться не должны.
+    const ids = Array.from(document.querySelectorAll("form")).flatMap((form) =>
+      Array.from(form.querySelectorAll<HTMLElement>("[id]")).map((node) => node.id),
+    );
+    expect(ids).toHaveLength(14);
+    expect(new Set(ids).size).toBe(ids.length);
   });
 
   it("не отправляет форму по сети: без action и method", () => {
@@ -185,14 +228,14 @@ describe("LightForm: валидация", () => {
     expect(errorNodes()).toHaveLength(6);
 
     fireEvent.change(control("firstName"), { target: { value: "Иван" } });
-    expect(document.getElementById("light-form-firstName-error")).toBeNull();
+    expect(errorFor("firstName")).toBeNull();
     expect(errorNodes()).toHaveLength(5);
 
     fireEvent.change(control("firstName"), { target: { value: "И" } });
-    expect(document.getElementById("light-form-firstName-error")).toBeNull();
+    expect(errorFor("firstName")).toBeNull();
 
     fireEvent.blur(control("firstName"));
-    expect(document.getElementById("light-form-firstName-error")).toHaveTextContent("Введите имя");
+    expect(errorFor("firstName")).toHaveTextContent("Введите имя");
   });
 });
 
@@ -224,7 +267,7 @@ describe("LightForm: успешная отправка", () => {
     expect(control("lastName").value).toBe("");
     expect(control("city").value).toBe("");
     expect(control("email").value).toBe("");
-    expect((document.getElementById("light-form-countryId") as HTMLSelectElement).value).toBe("");
+    expect(countrySelect().value).toBe("");
     expect(control("consent")).not.toBeChecked();
     expect(screen.getByRole("radio", { name: /Групповой маяк/ })).toBeChecked();
 
@@ -241,7 +284,7 @@ describe("LightForm: успешная отправка", () => {
 
     expect(control("firstName")).toBeDisabled();
     expect(control("consent")).toBeDisabled();
-    expect(document.getElementById("light-form-countryId")).toBeDisabled();
+    expect(countrySelect()).toBeDisabled();
     expect(screen.getByRole("radio", { name: /Групповой маяк/ })).toBeDisabled();
 
     act(() => {

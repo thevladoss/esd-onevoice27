@@ -1,6 +1,6 @@
 import "./light-form.css";
 import type { FormEvent } from "react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useId, useRef, useState } from "react";
 
 import { formCopy } from "../../data/copy.form";
 import { ESD_COUNTRIES } from "../../data/countries";
@@ -23,11 +23,6 @@ import { LightTypeChoice } from "./LightTypeChoice";
 import { SuccessToast } from "./SuccessToast";
 
 const SUBMIT_DELAY = 1200;
-const SUBMIT_ID = "light-form-submit";
-
-function fieldId(field: LightFormField): string {
-  return `light-form-${field}`;
-}
 
 function withoutField(errors: LightFormErrors, field: LightFormField): LightFormErrors {
   const next = { ...errors };
@@ -36,6 +31,11 @@ function withoutField(errors: LightFormErrors, field: LightFormField): LightForm
 }
 
 export function LightForm() {
+  // Префикс на экземпляр: два блока формы на странице не делят id и не воруют друг у друга фокус.
+  const uid = useId();
+  const fieldId = (field: LightFormField) => `${uid}-${field}`;
+  const submitId = `${uid}-submit`;
+
   const { addLight } = useLights();
   const [values, setValues] = useState<LightFormValues>(initialLightFormValues);
   const [errors, setErrors] = useState<LightFormErrors>({});
@@ -46,6 +46,12 @@ export function LightForm() {
   const [toastKey, setToastKey] = useState(0);
   const submitTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const returnFocus = useRef(false);
+  const formRef = useRef<HTMLFormElement>(null);
+
+  /** Контрол ищется внутри своей формы, а не по всему документу. */
+  function focusInForm(id: string) {
+    formRef.current?.querySelector<HTMLElement>(`[id="${id}"]`)?.focus();
+  }
 
   useEffect(
     () => () => {
@@ -65,9 +71,9 @@ export function LightForm() {
     returnFocus.current = false;
     const active = document.activeElement;
     if (active === null || active === document.body) {
-      document.getElementById(SUBMIT_ID)?.focus();
+      formRef.current?.querySelector<HTMLElement>(`[id="${submitId}"]`)?.focus();
     }
-  }, [submitting]);
+  }, [submitting, submitId]);
 
   function updateField(field: LightFormField, value: string | boolean) {
     const next = { ...values, [field]: value } as LightFormValues;
@@ -105,7 +111,7 @@ export function LightForm() {
 
     const firstInvalid = LIGHT_FORM_FIELD_ORDER.find((field) => found[field]);
     if (firstInvalid) {
-      document.getElementById(fieldId(firstInvalid))?.focus();
+      focusInForm(fieldId(firstInvalid));
       return;
     }
 
@@ -136,7 +142,7 @@ export function LightForm() {
       </div>
 
       <GlassCard className="lf-card">
-        <form className="lf-form" noValidate onSubmit={handleSubmit}>
+        <form className="lf-form" ref={formRef} noValidate onSubmit={handleSubmit}>
           {/* Пока идёт отправка, поля заблокированы: иначе набор за эти 1200 мс стёрся бы сбросом. */}
           <fieldset className="lf-fields" disabled={submitting}>
             <LightTypeChoice
@@ -256,7 +262,7 @@ export function LightForm() {
             as="button"
             type="submit"
             variant="primary"
-            id={SUBMIT_ID}
+            id={submitId}
             className="lf-submit"
             disabled={submitting}
             aria-busy={submitting || undefined}
