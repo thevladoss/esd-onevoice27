@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 01-05-PLAN.md
-last_updated: "2026-09-05T17:28:54.872Z"
-last_activity: 2026-09-05 -- Phase 05 execution started
+stopped_at: Completed 05-07-PLAN.md
+last_updated: "2026-09-05T18:49:31.077Z"
+last_activity: 2026-09-05 -- Плана 05-07: деплой подтверждён, ждём браузерный smoke
 progress:
   total_phases: 5
-  completed_phases: 4
+  completed_phases: 5
   total_plans: 25
-  completed_plans: 18
-  percent: 72
+  completed_plans: 25
+  percent: 100
 ---
 
 # Project State
@@ -26,17 +26,17 @@ See: .planning/PROJECT.md (updated 2026-09-05)
 ## Current Position
 
 Phase: 05 (polish-and-release) — EXECUTING
-Plan: 1 of 7
-Status: Executing Phase 05
-Last activity: 2026-09-05 -- Phase 05 execution started
+Plan: 7 of 7
+Status: Executing Phase 05 — план 05-07 закрыт по CLI-части, браузерный smoke за оркестратором
+Last activity: 2026-09-05 -- Плана 05-07: деплой подтверждён, ждём браузерный smoke
 
-Progress: [██░░░░░░░░] 24%
+Progress: [██████████] 100%
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total plans completed: 18
+- Total plans completed: 25
 - Average duration: - min
 - Total execution time: 0 hours
 
@@ -57,6 +57,7 @@ Progress: [██░░░░░░░░] 24%
 *Updated after each plan completion*
 | Phase 01 P01 | 13min | 4 tasks | 32 files |
 | Phase 01 P05 | 8min | 2 tasks | 1 files |
+| Phase 05 P07 | 12min | 2 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -74,6 +75,8 @@ Progress: [██░░░░░░░░] 24%
 - [Phase 01]: TypeScript закреплён на ^5.9.3 вместо шаблонного ~6.0.2 — шаблон Vite и tsc -b проверены на 5.x
 - [Phase 01]: деплой фазы 1 подтверждён сверкой sha256 локального dist и живых файлов Pages на одном коммите, а не только кодом 200
 - [Phase 01]: ожидание прогона Actions на macOS делается циклом gh run view --json status,conclusion с паузой: timeout для обёртки gh run watch недоступен
+- [Phase 05]: приём деплоя = код 200 + пустой diff списка ассетов + совпадение sha256 живых файлов и локального dist
+- [Phase 05]: права workflow разложены по джобам (build без OIDC-токена) — строже единого блока permissions, приводить к плану не стали
 
 ### Pending Todos
 
@@ -93,6 +96,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-09-05T15:53:59.719Z
-Stopped at: Completed 01-05-PLAN.md
-Resume file: .planning/phases/01-scaffold-and-deploy/01-05-SUMMARY.md
+Last session: 2026-09-05T18:49:13.640Z
+Stopped at: Completed 05-07-PLAN.md
+Resume file: .planning/phases/05-polish-and-release/05-07-SUMMARY.md

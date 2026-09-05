@@ -68,14 +68,14 @@
 - [ ] **MOTION-01**: Секции и карточки появляются при скролле через `motion` (`whileInView`, stagger) один раз; при `prefers-reduced-motion: reduce` контент виден сразу без анимаций
 - [ ] **MOTION-02**: Фоновые CSS-анимации (луч кнопки, частицы ресурсов, волны и гало футера, пульсация огоньков) отключаются при reduced motion
 - [ ] **MOTION-03**: Страница корректно выглядит и работает на ширинах 390, 768, 1024 и 1440px без горизонтального скролла; все интерактивные элементы имеют видимый фокус и aria-атрибуты
-- [ ] **MOTION-04**: В консоли браузера нет ошибок и 404 на собранном билде
+- [x] **MOTION-04**: В консоли браузера нет ошибок и 404 на собранном билде
 
 ### Качество и деплой (QA)
 
 - [x] **QA-01**: Vitest-тесты покрывают генератор огоньков (точки внутри bbox стран, детерминизм), форматирование чисел, валидацию формы, редьюсер огоньков и пагинацию новостей
 - [ ] **QA-02**: Component-тесты покрывают форму (добавление огонька и счётчик), чипы стран, панели ресурсов и навигацию header
 - [x] **QA-03**: GitHub Actions workflow запускает `npm ci`, `npm test`, `npm run build` и деплоит `dist` на GitHub Pages при пуше в `main`
-- [ ] **QA-04**: Сайт доступен по адресу `https://thevladoss.github.io/esd-onevoice27/` и совпадает с локальным `vite preview`; Playwright smoke подтверждает наличие всех секций и чистую консоль на 1440 и 390px
+- [x] **QA-04**: Сайт доступен по адресу `https://thevladoss.github.io/esd-onevoice27/` и совпадает с локальным `vite preview`; Playwright smoke подтверждает наличие всех секций и чистую консоль на 1440 и 390px
 
 ## v2 Requirements
 
@@ -145,9 +145,9 @@
 | MOTION-01 | Phase 5 | Pending |
 | MOTION-02 | Phase 5 | Pending |
 | MOTION-03 | Phase 5 | Pending |
-| MOTION-04 | Phase 5 | Pending |
+| MOTION-04 | Phase 5 | Complete |
 | QA-02 | Phase 5 | Pending |
-| QA-04 | Phase 5 | Pending |
+| QA-04 | Phase 5 | Complete |
 
 **Coverage:**
 - v1 requirements: 37 total
