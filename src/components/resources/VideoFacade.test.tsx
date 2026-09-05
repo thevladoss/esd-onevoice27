@@ -77,6 +77,30 @@ describe("VideoFacade", () => {
   });
 });
 
+describe("VideoFacade: экранирование id", () => {
+  it("не даёт данным подменить параметры встраивания и путь", () => {
+    render(<VideoFacade videoId="abc?list=PL&x=1" title="Подмена параметров" />);
+
+    expect(document.querySelector("img")?.getAttribute("src")).toBe(
+      "https://img.youtube.com/vi/abc%3Flist%3DPL%26x%3D1/hqdefault.jpg",
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: /^Смотреть видео: / }));
+
+    expect(document.querySelector("iframe")?.getAttribute("src")).toBe(
+      "https://www.youtube-nocookie.com/embed/abc%3Flist%3DPL%26x%3D1?autoplay=1&rel=0",
+    );
+  });
+
+  it("оставляет обычный id ролика нетронутым", () => {
+    render(<VideoFacade videoId="qQsgK18gKCU" title={KAMINSKY} />);
+
+    expect(document.querySelector("img")?.getAttribute("src")).toBe(
+      "https://img.youtube.com/vi/qQsgK18gKCU/hqdefault.jpg",
+    );
+  });
+});
+
 describe("данные ресурсов", () => {
   it("videos содержит 16 уникальных роликов ЕАД", () => {
     expect(videos.length).toBe(16);

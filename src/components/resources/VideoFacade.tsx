@@ -26,6 +26,10 @@ export function VideoFacade({
   const [playing, setPlaying] = useState(false);
   const [coverFailed, setCoverFailed] = useState(false);
   const iframeRef = useRef<HTMLIFrameElement>(null);
+  /** Компонент экспортирован и берёт `videoId` пропом от любого вызывающего кода. Без экранирования
+   *  значение вида `abc?list=PL…` подменило бы параметры встраивания, `abc/../live_stream` — путь,
+   *  а `#` обрезал бы хвост запроса. Origin от этого не меняется, содержимое фрейма — меняется. */
+  const id = encodeURIComponent(videoId);
 
   /** Кнопка play исчезает вместе с фасадом. Без переноса фокуса браузер отдаёт его в `body`,
    *  и следующий Tab уводит клавиатуру из сетки роликов в начало страницы. */
@@ -47,7 +51,7 @@ export function VideoFacade({
         <iframe
           ref={iframeRef}
           className="absolute inset-0 h-full w-full"
-          src={`https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0`}
+          src={`https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0`}
           title={title}
           allow={PLAYER_ALLOW}
           sandbox={PLAYER_SANDBOX}
@@ -69,7 +73,7 @@ export function VideoFacade({
             />
           ) : (
             <img
-              src={`https://img.youtube.com/vi/${videoId}/hqdefault.jpg`}
+              src={`https://img.youtube.com/vi/${id}/hqdefault.jpg`}
               alt=""
               loading="lazy"
               decoding="async"

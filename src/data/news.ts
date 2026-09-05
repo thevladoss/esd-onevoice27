@@ -8,8 +8,12 @@ export type NewsItem = {
   source: string;
 };
 
-const cover = (videoId: string) => `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
-const watch = (videoId: string) => `https://www.youtube.com/watch?v=${videoId}`;
+/** Id ролика экранируется: в адрес постера и в параметр `v` он попадает значением, а не
+ *  куском разметки адреса. */
+const cover = (videoId: string) =>
+  `https://img.youtube.com/vi/${encodeURIComponent(videoId)}/hqdefault.jpg`;
+const watch = (videoId: string) =>
+  `https://www.youtube.com/watch?v=${encodeURIComponent(videoId)}`;
 
 const YOUTUBE = "YouTube ЕАД";
 const SITE = "esd.onevoice27.org";
