@@ -1,0 +1,26 @@
+/* Аварийный экран: показывается вместо всей страницы, поэтому держит фон сам. */
+.app-error {
+  display: grid;
+  place-content: center;
+  gap: 8px;
+  min-height: 100vh;
+  padding: 24px;
+  text-align: center;
+  background: #070210;
+  color: #f8f7fb;
+}
+
+.app-error__title {
+  margin: 0;
+  font-family: "Onest", "Noto Sans", sans-serif;
+  font-weight: 900;
+  font-size: 24px;
+  line-height: 1.2;
+}
+
+.app-error__body {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.6;
+  color: rgb(248 247 251 / .82);
+}

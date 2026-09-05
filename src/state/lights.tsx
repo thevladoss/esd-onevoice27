@@ -49,13 +49,16 @@ export function countLights(lights: readonly Light[]): LightCounts {
 const GOLDEN_ANGLE = 2.39996;
 
 /**
- * Огонёк посетителя. Координата считается от центра страны, а не приходит из формы:
- * снаружи доходят только тип и код страны.
+ * Огонёк посетителя или null, если страна не входит в дивизион. Координата
+ * считается от центра страны, а не приходит из формы: снаружи доходят только
+ * тип и код страны. Исключение вместо null уронило бы всю страницу: редьюсер
+ * вызывается в фазе рендера.
  */
-export function createLight(lights: readonly Light[], input: AddLightInput): Light {
+export function tryCreateLight(lights: readonly Light[], input: AddLightInput): Light | null {
   const country = countryById(input.countryId);
   if (!country) {
-    throw new Error(`Unknown ESD country: ${input.countryId}`);
+    console.warn(`Страна вне дивизиона, огонёк не зажжён: ${input.countryId}`);
+    return null;
   }
 
   const taken = lights.reduce((acc, light) => (light.countryId === country.id ? acc + 1 : acc), 0);
@@ -79,8 +82,10 @@ export function createLight(lights: readonly Light[], input: AddLightInput): Lig
 
 export function lightsReducer(state: LightsState, action: LightsAction): LightsState {
   switch (action.type) {
-    case "add":
-      return { lights: [...state.lights, createLight(state.lights, action.input)] };
+    case "add": {
+      const light = tryCreateLight(state.lights, action.input);
+      return light ? { lights: [...state.lights, light] } : state;
+    }
     default:
       return state;
   }
