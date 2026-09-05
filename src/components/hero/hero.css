@@ -1,0 +1,198 @@
+/* Цвета палитры здесь литералами: tokens.css объявляет @theme без static,
+   поэтому Tailwind эмитит --color-* только для использованных утилит. */
+
+.hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+  min-height: clamp(600px, 92vh, 820px);
+  background: #070210;
+  color: #f8f7fb;
+}
+
+/* Звёздное поле */
+.starfield {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.starfield__layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  animation: star-drift 120s linear infinite alternate;
+}
+
+.starfield__layer--a {
+  background-image: radial-gradient(circle, rgb(248 247 251 / .55) 0.5px, transparent 1px);
+  background-size: 180px 180px;
+}
+
+.starfield__layer--b {
+  background-image: radial-gradient(circle, rgb(248 247 251 / .35) 0.75px, transparent 1.25px);
+  background-size: 320px 320px;
+  background-position: 90px 40px;
+  animation-name: star-drift-b;
+}
+
+.starfield__glow {
+  position: absolute;
+  width: clamp(320px, 46vw, 720px);
+  height: clamp(320px, 46vw, 720px);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.starfield__glow--signal {
+  left: 78%;
+  top: 34%;
+  background: radial-gradient(circle, rgb(158 67 154 / .18), transparent 70%);
+}
+
+.starfield__glow--unity-a {
+  left: 26%;
+  top: 18%;
+  background: radial-gradient(circle, rgb(48 63 131 / .22), transparent 70%);
+}
+
+.starfield__glow--unity-b {
+  left: 62%;
+  top: 78%;
+  background: radial-gradient(circle, rgb(48 63 131 / .14), transparent 70%);
+}
+
+@keyframes star-drift {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 180px 90px;
+  }
+}
+
+@keyframes star-drift-b {
+  from {
+    background-position: 90px 40px;
+  }
+  to {
+    background-position: -230px 200px;
+  }
+}
+
+/* Глобус */
+.globe-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  mix-blend-mode: screen;
+  opacity: .72;
+  pointer-events: none;
+}
+
+/* Затемняющие слои */
+.hero__scrim,
+.hero__vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.hero__scrim {
+  z-index: 3;
+  background: linear-gradient(180deg, rgb(7 2 16 / .2), rgb(7 2 16 / .92));
+}
+
+.hero__vignette {
+  z-index: 4;
+  background: radial-gradient(ellipse at 50% 50%, transparent 42%, rgb(4 3 18 / .48) 100%);
+}
+
+/* Текстовая колонка */
+.hero__content {
+  position: relative;
+  z-index: 5;
+  width: 100%;
+  max-width: 72rem;
+  margin-inline: auto;
+  padding-inline: clamp(20px, 4vw, 48px);
+  padding-top: 160px;
+  padding-bottom: clamp(48px, 9vh, 104px);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.hero__content > * {
+  max-width: 48rem;
+}
+
+.hero__title {
+  margin-top: 12px;
+}
+
+.hero__subtitle {
+  margin-top: 16px;
+  font-family: "Noto Sans", sans-serif;
+  font-weight: 400;
+  font-size: clamp(1rem, 1.8vw, 1.2rem);
+  line-height: 1.65;
+  color: rgb(248 247 251 / .82);
+  max-width: 54ch;
+}
+
+.hero__cta {
+  margin-top: 24px;
+}
+
+/* Осветляющий слой поверх брендового градиента: средний стоп поднимается
+   с #3b4da1 (2.7:1) до #5d6cb1 (4.1:1), требование WCAG 1.4.3 для крупного текста. */
+.hero__title h1 {
+  --gradient-hero-title: linear-gradient(
+    90deg,
+    #d28ebe 0%,
+    #bb6cae 7%,
+    #9e439a 17%,
+    #943393 22%,
+    #713d98 32%,
+    #4a489e 45%,
+    #3b4da1 52%,
+    #3d54a2 60%,
+    #436ba4 71%,
+    #4e90a9 83%,
+    #54a4ac 89%,
+    #7bc2c7 100%
+  );
+  background-image:
+    linear-gradient(0deg, rgb(248 247 251 / .18), rgb(248 247 251 / .18)),
+    var(--gradient-hero-title);
+  text-wrap: balance;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+@media (min-width: 1024px) {
+  .hero__title h1 {
+    font-size: clamp(3.75rem, 5.4vw, 5.5rem);
+  }
+}
+
+@media (forced-colors: active) {
+  .hero__title h1 {
+    background: none;
+    -webkit-text-fill-color: currentColor;
+    color: CanvasText;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .starfield__layer {
+    animation: none;
+  }
+}

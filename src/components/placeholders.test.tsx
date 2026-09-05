@@ -1,7 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import type { ReactElement } from "react";
 import { copy } from "../data/copy";
-import { Hero } from "./hero/Hero";
 import { MapSection } from "./map/MapSection";
 import { LightForm } from "./form/LightForm";
 import { About } from "./about/About";
@@ -18,8 +17,8 @@ type Placeholder = {
   text: { eyebrow: string; title: string; body: string };
 };
 
+// Hero живёт в собственном наборе src/components/hero/Hero.test.tsx: секция готова и заглушкой не является.
 const placeholders: Placeholder[] = [
-  { name: "Hero", Component: Hero, id: "hero", headingLevel: 1, text: copy.sections.hero },
   { name: "MapSection", Component: MapSection, id: "map", headingLevel: 2, text: copy.sections.map },
   {
     name: "LightForm",
@@ -86,23 +85,3 @@ for (const { name, Component, id, headingLevel, text } of placeholders) {
     }
   });
 }
-
-describe("Hero", () => {
-  it("держит единственный заголовок первого уровня", () => {
-    render(<Hero />);
-    expect(
-      screen.getByRole("heading", { level: 1, name: copy.sections.hero.title }),
-    ).toBeInTheDocument();
-    expect(screen.getAllByRole("heading")).toHaveLength(1);
-  });
-
-  it("даёт кнопку-ссылку на форму внутри той же карточки, что и тело", () => {
-    render(<Hero />);
-    const link = screen.getByRole("link", { name: copy.cta.lightYourLight.label });
-    expect(link).toHaveAttribute("href", copy.cta.lightYourLight.href);
-    expect(link).toHaveClass("btn", "btn--primary");
-    const card = document.querySelector(".glass-card");
-    expect(card).toContainElement(link as HTMLElement);
-    expect(card).toHaveTextContent(copy.sections.hero.body);
-  });
-});

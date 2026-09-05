@@ -1,25 +1,42 @@
-import { copy } from "../../data/copy";
-import { Section } from "../layout/Section";
+import type { MouseEvent } from "react";
+import "./hero.css";
+import { heroCopy } from "../../data/copy.hero";
+import { Eyebrow } from "../layout/Eyebrow";
 import { GradientTitle } from "../layout/GradientTitle";
-import { GlassCard } from "../layout/GlassCard";
 import { Button } from "../layout/Button";
+import { Starfield } from "./Starfield";
+import { scrollToSection } from "./scrollToSection";
 
 export function Hero() {
+  function handleCtaClick(event: MouseEvent<HTMLAnchorElement>) {
+    if (scrollToSection(heroCopy.ctaHref)) {
+      event.preventDefault();
+    }
+  }
+
   return (
-    <Section id="hero" eyebrow={copy.sections.hero.eyebrow} className="min-h-[40vh]">
-      <GradientTitle as="h1" variant="section">
-        {copy.sections.hero.title}
-      </GradientTitle>
-      <GlassCard className="mt-6 max-w-[60ch]">
-        <p className="font-body text-base leading-[1.6] text-paper/72">
-          {copy.sections.hero.body}
-        </p>
-        <div className="mt-8">
-          <Button as="a" variant="primary" href={copy.cta.lightYourLight.href}>
-            {copy.cta.lightYourLight.label}
-          </Button>
+    <section id="hero" className="hero">
+      <Starfield />
+      <div className="hero__scrim" aria-hidden="true" />
+      <div className="hero__vignette" aria-hidden="true" />
+      <div className="hero__content">
+        <Eyebrow>{heroCopy.eyebrow}</Eyebrow>
+        <div className="hero__title">
+          <GradientTitle as="h1" variant="hero">
+            {heroCopy.title}
+          </GradientTitle>
         </div>
-      </GlassCard>
-    </Section>
+        <p className="hero__subtitle">{heroCopy.subtitle}</p>
+        <Button
+          as="a"
+          variant="primary"
+          className="hero__cta"
+          href={heroCopy.ctaHref}
+          onClick={handleCtaClick}
+        >
+          {heroCopy.cta}
+        </Button>
+      </div>
+    </section>
   );
 }
