@@ -49,11 +49,31 @@ describe("политика reduced motion", () => {
     for (const selector of [
       '[data-anim="halo"]',
       '[data-anim="pulse"] circle',
-      '[data-anim="beam"]::before',
+      ".btn[data-beam]::after",
       '[data-anim="particles"]',
     ]) {
       expect(GLOBAL_CSS).toContain(selector);
     }
+  });
+});
+
+describe("кнопка с лучом", () => {
+  it("ведёт луч по рамке, а точки — под конической маской на том же угле", () => {
+    expect(GLOBAL_CSS.match(/@property --ov-hero-beam \{/g)).toHaveLength(1);
+    expect(GLOBAL_CSS).toContain("mask-image: conic-gradient(from var(--ov-hero-beam)");
+    expect(GLOBAL_CSS.match(/background-size: 7px 7px/g)).toHaveLength(1);
+    expect(GLOBAL_CSS).toContain(") border-box;");
+    expect(GLOBAL_CSS.match(/animation: hero-beam 3s linear infinite;/g)).toHaveLength(2);
+  });
+
+  it("останавливает и луч, и маску точек при reduced motion", () => {
+    expect(GLOBAL_CSS).toMatch(
+      /\.btn\[data-beam\],\s*\.btn\[data-beam\]::after \{\s*animation: none;/,
+    );
+  });
+
+  it("даёт submit формы отдельный размер той же кнопки", () => {
+    expect(GLOBAL_CSS).toContain('.btn[data-beam][data-size="form"]');
   });
 });
 

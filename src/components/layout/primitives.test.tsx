@@ -119,13 +119,33 @@ describe("Button", () => {
 
   it("объявляет луч только у основного варианта", () => {
     const { rerender } = render(<Button>Отправить</Button>);
-    expect(screen.getByRole("button", { name: "Отправить" })).toHaveAttribute(
-      "data-anim",
-      "beam",
-    );
+    const primary = screen.getByRole("button", { name: "Отправить" });
+    expect(primary).toHaveAttribute("data-beam", "true");
+    expect(primary).toHaveAttribute("data-anim", "beam");
 
     rerender(<Button variant="ghost">Отправить</Button>);
-    expect(screen.getByRole("button", { name: "Отправить" })).not.toHaveAttribute("data-anim");
+    const ghost = screen.getByRole("button", { name: "Отправить" });
+    expect(ghost).not.toHaveAttribute("data-beam");
+    expect(ghost).not.toHaveAttribute("data-anim");
+  });
+
+  it("заворачивает подпись в span, чтобы она шла поверх сетки точек", () => {
+    render(<Button>Отправить</Button>);
+    const label = screen.getByRole("button", { name: "Отправить" }).firstElementChild;
+    expect(label?.tagName).toBe("SPAN");
+    expect(label).toHaveClass("btn__label");
+    expect(label).toHaveTextContent("Отправить");
+  });
+
+  it("size=form размечает кнопку формы, без него атрибута нет", () => {
+    const { rerender } = render(<Button size="form">Отправить</Button>);
+    expect(screen.getByRole("button", { name: "Отправить" })).toHaveAttribute(
+      "data-size",
+      "form",
+    );
+
+    rerender(<Button>Отправить</Button>);
+    expect(screen.getByRole("button", { name: "Отправить" })).not.toHaveAttribute("data-size");
   });
 
   it("пробрасывает disabled на кнопку", () => {
