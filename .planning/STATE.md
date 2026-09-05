@@ -2,10 +2,10 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: planning
+status: executing
 stopped_at: Phase 1 UI-SPEC approved; planner running
-last_updated: "2026-09-05T15:08:24.579Z"
-last_activity: 2026-09-05 — Roadmap создан, все 37 v1-требований распределены по 5 фазам
+last_updated: "2026-09-05T15:09:01.032Z"
+last_activity: 2026-09-05 -- Phase 01 execution started
 progress:
   total_phases: 5
   completed_phases: 0
@@ -21,14 +21,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-09-05)
 
 **Core value:** Посетитель открывает страницу и видит красивый, живой лендинг уровня оригинала onevoice27.org, но про ЕАД: узнаёт, что такое «Единый голос 27», видит карту движения по дивизиону и может «зажечь свой свет».
-**Current focus:** Phase 1 — Каркас и деплой
+**Current focus:** Phase 01 — scaffold-and-deploy
 
 ## Current Position
 
-Phase: 1 of 5 (Каркас и деплой)
-Plan: 0 of TBD in current phase
-Status: Ready to plan
-Last activity: 2026-09-05 — Roadmap создан, все 37 v1-требований распределены по 5 фазам
+Phase: 01 (scaffold-and-deploy) — EXECUTING
+Plan: 1 of 5
+Status: Executing Phase 01
+Last activity: 2026-09-05 -- Phase 01 execution started
 
 Progress: [░░░░░░░░░░] 0%
 
