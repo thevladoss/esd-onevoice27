@@ -64,11 +64,20 @@ Plans:
 **Plans**: 5 plans
 
 Plans:
+**Wave 1**
+
 - [ ] 02-01-PLAN.md — Hero: звёздное поле, canvas-глобус с паузами, градиентный H1, CTA с лучом (HERO-01..03)
 - [ ] 02-02-PLAN.md — Движок карты: зависимости d3/world-atlas, страны ЕАД, проекция, генератор огоньков, formatCount, LightsProvider, тесты QA-01
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
 - [ ] 02-03-PLAN.md — Секция #map со скосами, статичная SVG-карта с огоньками, счётчики со значениями, провайдер в main.tsx (MAP-01..04)
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
 - [ ] 02-04-PLAN.md — Зум и панорамирование d3-zoom, чипы стран с полётом камеры, подсказка о жестах (MAP-05, MAP-06)
 - [ ] 02-05-PLAN.md — Count-up счётчиков с IntersectionObserver и reduced motion (MAP-04)
+
 **UI hint**: yes
 
 ### Phase 3: Форма, О проекте, Участие
@@ -144,6 +153,7 @@ Plans:
 **Plans**: 7 plans
 
 Plans:
+
 - [ ] 05-01-PLAN.md — Reveal/RevealGroup/RevealItem на motion, тесты reduce, обёртки семи секций, fade hero (MOTION-01)
 - [ ] 05-02-PLAN.md — Единый блок reduced motion и токены reveal в global.css, data-anim на слоях оболочки, skip-link, ландмарки, кольцо фокуса, overflow-x clip (MOTION-02, MOTION-03)
 - [ ] 05-03-PLAN.md — Аудит a11y и адаптива hero/map/light-form/about/involve: aria-labelledby, карта, счётчики, чипы, форма, стек 390 (MOTION-03)
@@ -151,6 +161,7 @@ Plans:
 - [ ] 05-05-PLAN.md — App.test, Header.test, добор CountryChips/LightForm/Resources, ноль предупреждений act (QA-02)
 - [ ] 05-06-PLAN.md — Чанк vendor-map, зачистка console.*, scripts/check-dist.mjs, README «Проверка», docs/qa/SMOKE.md (MOTION-04, QA-04)
 - [ ] 05-07-PLAN.md — Деплой в main, gh run watch, сверка прода с dist, Playwright smoke через оркестратора, скриншоты (QA-04, MOTION-04)
+
 **UI hint**: yes
 
 ## Progress
