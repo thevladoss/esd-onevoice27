@@ -2,8 +2,8 @@ import { render, screen } from "@testing-library/react";
 
 import { Reveal, RevealGroup, RevealItem } from "./Reveal";
 
-// Мок стоит до первого рендера: motion читает matchMedia один раз, при первом вызове
-// useReducedMotion, и держит ответ в модульном синглтоне до конца файла.
+// Мок стоит до первого рендера: usePrefersReducedMotion читает matchMedia при монтировании,
+// а подмена глобала на уровне файла событий change никому не рассылает.
 window.matchMedia = ((query: string) => ({
   matches: query.includes("prefers-reduced-motion"),
   media: query,

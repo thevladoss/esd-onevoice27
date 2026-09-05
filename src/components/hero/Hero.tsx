@@ -1,5 +1,5 @@
 import type { MouseEvent } from "react";
-import { motion, useReducedMotion } from "motion/react";
+import { motion } from "motion/react";
 import "./hero.css";
 import { heroCopy } from "../../data/copy.hero";
 import { Eyebrow } from "../layout/Eyebrow";
@@ -9,6 +9,7 @@ import { HERO_FADE_DELAYS, HERO_FADE_DURATION, REVEAL_EASE } from "../layout/rev
 import { Starfield } from "./Starfield";
 import { GlobeCanvas } from "./GlobeCanvas";
 import { scrollToSection } from "../../lib/scrollToSection";
+import { usePrefersReducedMotion } from "../../lib/useReducedMotion";
 
 /** Текст hero проявляется при монтировании: секция видна сразу, ждать скролла нечего.
  *  Меняется только прозрачность — сдвиг увёл бы градиентный H1 в transform-контекст,
@@ -26,7 +27,7 @@ function fadeIn(index: number) {
 }
 
 export function Hero() {
-  const reduce = useReducedMotion();
+  const reduce = usePrefersReducedMotion();
 
   function handleCtaClick(event: MouseEvent<HTMLAnchorElement>) {
     if (scrollToSection(heroCopy.ctaHref)) {

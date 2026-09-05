@@ -1,6 +1,8 @@
 import { useMemo, useState } from "react";
 import type { AriaAttributes, ReactNode, Ref } from "react";
-import { motion, useReducedMotion } from "motion/react";
+import { motion } from "motion/react";
+
+import { usePrefersReducedMotion } from "../../lib/useReducedMotion";
 
 import {
   REVEAL_DELAY_CHILDREN,
@@ -69,7 +71,7 @@ function useRevealSetup() {
  * При `prefers-reduced-motion: reduce` рендерится обычный элемент без inline-стилей.
  */
 export function Reveal({ as = "div", className, delay = 0, children, ref, ...aria }: RevealProps) {
-  const reduce = useReducedMotion();
+  const reduce = usePrefersReducedMotion();
   const { shift, viewport } = useRevealSetup();
   const Tag = as;
   const MotionTag = MOTION_TAGS[as];
@@ -110,7 +112,7 @@ const groupVariants = {
  * и волна перестаёт читаться как одно движение.
  */
 export function RevealGroup({ as = "div", className, children, ref, ...aria }: RevealBaseProps) {
-  const reduce = useReducedMotion();
+  const reduce = usePrefersReducedMotion();
   const { viewport } = useRevealSetup();
   const Tag = as;
   const MotionTag = MOTION_TAGS[as];
@@ -140,7 +142,7 @@ export function RevealGroup({ as = "div", className, children, ref, ...aria }: R
 
 /** Карточка внутри `RevealGroup`: состояние приходит от группы, своего `whileInView` нет. */
 export function RevealItem({ as = "div", className, children, ref, ...aria }: RevealBaseProps) {
-  const reduce = useReducedMotion();
+  const reduce = usePrefersReducedMotion();
   const { shift } = useRevealSetup();
   const Tag = as;
   const MotionTag = MOTION_TAGS[as];
