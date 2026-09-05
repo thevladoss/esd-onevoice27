@@ -72,7 +72,7 @@ describe("Header", () => {
     await user.click(screen.getByRole("link", { name: "Что это?" }));
 
     expect(scrollTo).toHaveBeenCalledTimes(1);
-    expect(scrollTo).toHaveBeenCalledWith({ top: 1184, behavior: "smooth" });
+    expect(scrollTo).toHaveBeenCalledWith({ top: 1100, behavior: "smooth" });
   });
 
   it("молчит по клику на пункт, у которого нет секции", async () => {
@@ -199,7 +199,7 @@ describe("Header: мобильный оверлей", () => {
 
     expect(burger).toHaveAttribute("aria-expanded", "false");
     expect(scrollTo).toHaveBeenCalledTimes(1);
-    expect(scrollTo).toHaveBeenCalledWith({ top: 884, behavior: "smooth" });
+    expect(scrollTo).toHaveBeenCalledWith({ top: 800, behavior: "smooth" });
   });
 
   it("замыкает фокус по кругу между ссылками оверлея и бургером", () => {

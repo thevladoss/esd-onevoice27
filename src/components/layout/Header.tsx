@@ -32,7 +32,6 @@ function useMediaQuery(query: string): boolean {
 }
 
 export function Header() {
-  const headerRef = useRef<HTMLElement>(null);
   const burgerRef = useRef<HTMLButtonElement>(null);
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -51,9 +50,9 @@ export function Header() {
 
   const navigate = useCallback((href: string) => {
     setMenuOpen(false);
-    // Нижняя граница пилюли, а не её высота: header зафиксирован с отступом
-    // сверху, и `bottom` учитывает этот отступ.
-    scrollToSection(href, headerRef.current?.getBoundingClientRect().bottom ?? 0);
+    // Отступ берётся из --header-offset: живой замер пилюли давал другое число,
+    // потому что к концу плавной прокрутки шапка уже уплотнилась.
+    scrollToSection(href);
   }, []);
 
   const handleClick = (event: MouseEvent<HTMLAnchorElement>, href: string) => {
@@ -62,7 +61,7 @@ export function Header() {
   };
 
   return (
-    <header ref={headerRef} className="site-header" data-scrolled={scrolled ? "true" : "false"}>
+    <header className="site-header" data-scrolled={scrolled ? "true" : "false"}>
       <div className="site-header__pill">
         <a
           className="site-header__brand"

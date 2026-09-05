@@ -7,6 +7,11 @@
   --gradient-brand: linear-gradient(104deg, #d28ebe 0%, #3b4da1 52%, #7bc2c7 100%);
   --gradient-title: linear-gradient(104deg, #e3afd2 2%, #8f9dd6 52%, #7bc2c7 98%);
   --gradient-action: linear-gradient(125deg, #6c2c68 0%, #3b4da1 50%, #39727e 100%);
+  /* Сколько плавающий header отъедает сверху вместе с зазором до заголовка
+     секции: отступ 12px + уплотнённая пилюля 72px (min-height 48px и padding
+     12px сверху и снизу) + зазор 16px. Единственный источник этой величины:
+     отсюда её берут scroll-padding-top ниже и src/lib/headerOffset.ts. */
+  --header-offset: 100px;
   --header-skew-inset: 16px;
   --header-skew-angle: 20deg;
   --footer-wedge: clamp(24px, 3vw, 44px);
@@ -16,7 +21,14 @@
 }
 
 html {
-  scroll-padding-top: 96px;
+  scroll-padding-top: var(--header-offset);
+}
+
+/* От 768px header отступает от края не на 12px, а на 16px. */
+@media (min-width: 768px) {
+  :root {
+    --header-offset: 104px;
+  }
 }
 
 body {

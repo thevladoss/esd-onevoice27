@@ -1,3 +1,4 @@
+import { HEADER_OFFSET_FALLBACK } from "./headerOffset";
 import { scrollToSection } from "./scrollToSection";
 
 function setScrollY(value: number) {
@@ -29,10 +30,10 @@ describe("scrollToSection", () => {
     window.matchMedia = defaultMatchMedia;
   });
 
-  it("прокручивает к секции по формуле позиция минус нижняя граница header минус 16", () => {
+  it("прокручивает к секции по формуле позиция минус отступ header", () => {
     addSection("about", 1200);
 
-    expect(scrollToSection("#about", 88)).toBe(true);
+    expect(scrollToSection("#about", 104)).toBe(true);
     expect(scrollTo).toHaveBeenCalledTimes(1);
     expect(scrollTo).toHaveBeenCalledWith({ top: 1096, behavior: "smooth" });
   });
@@ -41,14 +42,14 @@ describe("scrollToSection", () => {
     setScrollY(2000);
     addSection("about", 3000);
 
-    expect(scrollToSection("#about", 88)).toBe(true);
+    expect(scrollToSection("#about", 104)).toBe(true);
     expect(scrollTo).toHaveBeenCalledWith({ top: 2896, behavior: "smooth" });
   });
 
   it("обрезает отрицательный результат до нуля", () => {
     addSection("about", 40);
 
-    expect(scrollToSection("#about", 88)).toBe(true);
+    expect(scrollToSection("#about", 104)).toBe(true);
     expect(scrollTo).toHaveBeenCalledWith({ top: 0, behavior: "smooth" });
   });
 
@@ -57,7 +58,7 @@ describe("scrollToSection", () => {
     const consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
     const consoleWarn = vi.spyOn(console, "warn").mockImplementation(() => {});
 
-    expect(scrollToSection("#missing", 88)).toBe(false);
+    expect(scrollToSection("#missing", 104)).toBe(false);
     expect(scrollTo).not.toHaveBeenCalled();
     expect(window.location.hash).toBe(hashBefore);
     expect(consoleError).not.toHaveBeenCalled();
@@ -65,7 +66,7 @@ describe("scrollToSection", () => {
   });
 
   it("для якоря #top прокручивает страницу в самый верх", () => {
-    expect(scrollToSection("#top", 88)).toBe(true);
+    expect(scrollToSection("#top", 104)).toBe(true);
     expect(scrollTo).toHaveBeenCalledWith({ top: 0, behavior: "smooth" });
   });
 
@@ -84,7 +85,7 @@ describe("scrollToSection", () => {
     })) as unknown as typeof window.matchMedia;
     addSection("about", 1200);
 
-    expect(scrollToSection("#about", 88)).toBe(true);
+    expect(scrollToSection("#about", 104)).toBe(true);
     expect(scrollTo).toHaveBeenCalledWith({ top: 1096, behavior: "auto" });
   });
 
@@ -92,6 +93,22 @@ describe("scrollToSection", () => {
     addSection("news", 600);
 
     expect(scrollToSection("news", 100)).toBe(true);
-    expect(scrollTo).toHaveBeenCalledWith({ top: 484, behavior: "smooth" });
+    expect(scrollTo).toHaveBeenCalledWith({ top: 500, behavior: "smooth" });
+  });
+
+  it("без второго аргумента берёт отступ из --header-offset", () => {
+    addSection("about", 1200);
+    document.documentElement.style.setProperty("--header-offset", "140px");
+
+    expect(scrollToSection("#about")).toBe(true);
+    expect(scrollTo).toHaveBeenCalledWith({ top: 1060, behavior: "smooth" });
+
+    document.documentElement.style.removeProperty("--header-offset");
+    scrollTo.mockClear();
+    expect(scrollToSection("#about")).toBe(true);
+    expect(scrollTo).toHaveBeenCalledWith({
+      top: 1200 - HEADER_OFFSET_FALLBACK,
+      behavior: "smooth",
+    });
   });
 });
