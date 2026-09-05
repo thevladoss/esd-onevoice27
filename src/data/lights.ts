@@ -23,6 +23,14 @@ export const DEFAULT_GROUPS = 248;
  * странам с наибольшей дробной частью, поэтому сумма ровно равна total.
  */
 export function allocateByWeight(total: number, weights: readonly number[]): number[] {
+  // Сумма долей держится только на весах, дающих единицу: при большей сумме
+  // остаток отрицателен и раздача не идёт, при меньшей остаток уходит по второму
+  // кругу одним и тем же странам. Обе поломки молчаливые, поэтому проверка здесь.
+  const sum = weights.reduce((a, b) => a + b, 0);
+  if (Math.abs(sum - 1) > 1e-9) {
+    throw new Error(`Weights must sum to 1, got ${sum}`);
+  }
+
   const raw = weights.map((w) => w * total);
   const alloc = raw.map((value) => Math.floor(value));
   const order = raw

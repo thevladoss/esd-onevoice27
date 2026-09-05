@@ -19,6 +19,20 @@ describe("allocateByWeight", () => {
   });
 });
 
+describe("allocateByWeight: веса вне контракта", () => {
+  it("не берётся раздавать веса, которые не дают единицу", () => {
+    // Сумма больше единицы: остаток отрицателен, и раздача молча возвращала больше total.
+    expect(() => allocateByWeight(100, [0.5, 0.6])).toThrow(/sum to 1/);
+    // Сумма меньше единицы: остаток уходил по второму кругу одним и тем же странам.
+    expect(() => allocateByWeight(100, [0.5, 0.2])).toThrow(/sum to 1/);
+    expect(() => allocateByWeight(100, [])).toThrow(/sum to 1/);
+  });
+
+  it("пропускает веса дивизиона", () => {
+    expect(() => allocateByWeight(100, WEIGHTS)).not.toThrow();
+  });
+});
+
 describe("generateLights", () => {
   it("даёт 694 человека и 248 групп", () => {
     const lights = generateLights();
