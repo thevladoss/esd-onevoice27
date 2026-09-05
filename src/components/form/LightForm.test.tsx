@@ -137,6 +137,15 @@ describe("LightForm: структура секции", () => {
     ).toBeInTheDocument();
   });
 
+  it("называет секцию её заголовком через aria-labelledby", () => {
+    renderForm();
+
+    const section = document.getElementById("light-form");
+    expect(section).toHaveAttribute("aria-labelledby", "form-title");
+    expect(screen.getByRole("heading", { level: 2 })).toHaveAttribute("id", "form-title");
+    expect(screen.getByRole("region", { name: formCopy.title })).toBe(section);
+  });
+
   it("даёт select из двенадцати стран дивизиона с плейсхолдером", () => {
     renderForm();
 

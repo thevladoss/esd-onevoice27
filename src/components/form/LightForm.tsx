@@ -133,10 +133,10 @@ export function LightForm() {
   const closeToast = useCallback(() => setToastOpen(false), []);
 
   return (
-    <Section id="light-form" className="lf-section">
+    <Section id="light-form" titleId="form-title" className="lf-section">
       <Reveal className="lf-head">
         <Eyebrow>{formCopy.eyebrow}</Eyebrow>
-        <GradientTitle as="h2" variant="section">
+        <GradientTitle as="h2" variant="section" id="form-title">
           {formCopy.title}
         </GradientTitle>
         <p className="lf-lead">{formCopy.lead}</p>

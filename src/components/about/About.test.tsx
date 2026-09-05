@@ -17,6 +17,14 @@ describe("Секция About", () => {
     expect(lead.textContent).toMatch(/2000-летие крещения Иисуса/);
   });
 
+  it("называет секцию её заголовком через aria-labelledby", () => {
+    render(<About />);
+    const section = document.getElementById("about");
+    expect(section).toHaveAttribute("aria-labelledby", "about-title");
+    expect(screen.getByRole("heading", { level: 2 })).toHaveAttribute("id", "about-title");
+    expect(screen.getByRole("region", { name: aboutCopy.title })).toBe(section);
+  });
+
   it("держит видео за фасадом: кнопка есть, iframe нет", () => {
     const { container } = render(<About />);
 

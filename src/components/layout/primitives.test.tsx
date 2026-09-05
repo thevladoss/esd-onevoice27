@@ -22,6 +22,25 @@ describe("Section", () => {
     expect(screen.getByText("Тело")).toBeInTheDocument();
   });
 
+  it("по titleId связывает секцию с её заголовком", () => {
+    render(
+      <Section id="about" titleId="about-title" title="Что такое Единый голос 27?">
+        Тело
+      </Section>,
+    );
+    const section = document.getElementById("about");
+    expect(section).toHaveAttribute("aria-labelledby", "about-title");
+    expect(screen.getByRole("heading", { level: 2 })).toHaveAttribute("id", "about-title");
+    expect(
+      screen.getByRole("region", { name: "Что такое Единый голос 27?" }),
+    ).toBe(section);
+  });
+
+  it("без titleId не ставит aria-labelledby", () => {
+    render(<Section id="news">Тело</Section>);
+    expect(document.getElementById("news")).not.toHaveAttribute("aria-labelledby");
+  });
+
   it("без надзаголовка и заголовка не рендерит ни h2, ни p.eyebrow", () => {
     render(<Section id="map">Только тело</Section>);
     expect(screen.queryByRole("heading")).toBeNull();

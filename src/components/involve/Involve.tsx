@@ -19,10 +19,10 @@ const artById: Record<InvolveCardId, ReactNode> = {
 
 export function Involve() {
   return (
-    <Section id="involve" className="inv-section">
+    <Section id="involve" titleId="involve-title" className="inv-section">
       <Reveal className="inv-head">
         <Eyebrow>{involveCopy.eyebrow}</Eyebrow>
-        <GradientTitle as="h2" variant="section" className="mt-2">
+        <GradientTitle as="h2" variant="section" className="mt-2" id="involve-title">
           {involveCopy.title}
         </GradientTitle>
         <p className="inv-lead mt-4 font-body text-base leading-[1.6]">{involveCopy.lead}</p>
