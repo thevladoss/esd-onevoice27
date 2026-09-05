@@ -243,6 +243,9 @@
     flex-direction: row;
     gap: 16px;
     margin: 0;
+    /* Карточки лежат поверх карты и только показывают числа:
+       перетаскивание и ⌘/Ctrl + колесо уходят в карту под ними. */
+    pointer-events: none;
   }
 
   .counters .counter {
