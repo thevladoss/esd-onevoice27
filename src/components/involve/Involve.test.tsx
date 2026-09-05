@@ -21,6 +21,21 @@ describe("Секция «От убеждения к действию»", () => {
     expect(screen.getByText(involveCopy.lead)).toBeInTheDocument();
   });
 
+  it("называет секцию её заголовком через aria-labelledby", () => {
+    render(<Involve />);
+    const section = document.getElementById("involve");
+    expect(section).toHaveAttribute("aria-labelledby", "involve-title");
+    expect(screen.getByRole("heading", { level: 2 })).toHaveAttribute("id", "involve-title");
+    expect(screen.getByRole("region", { name: involveCopy.title })).toBe(section);
+  });
+
+  it("не пропускает уровни заголовков: один H2 и три H3", () => {
+    render(<Involve />);
+
+    const levels = screen.getAllByRole("heading").map((heading) => heading.tagName);
+    expect(levels).toEqual(["H2", "H3", "H3", "H3"]);
+  });
+
   it("рендерит триптих из трёх карточек с заголовками в порядке из copy", () => {
     const { container } = render(<Involve />);
 

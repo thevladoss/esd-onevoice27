@@ -135,8 +135,9 @@
 }
 
 .map-empty a {
-  color: #aad9dc;
+  color: #f8f7fb;
   text-decoration: underline;
+  text-underline-offset: 2px;
 }
 
 .map-empty a:focus-visible {
@@ -226,10 +227,11 @@
 .counters .counter {
   flex: 1;
   width: auto;
+  min-width: 0;
   min-height: 96px;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 1024px) {
   .counters {
     position: absolute;
     top: 88px;
@@ -323,6 +325,7 @@
 
 .chip {
   height: 44px;
+  min-width: 0;
   padding-inline: 16px;
   border-radius: 999px;
   border: 1px solid rgb(184 192 230 / .16);
@@ -367,7 +370,7 @@
   bottom: 16px;
   z-index: 4;
   margin: 0;
-  padding: 6px 10px;
+  padding: 8px 12px;
   border-radius: 8px;
   background: rgb(7 2 16 / .55);
   font-size: 12px;
@@ -382,6 +385,14 @@
 
 .map-hint__touch {
   display: inline;
+}
+
+@media (max-width: 767px) {
+  .map-hint {
+    position: static;
+    width: fit-content;
+    margin: 16px auto 0;
+  }
 }
 
 @media (min-width: 768px) {

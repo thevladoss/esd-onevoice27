@@ -21,7 +21,7 @@ import { Section } from "../layout/Section";
 import { ConsentCheckbox } from "./ConsentCheckbox";
 import { FormField } from "./FormField";
 import { LightTypeChoice } from "./LightTypeChoice";
-import { SuccessToast } from "./SuccessToast";
+import { SuccessLiveRegion, SuccessToast } from "./SuccessToast";
 
 const SUBMIT_DELAY = 1200;
 
@@ -133,10 +133,10 @@ export function LightForm() {
   const closeToast = useCallback(() => setToastOpen(false), []);
 
   return (
-    <Section id="light-form" className="lf-section">
+    <Section id="light-form" titleId="form-title" className="lf-section">
       <Reveal className="lf-head">
         <Eyebrow>{formCopy.eyebrow}</Eyebrow>
-        <GradientTitle as="h2" variant="section">
+        <GradientTitle as="h2" variant="section" id="form-title">
           {formCopy.title}
         </GradientTitle>
         <p className="lf-lead">{formCopy.lead}</p>
@@ -275,13 +275,8 @@ export function LightForm() {
         </GlassCard>
       </Reveal>
 
-      {/*
-        Живой регион смонтирован всегда и пустой до успеха: скринридер объявляет отправку
-        сменой текста внутри уже существующего региона. Тост ниже — только визуальная копия.
-      */}
-      <p className="sr-only" role="status" aria-live="polite">
-        {toastOpen ? formCopy.success : ""}
-      </p>
+      {/* Тост ниже — визуальная копия: объявляет успех живой регион, а не карточка. */}
+      <SuccessLiveRegion message={toastOpen ? formCopy.success : ""} />
 
       <SuccessToast
         key={toastKey}

@@ -108,6 +108,7 @@
 .lf-type {
   position: relative;
   display: block;
+  min-width: 0;
   min-height: 44px;
   padding: 16px;
   padding-right: 40px;
@@ -186,6 +187,15 @@
   .lf-span {
     grid-column: 1 / -1;
   }
+}
+
+/* Третья строка сетки поля пуста, пока ошибки нет: её появление не сдвигает соседние поля.
+   26px = строка 13px/1.35 плюс отступ 8px от контрола. */
+.lf-field {
+  display: grid;
+  grid-template-rows: auto auto minmax(26px, auto);
+  align-content: start;
+  min-width: 0;
 }
 
 .lf-label {
@@ -334,7 +344,7 @@ select.lf-control option {
 .lf-toast-card {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 4px;
   max-width: 26rem;
   padding: 16px 20px;
   cursor: pointer;

@@ -12,6 +12,14 @@ describe("Hero", () => {
     expect(screen.getByText("Единое глобальное движение")).toBeInTheDocument();
   });
 
+  it("называет секцию её заголовком через aria-labelledby", () => {
+    render(<Hero />);
+    const section = document.getElementById("hero");
+    expect(section).toHaveAttribute("aria-labelledby", "hero-title");
+    expect(screen.getByRole("heading", { level: 1 })).toHaveAttribute("id", "hero-title");
+    expect(screen.getByRole("region", { name: heroCopy.title })).toBe(section);
+  });
+
   it("держит заголовок первого уровня «Вместе, единым голосом»", () => {
     render(<Hero />);
     const heading = screen.getByRole("heading", { level: 1 });

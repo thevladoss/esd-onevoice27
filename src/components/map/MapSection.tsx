@@ -33,13 +33,13 @@ export function MapSection() {
   }, []);
 
   return (
-    <section id="map" className="map-section">
+    <section id="map" className="map-section" aria-labelledby="map-title">
       <div className="map-section__skew">
         <div className="map-section__inner">
           {/* div, а не header: внутри секции он читался бы вторым баннером страницы */}
           <Reveal className="map-section__header">
             <Eyebrow>{mapCopy.eyebrow}</Eyebrow>
-            <GradientTitle as="h2" variant="section">
+            <GradientTitle as="h2" variant="section" id="map-title">
               {mapCopy.title}
             </GradientTitle>
           </Reveal>

@@ -24,6 +24,14 @@ describe("MapSection", () => {
     );
   });
 
+  it("называет секцию её заголовком через aria-labelledby", () => {
+    renderSection();
+    const section = document.getElementById("map");
+    expect(section).toHaveAttribute("aria-labelledby", "map-title");
+    expect(screen.getByRole("heading", { level: 2 })).toHaveAttribute("id", "map-title");
+    expect(screen.getByRole("region", { name: "Зажигаем свет по всему дивизиону" })).toBe(section);
+  });
+
   it("показывает счётчики дивизиона", () => {
     renderSection();
     expect(screen.getByText("ЧЕЛОВЕК")).toBeInTheDocument();

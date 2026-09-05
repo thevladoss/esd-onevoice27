@@ -36,13 +36,13 @@ export function Hero() {
 
   const eyebrow = <Eyebrow>{heroCopy.eyebrow}</Eyebrow>;
   const title = (
-    <GradientTitle as="h1" variant="hero">
+    <GradientTitle as="h1" variant="hero" id="hero-title">
       {heroCopy.title}
     </GradientTitle>
   );
 
   return (
-    <section id="hero" className="hero">
+    <section id="hero" className="hero" aria-labelledby="hero-title">
       <Starfield />
       <GlobeCanvas />
       <div className="hero__scrim" aria-hidden="true" />
