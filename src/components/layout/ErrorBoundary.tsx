@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { ErrorInfo, ReactNode } from "react";
 import { Component } from "react";
 import "./ErrorBoundary.css";
 
@@ -25,6 +25,15 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
 
   static getDerivedStateFromError(): ErrorBoundaryState {
     return { failed: true };
+  }
+
+  /** Единственный след упавшего рендера. Лог под флагом сборки: у посетителя консоль
+   *  остаётся чистой (MOTION-04), а разработчик получает стек компонентов вместо
+   *  серого экрана без объяснений. */
+  componentDidCatch(error: Error, info: ErrorInfo): void {
+    if (import.meta.env.DEV) {
+      console.error("Рендер упал:", error, info.componentStack);
+    }
   }
 
   render(): ReactNode {
