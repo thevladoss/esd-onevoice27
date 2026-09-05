@@ -1,6 +1,8 @@
 /* eslint-disable react-refresh/only-export-components --
    formatNewsDate живёт рядом с разметкой карточки: формат даты и её вёрстка меняются вместе.
    Ценой служит fast refresh этого файла. */
+import { useState } from "react";
+import { newsCopy } from "../../data/copy.news";
 import type { NewsItem } from "../../data/news";
 
 const dateFormatter = new Intl.DateTimeFormat("ru-RU", {
@@ -20,6 +22,8 @@ export function formatNewsDate(iso: string): string {
 }
 
 export function NewsCard({ item }: { item: NewsItem }) {
+  const [coverFailed, setCoverFailed] = useState(false);
+
   return (
     <article className="h-full">
       <a
@@ -29,13 +33,28 @@ export function NewsCard({ item }: { item: NewsItem }) {
         className="group relative block h-full overflow-hidden rounded-card border border-[var(--glass-border)] bg-midnight-900 transition-colors duration-[420ms] ease-header hover:border-[rgb(123_194_199/.4)] focus-within:border-[rgb(123_194_199/.4)] focus-visible:outline-2 focus-visible:outline-offset-[3px] focus-visible:outline-horizon-400"
       >
         <div className="aspect-[4/5] w-full overflow-hidden">
-          <img
-            src={item.cover}
-            alt=""
-            loading="lazy"
-            decoding="async"
-            className="h-full w-full object-cover object-center transition-transform duration-[520ms] ease-header motion-safe:group-hover:scale-[1.04]"
-          />
+          {coverFailed ? (
+            <div
+              aria-hidden="true"
+              className="flex h-full w-full flex-col items-center justify-center gap-1 bg-[linear-gradient(145deg,rgb(48_63_131/.86),rgb(18_12_52/.76))] px-4 pb-20 text-center"
+            >
+              <p className="font-body text-xs font-bold uppercase leading-[1.4] tracking-[0.08em] text-paper/62">
+                {newsCopy.coverFailedTitle}
+              </p>
+              <p className="font-body text-xs leading-[1.4] text-paper/80">
+                {newsCopy.coverFailedBody}
+              </p>
+            </div>
+          ) : (
+            <img
+              src={item.cover}
+              alt=""
+              loading="lazy"
+              decoding="async"
+              onError={() => setCoverFailed(true)}
+              className="h-full w-full object-cover object-center transition-transform duration-[520ms] ease-header motion-safe:group-hover:scale-[1.04]"
+            />
+          )}
         </div>
         <span
           aria-hidden="true"

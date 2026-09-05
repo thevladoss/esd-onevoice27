@@ -3,6 +3,7 @@ import { newsCopy } from "../../data/copy.news";
 import { news } from "../../data/news";
 import type { NewsItem } from "../../data/news";
 import { paginate } from "../../lib/paginate";
+import { Button } from "../layout/Button";
 import { Eyebrow } from "../layout/Eyebrow";
 import { GradientTitle } from "../layout/GradientTitle";
 import { NewsCard } from "./NewsCard";
@@ -32,13 +33,28 @@ export function News({ items = news }: { items?: NewsItem[] } = {}) {
           <p className="mt-4 font-body text-base leading-[1.5] text-paper/80">{newsCopy.body}</p>
         </div>
 
-        <ul className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3 lg:gap-8">
-          {result.items.map((item) => (
-            <li key={item.id}>
-              <NewsCard item={item} />
-            </li>
-          ))}
-        </ul>
+        {result.items.length === 0 ? (
+          <div className="mt-12 rounded-card border border-[var(--glass-border)] p-8 text-center">
+            <p className="font-body text-base leading-[1.5] text-paper/80">{newsCopy.emptyTitle}</p>
+            <Button
+              variant="ghost"
+              as="button"
+              type="button"
+              className="mt-6"
+              onClick={() => setPage(1)}
+            >
+              {newsCopy.emptyAction}
+            </Button>
+          </div>
+        ) : (
+          <ul className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3 lg:gap-8">
+            {result.items.map((item) => (
+              <li key={item.id}>
+                <NewsCard item={item} />
+              </li>
+            ))}
+          </ul>
+        )}
 
         <p role="status" className="sr-only">
           {newsCopy.pageStatus(result.page, result.totalPages)}

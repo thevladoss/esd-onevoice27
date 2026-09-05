@@ -74,6 +74,57 @@ describe("News", () => {
 
     expect(screen.getByRole("navigation", { name: "Пагинация новостей" })).toBeInTheDocument();
   });
+
+  it("держит обложку декоративной, а заголовок и дату — в правильном порядке", () => {
+    render(<News />);
+
+    for (const article of screen.getAllByRole("article")) {
+      const image = article.querySelector("img");
+      expect(image).toHaveAttribute("alt", "");
+      expect(image).toHaveAttribute("loading", "lazy");
+
+      const heading = within(article).getByRole("heading", { level: 3 });
+      expect(heading.textContent?.trim().length ?? 0).toBeGreaterThan(0);
+
+      const marked = article.querySelectorAll("time, h3");
+      expect(marked[0].tagName).toBe("TIME");
+      expect(marked[1].tagName).toBe("H3");
+    }
+  });
+
+  it("заменяет упавшую обложку плашкой, сохраняя ссылку и заголовок", () => {
+    render(<News />);
+
+    const [first] = screen.getAllByRole("article");
+    const image = first.querySelector("img");
+    expect(image).not.toBeNull();
+
+    fireEvent.error(image as HTMLImageElement);
+
+    expect(first.querySelector("img")).toBeNull();
+    expect(within(first).getByText("Обложка недоступна")).toBeInTheDocument();
+    expect(
+      within(first).getByText("Заголовок и ссылка на месте — откройте новость"),
+    ).toBeInTheDocument();
+    expect(within(first).getByRole("link")).toHaveAttribute("rel", "noopener noreferrer");
+    expect(within(first).getByRole("heading", { level: 3 })).toBeInTheDocument();
+    expect(screen.getAllByRole("article")).toHaveLength(6);
+  });
+
+  it("объясняет пустой список и возвращает на первую страницу", () => {
+    render(<News items={[]} />);
+
+    expect(screen.queryAllByRole("article")).toHaveLength(0);
+    expect(screen.getByText("На этой странице новостей нет")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Вернуться к первой странице" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Страница 1" })).toHaveAttribute(
+      "aria-current",
+      "page",
+    );
+    expect(screen.queryByRole("button", { name: "Страница 2" })).toBeNull();
+    expect(screen.getByRole("button", { name: "Следующая страница" })).toBeDisabled();
+    expect(screen.getByRole("status")).toHaveTextContent("Страница 1 из 1");
+  });
 });
 
 describe("formatNewsDate", () => {
