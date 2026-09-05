@@ -6,7 +6,7 @@ import { GradientTitle } from "../layout/GradientTitle";
 import { Button } from "../layout/Button";
 import { Starfield } from "./Starfield";
 import { GlobeCanvas } from "./GlobeCanvas";
-import { scrollToSection } from "./scrollToSection";
+import { scrollToSection } from "../../lib/scrollToSection";
 
 export function Hero() {
   function handleCtaClick(event: MouseEvent<HTMLAnchorElement>) {
