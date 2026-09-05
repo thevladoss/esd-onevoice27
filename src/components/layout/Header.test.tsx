@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, within } from "@testing-library/react";
+import { act, fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Header } from "./Header";
 
@@ -113,5 +113,141 @@ describe("Header", () => {
     expect(burger).toHaveAttribute("aria-expanded", "false");
     expect(burger).toHaveAttribute("aria-controls", "mobile-menu");
     expect(burger).toHaveAttribute("type", "button");
+  });
+});
+
+describe("Header: мобильный оверлей", () => {
+  const scrollTo = vi.mocked(window.scrollTo);
+
+  function openMenu() {
+    const burger = screen.getByRole("button", { name: "Открыть меню" });
+    fireEvent.click(burger);
+    return burger;
+  }
+
+  function overlay() {
+    return within(screen.getByRole("banner")).getByRole("dialog", { hidden: true });
+  }
+
+  beforeEach(() => {
+    scrollTo.mockClear();
+    document.body.style.overflow = "scroll";
+  });
+
+  afterEach(() => {
+    document.body.style.overflow = "";
+    document.querySelectorAll("body > section").forEach((section) => section.remove());
+  });
+
+  it("держит оверлей внутри ландмарки banner", () => {
+    render(<Header />);
+
+    expect(overlay()).toHaveAttribute("id", "mobile-menu");
+    expect(overlay()).toHaveAttribute("aria-modal", "true");
+  });
+
+  it("прячет закрытый оверлей от скринридера и клавиатуры", () => {
+    render(<Header />);
+
+    expect(overlay()).toHaveAttribute("aria-hidden", "true");
+    expect(overlay()).toHaveAttribute("inert");
+  });
+
+  it("открывает меню кнопкой, блокирует скролл и уводит фокус в оверлей", () => {
+    render(<Header />);
+    openMenu();
+
+    const dialog = screen.getByRole("dialog", { name: "Меню" });
+    expect(screen.getByRole("button", { name: "Закрыть меню" })).toHaveAttribute(
+      "aria-expanded",
+      "true",
+    );
+    expect(document.body.style.overflow).toBe("hidden");
+    expect(document.activeElement).toBe(within(dialog).getAllByRole("link")[0]);
+  });
+
+  it("закрывает меню по Escape и возвращает фокус на бургер", () => {
+    render(<Header />);
+    const burger = openMenu();
+
+    fireEvent.keyDown(document, { key: "Escape" });
+
+    expect(burger).toHaveAttribute("aria-expanded", "false");
+    expect(document.activeElement).toBe(burger);
+    expect(document.body.style.overflow).toBe("scroll");
+  });
+
+  it("закрывает меню кликом по фону оверлея", () => {
+    render(<Header />);
+    const burger = openMenu();
+
+    fireEvent.click(overlay());
+
+    expect(burger).toHaveAttribute("aria-expanded", "false");
+  });
+
+  it("по клику на пункт оверлея закрывает меню и прокручивает к секции", () => {
+    addSection("involve", 900);
+    render(<Header />);
+    const burger = openMenu();
+
+    fireEvent.click(within(screen.getByRole("dialog", { name: "Меню" })).getByText("Участвовать"));
+
+    expect(burger).toHaveAttribute("aria-expanded", "false");
+    expect(scrollTo).toHaveBeenCalledTimes(1);
+    expect(scrollTo).toHaveBeenCalledWith({ top: 884, behavior: "smooth" });
+  });
+
+  it("замыкает фокус по кругу между ссылками оверлея и бургером", () => {
+    render(<Header />);
+    const burger = openMenu();
+    const links = within(screen.getByRole("dialog", { name: "Меню" })).getAllByRole("link");
+    const lastLink = links[links.length - 1];
+
+    lastLink.focus();
+    fireEvent.keyDown(document, { key: "Tab" });
+    expect(document.activeElement).toBe(burger);
+
+    fireEvent.keyDown(document, { key: "Tab", shiftKey: true });
+    expect(document.activeElement).toBe(lastLink);
+  });
+
+  it("закрывает меню, когда экран становится десктопным", () => {
+    const defaultMatchMedia = window.matchMedia;
+    const listeners = new Set<(event: MediaQueryListEvent) => void>();
+    let desktop = false;
+
+    window.matchMedia = ((query: string) => ({
+      get matches() {
+        return query.includes("min-width: 768px") ? desktop : false;
+      },
+      media: query,
+      onchange: null,
+      addEventListener: (_type: string, listener: (event: MediaQueryListEvent) => void) =>
+        listeners.add(listener),
+      removeEventListener: (_type: string, listener: (event: MediaQueryListEvent) => void) =>
+        listeners.delete(listener),
+      addListener: () => {},
+      removeListener: () => {},
+      dispatchEvent: () => false,
+    })) as unknown as typeof window.matchMedia;
+
+    try {
+      render(<Header />);
+      const burger = openMenu();
+      expect(burger).toHaveAttribute("aria-expanded", "true");
+
+      act(() => {
+        desktop = true;
+        listeners.forEach((listener) =>
+          listener({ matches: true, media: "(min-width: 768px)" } as MediaQueryListEvent),
+        );
+      });
+
+      expect(burger).toHaveAttribute("aria-expanded", "false");
+      expect(document.body.style.overflow).toBe("scroll");
+    } finally {
+      window.matchMedia = defaultMatchMedia;
+    }
   });
 });
