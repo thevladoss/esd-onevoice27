@@ -121,3 +121,32 @@ curl -sI https://thevladoss.github.io/esd-onevoice27/ | head -1   # ожидае
 | Тесты | 42 файла, 335 | 43 файла, 346, предупреждений `act` нет; `check:dist` теперь шаг деплоя в CI |
 
 Замечание к методике: Playwright прокручивает страницу к кнопке пагинации перед кликом, если она ниже экрана; тогда группа карточек уходит выше вьюпорта и появляется только при прокрутке назад. Сценарий пользователя (пагинация уже видна) этого эффекта не имеет.
+
+## Фаза 6: точность оригинала (шапка, кнопка, фоны)
+
+Правки пользователя после приёмки фазы 5: «меню точно как в оригинале вплоть до анимаций и цветов», «фоны на всю ширину как в оригинале», «точки на кнопке проявляются и гаснут вслед за лучом». Правила сняты с живого onevoice27.org через Playwright (таблицы стилей и вычисленные значения), палитра `--ov-*-rgb` в точных RGB. Инструмент приёмки: Playwright MCP, Chrome, прод https://thevladoss.github.io/esd-onevoice27/, сборка после слияния планов 06-01…06-03 и фиксов 06-04.
+
+| Область | Оригинал | Наш прод | Статус |
+|---|---|---|---|
+| Пилюля шапки 1440 | 72rem × 80px, radius 18px, `skewX(-20deg)` на слоях рамки и стекла, рамка `linear-gradient(112deg, …)`, стекло `rgb(7 2 16 / .77)` + `blur(18px) saturate(135%)`, drop-shadow | 1152 × 80px на x=144, radius 18px, `matrix(1, 0, -0.36397, 1, 0, 0)` у `::before` и `::after` (tan 20°), blur 18px saturate 1.35, поверхность rgba(7, 2, 16, .77), drop-shadow | да |
+| Пилюля 1920 | тот же 72rem по центру | 1152px на x=384 | да |
+| Пункты меню | 16px / 650 / uppercase / -0.015em, текст в span с градиентом 230% и `background-position 100% 50%` → `0 50%` на hover за 360ms | 16px 650 uppercase, `background-clip: text`, позиция `100% 50%` → `0px 50%` на hover | да |
+| Скрытие при прокрутке | `.is-header-hidden`: `translateY(calc(-100% - 2rem))`, opacity 0, 420ms | после прокрутки 700 → 900: класс `is-header-hidden`, `matrix(…, 0, -112)`, opacity 0; после прокрутки вверх класс снят, opacity 1 | да |
+| Логотип | белый rgb(255 255 255) | `Единый голос 27 / миссия для всех` белый, без градиента | да |
+| Мобильная шапка 390 | 72px, radius 0, световая линия 1.5px по низу | min-height 72px, radius 0, `::before` 1.5px у нижней кромки | да |
+| Бургер | SVG 64×28, три rect, в открытом виде крест: `translateY(-8px) scaleX(.72)` + opacity 0 / `scaleX(1.2308) rotate(45deg)` / `translateY(-12px) rotate(-45deg)` | 3 rect; matrix(0.72,0,0,1,0,-8) / matrix(0.87,0.71,-0.87,0.71,0,0) / matrix(0.71,-0.71,0.71,0.71,0,-12) | да |
+| Оверлей меню | fixed inset 0, радиальные пятна signal/horizon + linear 145deg, blur 24px saturate 125%, пункты `clamp(1.65rem, 8vw, 2.6rem)` / 750, разделители, линия 1.5rem справа; крест поверх оверлея | visibility visible, opacity 1, `blur(24px) saturate(1.25)`, пункты 31.2px / 750, линия 24px; после переноса оверлея внутрь пилюли `elementFromPoint` по центру бургера отдаёт бургер, клик по кресту закрывает и возвращает фокус | да |
+| Кнопка hero | рамка 1.5px transparent, поверхность `linear-gradient(125deg, rgb(108 44 104), rgb(59 77 161), rgb(57 114 126))` padding-box + `conic-gradient(from var(--ov-hero-beam) …)` border-box, `::after` точки 7px с `mask-image: conic-gradient(…)`, `hero-beam 3s linear infinite` | border 1.5px, те же градиенты, `::after` `background-size 7px 7px`, opacity .42, mask conic, animation hero-beam 3s; угол `--ov-hero-beam` 221° → 257° за 300 мс | да |
+| Submit формы | те же правила, width 100%, min-height 54px | `.btn[data-beam][data-size="form"]` | да |
+| Фоны 1920 | все секции на всю ширину: карта+форма на rgb(18 12 52) со скосом, about rgb(22 29 61) с радиальными, involve скошенная полоса с контуром, news rgb(18 12 52), resources rgb(18 12 52) с атмосферой и частицами, footer градиент со скосом | `main > section` и footer шириной 1920; подложки: hero rgb(7 2 16) + `::after`-оверлей, map слой rgb(18 12 52) + `::before` со скосом (margin-top −53px), light-form rgb(18 12 52) + `::before`, about rgb(22 29 61) + `::before`, involve `::before`/`::after` со скосами (margin-top −53px), news rgb(18 12 52) + `::before`, resources rgb(18 12 52) + слой атмосферы и частиц, quote градиент, footer градиент + `::after`, margin-top −47px | да |
+| Карта | Mapbox во всю ширину окна | SVG 1920px, left 0, контейнер 1920px; проекция не менялась: лишняя ширина уходит соседним странам, как у оригинала | да |
+| Горизонтальный скролл | у оригинала на 1920 scrollWidth 2338 (орб со сдвигом 38%) | до фикса тот же дефект (2338 / 1834 / 1304 / 978 на 1920 / 1440 / 1024 / 768); после `overflow-x: clip` на секциях карты и формы scrollWidth равен innerWidth на 320 / 390 / 768 / 1024 / 1440 / 1920 (локальный preview, затем прод) | да, после фикса |
+| Deep link материалов | — (интеграционная находка аудита v1.0) | клик по «Скачать материалы» в триптихе: `location.hash = #resources-materials`, `aria-expanded` панелей `[false, true, false]`, 5 ссылок, секция под шапкой (top 112px) | да |
+| Reduced motion | все переходы шапки `.01ms`, луч и маска статичны | 51 `[data-anim]` без анимации, `animationName: none` у кнопки и её `::after`, transition-duration шапки 1e-05s, 8 секций видны | да |
+| Секции, консоль, сеть | — | 8 секций, 0 ошибок консоли, 0 ответов ≥ 400 из 60 (thevladoss.github.io, fonts.googleapis.com, fonts.gstatic.com, img.youtube.com), reveal 31/31, счётчики 694 / 248 | да |
+
+Скриншоты фазы 6: `final-desktop.jpeg` (1440), `final-header-1920.jpeg` (пилюля на 1920), `final-cta.jpeg` (кнопка), `final-full.jpeg` (1440, вся страница), `final-full-1920.jpeg` (1920, вся страница), `final-mobile.jpeg` и `final-mobile-menu.jpeg` (390), `final-reduced-motion.jpeg`.
+
+Сознательные отступления от оригинала: бургер остаётся `<button>` (у оригинала `<a role="button">`); кольцо фокуса на пунктах меню сохранено (оригинал ставит `outline: none`); шрифт Onest вместо Figtree; активный пункт меню подсвечен как hover; горизонтальный overflow оригинала не скопирован.
+
+**Вердикт фазы 6:** принято.

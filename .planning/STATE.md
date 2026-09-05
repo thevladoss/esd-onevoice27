@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Executing Phase 06 (планы 06-01…06-03 параллельно в worktree)
+stopped_at: Completed 06-04-PLAN.md, фаза 06 ждёт верификацию
 last_updated: "2026-09-05T20:45:00.000Z"
 last_activity: 2026-09-05 -- Фаза 6 «Точность оригинала» по правкам пользователя: планы 06-01 шапка, 06-02 кнопка, 06-03 фоны исполняются
 progress:
   total_phases: 6
   completed_phases: 5
   total_plans: 30
-  completed_plans: 26
-  percent: 87
+  completed_plans: 30
+  percent: 100
 ---
 
 # Project State
@@ -26,17 +26,17 @@ See: .planning/PROJECT.md (updated 2026-09-05)
 ## Current Position
 
 Phase: 06 (original-fidelity) — EXECUTING
-Plan: 1–3 of 4 (параллельно)
-Status: Фаза 05 закрыта (verification passed, review-fix, UAT); фаза 06 по правкам пользователя: шапка, кнопка, фоны, затем deep link, smoke и деплой
-Last activity: 2026-09-05 -- планы 06-01…06-03 у исполнителей
+Plan: 4 of 4
+Status: Все планы фазы 06 слиты и приняты в браузере (SMOKE.md «Фаза 6»), ожидается верификация
+Last activity: 2026-09-05 -- 06-04: deep link, крест бургера, overflow-x clip, smoke на 1440/1920/390
 
-Progress: [████████▋ ] 87%
+Progress: [██████████] 100%
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total plans completed: 26
+- Total plans completed: 30
 - Average duration: - min
 - Total execution time: 0 hours
 
