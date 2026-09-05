@@ -210,6 +210,16 @@ describe("зум карты", () => {
     expect(svg?.style.getPropertyValue("touch-action")).toBe("pan-y");
   });
 
+  it("не улетает в NaN на стране вне дивизиона", () => {
+    // 840 это США: диплинк или параметр хеша могут привести любой номер страны.
+    const { container } = render(<EsdMap lights={lights} size={SIZE} selectedCountryId={840} />);
+
+    expect(readTransform(container)).toBe("translate(0,0) scale(1)");
+    expect(readTransform(container)).not.toContain("NaN");
+    // Карта остаётся на месте: полёт в пустые границы стирал её целиком.
+    expect(container.querySelectorAll("path.country")).toHaveLength(177);
+  });
+
   it("держит камеру посетителя, когда меняется размер контейнера", () => {
     const { container, rerender } = render(<EsdMap lights={lights} size={SIZE} />);
     const svg = container.querySelector("svg") as SVGSVGElement;

@@ -193,12 +193,20 @@ export function EsdMap({
     // Страну при этом не переключали, поэтому камеру посетителя оставляем как есть.
     if (sizeChanged && !selectionChanged && selectedCountryId === null) return;
 
-    const feature = selectedCountryId === null ? undefined : featureById(selectedCountryId);
+    // Страну ищем только среди дивизиона: пропс принимает любое число, а страна,
+    // которую проекция отсекла целиком, даёт границы из Infinity.
+    const feature =
+      selectedCountryId !== null && isEsd(selectedCountryId)
+        ? featureById(selectedCountryId)
+        : undefined;
     let target = zoomIdentity;
 
     if (feature) {
       const path = geoPath(projection);
       const [[x0, y0], [x1, y1]] = path.bounds(feature);
+      // Пустые границы схлопнули бы масштаб и дали translate(NaN,NaN): карта исчезает целиком.
+      if (![x0, y0, x1, y1].every(Number.isFinite) || x1 <= x0 || y1 <= y0) return;
+
       // Страна занимает 0.8 вьюбокса, остальное уходит на поля вокруг неё.
       const fit = 0.8 / Math.max((x1 - x0) / width, (y1 - y0) / height);
       const k = Math.min(ZOOM_MAX, Math.max(ZOOM_MIN, fit));
