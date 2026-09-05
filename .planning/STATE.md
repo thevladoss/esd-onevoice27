@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Phase 1 UI-SPEC approved; planner running
-last_updated: "2026-09-05T15:21:07.609Z"
-last_activity: 2026-09-05 -- Phase 01 execution started
+stopped_at: Completed 01-05-PLAN.md
+last_updated: "2026-09-05T15:55:34.173Z"
+last_activity: 2026-09-05 -- Phase 01 plan 05 deployed and verified
 progress:
   total_phases: 5
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 25
-  completed_plans: 1
-  percent: 0
+  completed_plans: 6
+  percent: 20
 ---
 
 # Project State
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-09-05)
 ## Current Position
 
 Phase: 01 (scaffold-and-deploy) — EXECUTING
-Plan: 2 of 5
-Status: Executing Phase 01
-Last activity: 2026-09-05 -- Phase 01 execution started
+Plan: 5 of 5 (все планы фазы 01 выполнены)
+Status: Фаза 01 выполнена, ждёт verify
+Last activity: 2026-09-05 -- живой деплой фазы 01 подтверждён (прогон 33975939373)
 
-Progress: [░░░░░░░░░░] 4%
+Progress: [██░░░░░░░░] 24%
 
 ## Performance Metrics
 
@@ -53,6 +53,7 @@ Progress: [░░░░░░░░░░] 4%
 
 *Updated after each plan completion*
 | Phase 01 P01 | 13min | 4 tasks | 32 files |
+| Phase 01 P05 | 8min | 2 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -68,6 +69,8 @@ Progress: [░░░░░░░░░░] 4%
 - [Phase 01]: Vitest закреплён на 4.1.11 и jsdom на 29.1.1 — локальный Node 25.2.1 не входит в engines vitest 5
 - [Phase 01]: Vite 8.2.2 работает с @tailwindcss/vite 4.3.3 и Vitest, откат на Vite 7 не нужен — блокер фазы 1 снят проверкой билда и тестов
 - [Phase 01]: TypeScript закреплён на ^5.9.3 вместо шаблонного ~6.0.2 — шаблон Vite и tsc -b проверены на 5.x
+- [Phase 01]: деплой фазы 1 подтверждён сверкой sha256 локального dist и живых файлов Pages на одном коммите, а не только кодом 200
+- [Phase 01]: ожидание прогона Actions на macOS делается циклом gh run view --json status,conclusion с паузой: timeout для обёртки gh run watch недоступен
 
 ### Pending Todos
 
@@ -75,7 +78,6 @@ Progress: [░░░░░░░░░░] 4%
 
 ### Blockers/Concerns
 
-- Фаза 1: подтвердить совместимость Vite 8 с `@tailwindcss/vite` и Vitest 5, иначе откат на Vite 7 (см. research/SUMMARY.md)
 - Фаза 2: производительность огоньков и проекция карты на реальном билде (антимеридиан, ≤40 анимированных огоньков)
 
 ## Deferred Items
@@ -88,6 +90,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-09-05T15:20:50.434Z
-Stopped at: Phase 1 UI-SPEC approved; planner running
-Resume file: .planning/phases/01-scaffold-and-deploy/01-UI-SPEC.md
+Last session: 2026-09-05T15:53:59.719Z
+Stopped at: Completed 01-05-PLAN.md
+Resume file: .planning/phases/01-scaffold-and-deploy/01-05-SUMMARY.md
