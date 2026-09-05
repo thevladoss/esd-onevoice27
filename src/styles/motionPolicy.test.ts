@@ -10,6 +10,7 @@ import { describe, expect, it } from "vitest";
  */
 const SRC = resolve(process.cwd(), "src");
 const GLOBAL_CSS_PATH = join(SRC, "styles", "global.css");
+const POLICY_TEST_PATH = join(SRC, "styles", "motionPolicy.test.ts");
 const GLOBAL_CSS = readFileSync(GLOBAL_CSS_PATH, "utf8");
 
 /** Пути всех файлов `src` с одним из расширений, рекурсивно. */
@@ -121,12 +122,25 @@ describe("оболочка страницы", () => {
     expect(unprotected).toEqual([]);
   });
 
-  it("нигде в исходниках не снимает обводку фокуса", () => {
-    // Скобки вокруг дефиса нужны, чтобы сам тест не попал под свой же поиск.
-    const ringOff = /outline:\s*none|outline-width:\s*0|\boutline[-]none\b/;
-    const offenders = filesWithExt([".css", ".ts", ".tsx"]).filter((path) =>
-      ringOff.test(readFileSync(path, "utf8")),
-    );
+  it("нигде в исходниках не снимает обводку фокуса, кроме цели ссылки пропуска", () => {
+    /* Все способы погасить кольцо, а не только `outline: none`: правило для main когда-то
+       переписали на прозрачный цвет ровно затем, чтобы пройти этот тест текстом. */
+    const ringOff = /outline:\s*(none|0)|outline-width:\s*0|outline-color:\s*transparent|\boutline-none\b/;
+
+    /* Единственное согласованное исключение — программный фокус на <main> после ссылки
+       пропуска. Разрешено ровно это правило целиком, а не файл: любая другая строка в
+       global.css, гасящая кольцо, тест роняет. */
+    const allowedRule = "main:focus,\nmain:focus-visible {\n  outline-color: transparent;\n}";
+    expect(GLOBAL_CSS).toContain(allowedRule);
+    expect(GLOBAL_CSS.split(allowedRule)).toHaveLength(2);
+
+    const offenders = filesWithExt([".css", ".ts", ".tsx"])
+      // Сам файл политики держит образцы запрещённых правил, иначе искать было бы нечем.
+      .filter((path) => path !== POLICY_TEST_PATH)
+      .filter((path) => {
+        const source = readFileSync(path, "utf8");
+        return ringOff.test(path === GLOBAL_CSS_PATH ? source.replace(allowedRule, "") : source);
+      });
 
     expect(offenders).toEqual([]);
   });
