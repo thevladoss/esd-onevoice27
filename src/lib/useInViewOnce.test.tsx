@@ -1,4 +1,5 @@
 import { renderHook } from "@testing-library/react";
+import type { Mock } from "vitest";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { useInViewOnce } from "./useInViewOnce";
@@ -6,8 +7,8 @@ import { useInViewOnce } from "./useInViewOnce";
 interface ObserverSpy {
   constructed: number;
   options: IntersectionObserverInit | undefined;
-  observe: ReturnType<typeof vi.fn>;
-  disconnect: ReturnType<typeof vi.fn>;
+  observe: Mock<(target: Element) => void>;
+  disconnect: Mock<() => void>;
 }
 
 /** Подменяет глобальный IntersectionObserver: `intersecting = null` значит «коллбэк не вызывается». */
@@ -15,8 +16,8 @@ function stubObserver(intersecting: boolean | null): ObserverSpy {
   const spy: ObserverSpy = {
     constructed: 0,
     options: undefined,
-    observe: vi.fn(),
-    disconnect: vi.fn(),
+    observe: vi.fn<(target: Element) => void>(),
+    disconnect: vi.fn<() => void>(),
   };
 
   class ObserverStub {
