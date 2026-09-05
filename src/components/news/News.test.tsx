@@ -1,6 +1,7 @@
 import { fireEvent, render, screen, within } from "@testing-library/react";
 import { News } from "./News";
 import { formatNewsDate } from "./NewsCard";
+import { news } from "../../data/news";
 
 beforeEach(() => {
   vi.mocked(window.scrollTo).mockClear();
@@ -158,12 +159,12 @@ describe("News", () => {
     ).toBeInTheDocument();
   });
 
-  it("объясняет пустой список и возвращает на первую страницу", () => {
+  it("объясняет пустой список без мёртвой кнопки возврата на ту же страницу", () => {
     render(<News items={[]} />);
 
     expect(screen.queryAllByRole("article")).toHaveLength(0);
     expect(screen.getByText("На этой странице новостей нет")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Вернуться к первой странице" })).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Вернуться к первой странице" })).toBeNull();
     expect(screen.getByRole("button", { name: "Страница 1" })).toHaveAttribute(
       "aria-current",
       "page",
@@ -173,6 +174,24 @@ describe("News", () => {
       "aria-disabled",
       "true",
     );
+    expect(screen.getByRole("status")).toHaveTextContent("Страница 1 из 1");
+  });
+
+  it("после укорочения списка показывает пустое состояние и рабочий возврат на первую страницу", () => {
+    const { rerender } = render(<News />);
+
+    fireEvent.click(screen.getByRole("button", { name: "Страница 2" }));
+    expect(screen.getAllByRole("article")).toHaveLength(3);
+
+    rerender(<News items={news.slice(0, 3)} />);
+
+    expect(screen.queryAllByRole("article")).toHaveLength(0);
+    expect(screen.getByText("На этой странице новостей нет")).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: "Вернуться к первой странице" }));
+
+    expect(screen.getAllByRole("article")).toHaveLength(3);
+    expect(screen.queryByText("На этой странице новостей нет")).toBeNull();
     expect(screen.getByRole("status")).toHaveTextContent("Страница 1 из 1");
   });
 });
