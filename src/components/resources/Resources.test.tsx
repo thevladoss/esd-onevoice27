@@ -1,5 +1,7 @@
 import { fireEvent, render, screen, within } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { Resources } from "./Resources";
+import { Involve } from "../involve/Involve";
 import { materials } from "../../data/materials";
 
 const CARD_MUSIC = /Пойте вместе/;
@@ -214,6 +216,29 @@ describe("панель: клавиатура и deep link", () => {
     expect(
       screen.getByRole("button", { name: CARD_MATERIALS }).getAttribute("aria-expanded"),
     ).toBe("true");
+  });
+
+  it("раскрывает панель по клику на карточку триптиха и повторяет это на втором клике", async () => {
+    const user = userEvent.setup();
+    render(
+      <>
+        <Involve />
+        <Resources />
+      </>,
+    );
+
+    const link = screen.getByRole("link", { name: "Скачать материалы" });
+
+    await user.click(link);
+    expect(panelRegion()).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: "Свернуть панель" }));
+    expect(queryPanelRegion()).toBeNull();
+
+    // Хэш уже равен целевому, поэтому hashchange браузер не шлёт: панель держится
+    // на делегированном клике, а не на смене адреса.
+    await user.click(link);
+    expect(panelRegion()).toBeInTheDocument();
   });
 
   it("снимает слушателя хэша при размонтировании", () => {

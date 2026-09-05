@@ -8,10 +8,9 @@ import { ResourceCard } from "./ResourceCard";
 import { ResourcePanel } from "./ResourcePanel";
 import "./resources.css";
 
-/** Адрес с этим хэшем открывает панель материалов. Строка сверяется целиком и никуда не
- *  подставляется, поэтому адресная строка не управляет разметкой.
- *  Внутри сайта сюда ведёт карточка триптиха «Скачать материалы →» (`copy.involve.ts`):
- *  обычная ссылка меняет хэш, `hashchange` ниже раскрывает панель и прокручивает к ней.
+/** Адрес с этим хэшем открывает панель материалов. Строка — константа модуля: с адресной
+ *  строки в селектор ниже ничего не попадает, разметкой она не управляет.
+ *  Внутри сайта сюда ведёт карточка триптиха «Скачать материалы →» (`copy.involve.ts`).
  *  Тот же адрес работает для внешних ссылок и закладок. */
 const MATERIALS_HASH = "#resources-materials";
 
@@ -56,22 +55,48 @@ export function Resources() {
     }
   }, [active]);
 
-  /** Хэш читается дважды: при монтировании (переход с внешней страницы) и на `hashchange` —
-   *  клик по ссылке внутри уже открытого лендинга меняет адрес без перезагрузки, и без
-   *  слушателя панель осталась бы закрытой. */
+  /** Панель материалов открывают три входа:
+   *  1. хэш при монтировании — переход с внешней страницы или из закладки;
+   *  2. `hashchange` — адрес поменяли снаружи разметки: «Назад», ввод в адресной строке;
+   *  3. клик по любой внутренней ссылке на этот якорь — делегирование на документе.
+   *
+   *  Третий вход нужен потому, что браузер не шлёт `hashchange`, когда адрес после клика
+   *  совпадает с текущим. Посетитель открыл панель карточкой триптиха, свернул её кнопкой,
+   *  хэш остался прежним — и второй клик по той же карточке молчал бы. */
   useEffect(() => {
     if (hashOpensMaterials()) {
       scrollToResources(sectionRef.current);
     }
 
-    function onHashChange() {
-      if (!hashOpensMaterials()) return;
+    function openMaterials() {
       setActive("materials");
       scrollToResources(sectionRef.current);
     }
 
+    function onHashChange() {
+      if (!hashOpensMaterials()) return;
+      openMaterials();
+    }
+
+    function onDocumentClick(event: MouseEvent) {
+      // Средняя кнопка и модификаторы открывают ссылку в новой вкладке, отменённый
+      // клик обработал кто-то другой: в этих случаях панель не трогаем.
+      if (event.defaultPrevented || event.button !== 0) return;
+      if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+      if (!target.closest(`a[href="${MATERIALS_HASH}"]`)) return;
+
+      openMaterials();
+    }
+
     window.addEventListener("hashchange", onHashChange);
-    return () => window.removeEventListener("hashchange", onHashChange);
+    document.addEventListener("click", onDocumentClick);
+    return () => {
+      window.removeEventListener("hashchange", onHashChange);
+      document.removeEventListener("click", onDocumentClick);
+    };
   }, []);
 
   return (
