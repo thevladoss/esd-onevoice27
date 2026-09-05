@@ -58,6 +58,13 @@ describe("fibonacciSphere", () => {
       expect(Math.abs(Math.sqrt(x * x + y * y + z * z) - 1)).toBeLessThan(1e-5);
     }
   });
+
+  it("на единственной точке отдаёт координаты, а не NaN", () => {
+    const points = fibonacciSphere(1);
+
+    expect(points.length).toBe(3);
+    expect([...points].every(Number.isFinite)).toBe(true);
+  });
 });
 
 describe("latitudeColor", () => {

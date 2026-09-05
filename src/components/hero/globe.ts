@@ -65,7 +65,8 @@ export type GlobeMotionFlags = {
 export function fibonacciSphere(n: number): Float32Array {
   const points = new Float32Array(n * 3);
   for (let i = 0; i < n; i++) {
-    const y = 1 - (i / (n - 1)) * 2;
+    // n === 1 делил бы на ноль, и все три координаты уходили в NaN.
+    const y = n === 1 ? 0 : 1 - (i / (n - 1)) * 2;
     const ring = Math.sqrt(Math.max(0, 1 - y * y));
     const theta = GOLDEN_ANGLE * i;
     points[i * 3] = Math.cos(theta) * ring;
