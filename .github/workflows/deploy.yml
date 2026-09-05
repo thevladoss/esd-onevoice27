@@ -10,9 +10,12 @@ on:
 permissions:
   contents: read
 
+# Идущий деплой не отменяем: прерванный deploy-pages оставляет деплоймент
+# в подвешенном состоянии, и следующий запуск падает с «deployment already
+# in progress».
 concurrency:
   group: pages
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   build:
