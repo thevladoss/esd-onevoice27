@@ -5,6 +5,7 @@ import { Eyebrow } from "../layout/Eyebrow";
 import { GradientTitle } from "../layout/GradientTitle";
 import { Button } from "../layout/Button";
 import { Starfield } from "./Starfield";
+import { GlobeCanvas } from "./GlobeCanvas";
 import { scrollToSection } from "./scrollToSection";
 
 export function Hero() {
@@ -17,6 +18,7 @@ export function Hero() {
   return (
     <section id="hero" className="hero">
       <Starfield />
+      <GlobeCanvas />
       <div className="hero__scrim" aria-hidden="true" />
       <div className="hero__vignette" aria-hidden="true" />
       <div className="hero__content">

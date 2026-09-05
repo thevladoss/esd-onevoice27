@@ -42,6 +42,13 @@ describe("Hero", () => {
     expect(starfield).toHaveAttribute("aria-hidden", "true");
   });
 
+  it("кладёт в секцию canvas глобуса", () => {
+    render(<Hero />);
+    const globe = document.querySelector("#hero canvas.globe-canvas");
+    expect(globe).not.toBeNull();
+    expect(globe).toHaveAttribute("aria-hidden", "true");
+  });
+
   it("берёт все тексты из heroCopy, а не из JSX", () => {
     render(<Hero />);
     expect(screen.getByText(heroCopy.eyebrow)).toBeInTheDocument();
