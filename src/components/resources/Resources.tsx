@@ -7,12 +7,21 @@ import { ResourceCard } from "./ResourceCard";
 import { ResourcePanel } from "./ResourcePanel";
 import "./resources.css";
 
-/** Переход из триптиха «Скачать материалы →» приходит с готовым хэшем. Строка сверяется целиком
- *  и никуда не подставляется, поэтому адресная строка не управляет разметкой. */
+/** Адрес с этим хэшем открывает панель материалов. Строка сверяется целиком и никуда не
+ *  подставляется, поэтому адресная строка не управляет разметкой.
+ *  Сейчас такую ссылку никто в `src/` не отдаёт: триптих «Скачать материалы →» ведёт на
+ *  `#resources`. Перевод ссылки на `#resources-materials` — за фазой 5, которая сводит копирайт
+ *  секций в общий словарь; до тех пор хэш работает для внешних ссылок и закладок. */
 const MATERIALS_HASH = "#resources-materials";
 
 function hashOpensMaterials() {
   return window.location.hash === MATERIALS_HASH;
+}
+
+/** Скролл к секции ресурсов с оглядкой на prefers-reduced-motion. */
+function scrollToResources(section: HTMLElement | null) {
+  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  section?.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "start" });
 }
 
 export function Resources() {
@@ -46,10 +55,22 @@ export function Resources() {
     }
   }, [active]);
 
+  /** Хэш читается дважды: при монтировании (переход с внешней страницы) и на `hashchange` —
+   *  клик по ссылке внутри уже открытого лендинга меняет адрес без перезагрузки, и без
+   *  слушателя панель осталась бы закрытой. */
   useEffect(() => {
-    if (!hashOpensMaterials()) return;
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    sectionRef.current?.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "start" });
+    if (hashOpensMaterials()) {
+      scrollToResources(sectionRef.current);
+    }
+
+    function onHashChange() {
+      if (!hashOpensMaterials()) return;
+      setActive("materials");
+      scrollToResources(sectionRef.current);
+    }
+
+    window.addEventListener("hashchange", onHashChange);
+    return () => window.removeEventListener("hashchange", onHashChange);
   }, []);
 
   return (
@@ -110,7 +131,10 @@ export function Resources() {
           </div>
         </div>
 
-        <div id="resources-panel" data-open={active !== null} className="resources-panel-wrap mt-8">
+        {/* Обёртка держит только анимацию высоты: `id="resources-panel"` живёт на самой
+            панели с `role="region"`, иначе `aria-controls` карточек указывал бы на
+            безролевой div (04-UI-SPEC.md:244). */}
+        <div data-open={active !== null} className="resources-panel-wrap mt-8">
           <div className="min-h-0 overflow-hidden">
             {active ? (
               <ResourcePanel

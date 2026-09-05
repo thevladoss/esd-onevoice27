@@ -36,10 +36,26 @@ describe("VideoFacade", () => {
       "https://www.youtube-nocookie.com/embed/qQsgK18gKCU?autoplay=1&rel=0",
     )).toBe(true);
     expect(iframe?.getAttribute("title")).toBe(KAMINSKY);
-    expect(iframe?.getAttribute("allow")).toContain("autoplay");
-    expect(iframe?.getAttribute("allow")).toContain("encrypted-media");
+    expect(iframe?.getAttribute("allow")).toBe("autoplay; encrypted-media; picture-in-picture");
+    expect(iframe?.getAttribute("allow")).not.toContain("clipboard-write");
+    expect(iframe?.getAttribute("allow")).not.toContain("web-share");
+    expect(iframe?.getAttribute("sandbox")).toBe(
+      "allow-scripts allow-same-origin allow-presentation allow-popups allow-popups-to-escape-sandbox",
+    );
     expect(iframe?.hasAttribute("allowfullscreen")).toBe(true);
     expect(screen.queryByRole("button")).toBeNull();
+  });
+
+  it("после старта плеера отдаёт фокус iframe, а не роняет его в body", () => {
+    render(<VideoFacade videoId="qQsgK18gKCU" title={KAMINSKY} />);
+
+    const play = screen.getByRole("button", { name: `Смотреть видео: ${KAMINSKY}` });
+    play.focus();
+    fireEvent.click(play);
+
+    const iframe = document.querySelector("iframe");
+    expect(iframe).not.toBeNull();
+    expect(document.activeElement).toBe(iframe);
   });
 
   it("при ошибке постера прячет картинку, но держит кнопку play и помечает фасад", () => {
@@ -58,6 +74,30 @@ describe("VideoFacade", () => {
     render(<VideoFacade videoId="-Eo--61cx90" title="Единый голос-2027: Иван Вельгоша" />);
 
     expect(document.querySelector("img")?.getAttribute("src")).toContain("/vi/-Eo--61cx90/");
+  });
+});
+
+describe("VideoFacade: экранирование id", () => {
+  it("не даёт данным подменить параметры встраивания и путь", () => {
+    render(<VideoFacade videoId="abc?list=PL&x=1" title="Подмена параметров" />);
+
+    expect(document.querySelector("img")?.getAttribute("src")).toBe(
+      "https://img.youtube.com/vi/abc%3Flist%3DPL%26x%3D1/hqdefault.jpg",
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: /^Смотреть видео: / }));
+
+    expect(document.querySelector("iframe")?.getAttribute("src")).toBe(
+      "https://www.youtube-nocookie.com/embed/abc%3Flist%3DPL%26x%3D1?autoplay=1&rel=0",
+    );
+  });
+
+  it("оставляет обычный id ролика нетронутым", () => {
+    render(<VideoFacade videoId="qQsgK18gKCU" title={KAMINSKY} />);
+
+    expect(document.querySelector("img")?.getAttribute("src")).toBe(
+      "https://img.youtube.com/vi/qQsgK18gKCU/hqdefault.jpg",
+    );
   });
 });
 

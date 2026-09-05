@@ -53,6 +53,27 @@ describe("paginate", () => {
     expect(paginate(nine, 2).items).toHaveLength(3);
   });
 
+  it("сводит perPage = 0 к одному элементу на странице вместо Infinity страниц", () => {
+    const result = paginate(nine, 1, 0);
+
+    expect(Number.isFinite(result.totalPages)).toBe(true);
+    expect(result.totalPages).toBe(9);
+    expect(result.items).toEqual([1]);
+  });
+
+  it("не срезает хвост списка при отрицательном perPage", () => {
+    const result = paginate([1, 2, 3], 1, -2);
+
+    expect(result.totalPages).toBe(3);
+    expect(result.items).toEqual([1]);
+    expect(paginate([1, 2, 3], 3, -2).items).toEqual([3]);
+  });
+
+  it("округляет нецелый perPage вниз, а NaN сводит к единице", () => {
+    expect(paginate(nine, 1, 2.7).items).toEqual([1, 2]);
+    expect(paginate(nine, 1, Number.NaN).totalPages).toBe(9);
+  });
+
   it("сохраняет исходный порядок и типы элементов", () => {
     const items = [{ id: "a" }, { id: "b" }, { id: "c" }];
     const result = paginate(items, 1, 2);

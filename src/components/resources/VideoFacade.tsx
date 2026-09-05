@@ -1,5 +1,14 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { resourcesCopy } from "../../data/copy.resources";
+
+/** Права сведены к воспроизведению: `clipboard-write` отдавал стороннему фрейму подмену буфера
+ *  обмена, `web-share` — системный лист шаринга от имени страницы, `accelerometer` датчик. */
+const PLAYER_ALLOW = "autoplay; encrypted-media; picture-in-picture";
+
+/** Песочница оставляет ролику скрипты, своё хранилище, Presentation API и переход по ссылке
+ *  «Смотреть на YouTube» в новой вкладке — этого хватает плееру и ничего сверх того. */
+const PLAYER_SANDBOX =
+  "allow-scripts allow-same-origin allow-presentation allow-popups allow-popups-to-escape-sandbox";
 
 /**
  * Лёгкий фасад ролика YouTube: постер и кнопка play, плеер грузится только по клику,
@@ -16,6 +25,19 @@ export function VideoFacade({
 }) {
   const [playing, setPlaying] = useState(false);
   const [coverFailed, setCoverFailed] = useState(false);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+  /** Компонент экспортирован и берёт `videoId` пропом от любого вызывающего кода. Без экранирования
+   *  значение вида `abc?list=PL…` подменило бы параметры встраивания, `abc/../live_stream` — путь,
+   *  а `#` обрезал бы хвост запроса. Origin от этого не меняется, содержимое фрейма — меняется. */
+  const id = encodeURIComponent(videoId);
+
+  /** Кнопка play исчезает вместе с фасадом. Без переноса фокуса браузер отдаёт его в `body`,
+   *  и следующий Tab уводит клавиатуру из сетки роликов в начало страницы. */
+  useEffect(() => {
+    if (playing) {
+      iframeRef.current?.focus();
+    }
+  }, [playing]);
 
   return (
     <div
@@ -27,10 +49,12 @@ export function VideoFacade({
     >
       {playing ? (
         <iframe
+          ref={iframeRef}
           className="absolute inset-0 h-full w-full"
-          src={`https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0`}
+          src={`https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0`}
           title={title}
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+          allow={PLAYER_ALLOW}
+          sandbox={PLAYER_SANDBOX}
           allowFullScreen
           loading="lazy"
           referrerPolicy="strict-origin-when-cross-origin"
@@ -49,7 +73,7 @@ export function VideoFacade({
             />
           ) : (
             <img
-              src={`https://img.youtube.com/vi/${videoId}/hqdefault.jpg`}
+              src={`https://img.youtube.com/vi/${id}/hqdefault.jpg`}
               alt=""
               loading="lazy"
               decoding="async"

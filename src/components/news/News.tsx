@@ -14,6 +14,11 @@ const PER_PAGE = 6;
 export function News({ items = news }: { items?: NewsItem[] } = {}) {
   const [page, setPage] = useState(1);
   const result = paginate(items, page, PER_PAGE);
+  /** `paginate` зажимает страницу в границы, поэтому сырое состояние выше `totalPages` значит одно:
+   *  список укоротился под ногами, и пользователь стоит на исчезнувшей странице. Только в этом
+   *  случае возврат к первой странице что-то меняет, поэтому кнопку показываем там же. */
+  const outOfRange = page > result.totalPages;
+  const isEmpty = outOfRange || result.items.length === 0;
 
   return (
     <section
@@ -33,18 +38,20 @@ export function News({ items = news }: { items?: NewsItem[] } = {}) {
           <p className="mt-4 font-body text-base leading-[1.5] text-paper/80">{newsCopy.body}</p>
         </div>
 
-        {result.items.length === 0 ? (
+        {isEmpty ? (
           <div className="mt-12 rounded-card border border-[var(--glass-border)] p-8 text-center">
             <p className="font-body text-base leading-[1.5] text-paper/80">{newsCopy.emptyTitle}</p>
-            <Button
-              variant="ghost"
-              as="button"
-              type="button"
-              className="mt-6"
-              onClick={() => setPage(1)}
-            >
-              {newsCopy.emptyAction}
-            </Button>
+            {page > 1 ? (
+              <Button
+                variant="ghost"
+                as="button"
+                type="button"
+                className="mt-6"
+                onClick={() => setPage(1)}
+              >
+                {newsCopy.emptyAction}
+              </Button>
+            ) : null}
           </div>
         ) : (
           <ul className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3 lg:gap-8">

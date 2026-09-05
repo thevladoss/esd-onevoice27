@@ -25,6 +25,7 @@ export function ResourcePanel({
   return (
     <div
       ref={ref}
+      id="resources-panel"
       role="region"
       aria-labelledby="resources-panel-title"
       tabIndex={-1}

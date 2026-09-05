@@ -8,9 +8,7 @@ const CARD_VIDEO = /Смотрите и делитесь/;
 const FACADE = /^Смотреть видео: /;
 
 function cardButtons() {
-  return Array.from(
-    document.querySelectorAll<HTMLButtonElement>('button[aria-controls="resources-panel"]'),
-  );
+  return Array.from(document.querySelectorAll<HTMLButtonElement>("button[data-kind]"));
 }
 
 afterEach(() => {
@@ -120,6 +118,25 @@ describe("Resources: карточки и панели", () => {
     }
   });
 
+  it("держит id панели на элементе с role=region, а aria-controls — на раскрытой карточке", () => {
+    render(<Resources />);
+
+    const materialsBtn = screen.getByRole("button", { name: CARD_MATERIALS });
+    expect(materialsBtn.getAttribute("aria-controls")).toBeNull();
+
+    fireEvent.click(materialsBtn);
+
+    const region = screen.getByRole("region");
+    expect(region.getAttribute("id")).toBe("resources-panel");
+    expect(document.getElementById("resources-panel")).toBe(region);
+    expect(materialsBtn.getAttribute("aria-controls")).toBe("resources-panel");
+
+    for (const card of cardButtons().filter((card) => card !== materialsBtn)) {
+      expect(card.getAttribute("aria-controls")).toBeNull();
+      expect(card.getAttribute("aria-expanded")).toBe("false");
+    }
+  });
+
   it("показывает кнопку «Свернуть панель» при раскрытой панели", () => {
     render(<Resources />);
 
@@ -167,6 +184,30 @@ describe("панель: клавиатура и deep link", () => {
     expect(
       screen.getByRole("button", { name: CARD_MATERIALS }).getAttribute("aria-expanded"),
     ).toBe("true");
+  });
+
+  it("открывает панель материалов по смене хэша внутри уже открытой страницы", () => {
+    render(<Resources />);
+    expect(screen.queryByRole("region")).toBeNull();
+
+    window.location.hash = "#resources-materials";
+    fireEvent(window, new Event("hashchange"));
+
+    const region = screen.getByRole("region");
+    expect(within(region).getAllByRole("link")).toHaveLength(5);
+    expect(
+      screen.getByRole("button", { name: CARD_MATERIALS }).getAttribute("aria-expanded"),
+    ).toBe("true");
+  });
+
+  it("снимает слушателя хэша при размонтировании", () => {
+    const { unmount } = render(<Resources />);
+    unmount();
+
+    window.location.hash = "#resources-materials";
+    fireEvent(window, new Event("hashchange"));
+
+    expect(screen.queryByRole("region")).toBeNull();
   });
 
   it("держит три слоя частиц в декоративном фоне секции", () => {

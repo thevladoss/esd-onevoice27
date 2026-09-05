@@ -1,6 +1,7 @@
 import { fireEvent, render, screen, within } from "@testing-library/react";
 import { News } from "./News";
 import { formatNewsDate } from "./NewsCard";
+import { news } from "../../data/news";
 
 beforeEach(() => {
   vi.mocked(window.scrollTo).mockClear();
@@ -50,7 +51,10 @@ describe("News", () => {
       "page",
     );
     expect(screen.getByRole("button", { name: "Страница 1" })).not.toHaveAttribute("aria-current");
-    expect(screen.getByRole("button", { name: "Следующая страница" })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "Следующая страница" })).toHaveAttribute(
+      "aria-disabled",
+      "true",
+    );
     expect(screen.getByRole("status")).toHaveTextContent("Страница 2 из 2");
     expect(document.activeElement).toBe(screen.getByRole("button", { name: "Страница 2" }));
     expect(window.scrollTo).not.toHaveBeenCalled();
@@ -61,12 +65,33 @@ describe("News", () => {
     render(<News />);
 
     const next = screen.getByRole("button", { name: "Следующая страница" });
-    expect(next).toBeEnabled();
+    expect(next).toHaveAttribute("aria-disabled", "false");
 
     fireEvent.click(next);
 
     expect(screen.getAllByRole("article")).toHaveLength(3);
-    expect(screen.getByRole("button", { name: "Следующая страница" })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "Следующая страница" })).toHaveAttribute(
+      "aria-disabled",
+      "true",
+    );
+  });
+
+  it("держит погашенную стрелку в дереве фокуса и не листает дальше последней страницы", () => {
+    render(<News />);
+
+    const next = screen.getByRole("button", { name: "Следующая страница" });
+    next.focus();
+    fireEvent.click(next);
+
+    const quenched = screen.getByRole("button", { name: "Следующая страница" });
+    expect(quenched).toHaveAttribute("aria-disabled", "true");
+    expect(document.activeElement).toBe(quenched);
+
+    fireEvent.click(quenched);
+
+    expect(screen.getByRole("status")).toHaveTextContent("Страница 2 из 2");
+    expect(screen.getAllByRole("article")).toHaveLength(3);
+    expect(document.activeElement).toBe(quenched);
   });
 
   it("подписывает навигацию пагинации", () => {
@@ -111,18 +136,62 @@ describe("News", () => {
     expect(screen.getAllByRole("article")).toHaveLength(6);
   });
 
-  it("объясняет пустой список и возвращает на первую страницу", () => {
+  it("рисует карточку с битой датой без <time> и не роняет секцию", () => {
+    render(
+      <News
+        items={[
+          {
+            id: "broken-date",
+            title: "Новость с испорченной датой",
+            date: "2026-13-45",
+            cover: "https://img.youtube.com/vi/YpLD6p-z00g/hqdefault.jpg",
+            href: "https://esd.onevoice27.org/",
+            source: "esd.onevoice27.org",
+          },
+        ]}
+      />,
+    );
+
+    const [article] = screen.getAllByRole("article");
+    expect(article.querySelector("time")).toBeNull();
+    expect(
+      within(article).getByRole("heading", { level: 3, name: "Новость с испорченной датой" }),
+    ).toBeInTheDocument();
+  });
+
+  it("объясняет пустой список без мёртвой кнопки возврата на ту же страницу", () => {
     render(<News items={[]} />);
 
     expect(screen.queryAllByRole("article")).toHaveLength(0);
     expect(screen.getByText("На этой странице новостей нет")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Вернуться к первой странице" })).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Вернуться к первой странице" })).toBeNull();
     expect(screen.getByRole("button", { name: "Страница 1" })).toHaveAttribute(
       "aria-current",
       "page",
     );
     expect(screen.queryByRole("button", { name: "Страница 2" })).toBeNull();
-    expect(screen.getByRole("button", { name: "Следующая страница" })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "Следующая страница" })).toHaveAttribute(
+      "aria-disabled",
+      "true",
+    );
+    expect(screen.getByRole("status")).toHaveTextContent("Страница 1 из 1");
+  });
+
+  it("после укорочения списка показывает пустое состояние и рабочий возврат на первую страницу", () => {
+    const { rerender } = render(<News />);
+
+    fireEvent.click(screen.getByRole("button", { name: "Страница 2" }));
+    expect(screen.getAllByRole("article")).toHaveLength(3);
+
+    rerender(<News items={news.slice(0, 3)} />);
+
+    expect(screen.queryAllByRole("article")).toHaveLength(0);
+    expect(screen.getByText("На этой странице новостей нет")).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: "Вернуться к первой странице" }));
+
+    expect(screen.getAllByRole("article")).toHaveLength(3);
+    expect(screen.queryByText("На этой странице новостей нет")).toBeNull();
     expect(screen.getByRole("status")).toHaveTextContent("Страница 1 из 1");
   });
 });
@@ -131,5 +200,11 @@ describe("formatNewsDate", () => {
   it("превращает ISO-дату в русскую запись без сокращения «г.»", () => {
     expect(formatNewsDate("2026-09-05")).toBe("5 сентября 2026");
     expect(formatNewsDate("2026-06-26")).toBe("26 июня 2026");
+  });
+
+  it("на непарсимой дате отдаёт пустую строку вместо RangeError", () => {
+    expect(formatNewsDate("2026-13-45")).toBe("");
+    expect(formatNewsDate("")).toBe("");
+    expect(formatNewsDate("вчера")).toBe("");
   });
 });
