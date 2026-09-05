@@ -1,0 +1,131 @@
+/* Секция «Что такое Единый голос 27?» */
+.ab-section {
+  --focus-ring: #aad9dc;
+  --ui-transition: 420ms cubic-bezier(0.32, 0.72, 0, 1);
+
+  position: relative;
+  isolation: isolate;
+  overflow-x: clip;
+  background:
+    radial-gradient(circle at 8% -10%, rgb(158 67 154 / .3), transparent 42%),
+    radial-gradient(circle at 104% 30%, rgb(48 63 131 / .9), transparent 46%),
+    var(--color-midnight-900);
+}
+
+.ab-lead {
+  max-width: 42rem;
+  color: rgb(248 247 251 / .8);
+  font: 400 16px/1.6 var(--font-body);
+}
+
+.ab-steps {
+  display: grid;
+  gap: 24px;
+}
+
+@media (min-width: 1024px) {
+  .ab-steps {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-items: stretch;
+  }
+}
+
+/* Карточка шага: стекло из фазы 1 плюс акцентная линия и разделитель */
+.ab-step {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  height: 100%;
+  transition: border-color var(--ui-transition);
+}
+
+.ab-step::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 24px;
+  width: 96px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #bb6cae 28%, #7bc2c7 62%, transparent);
+  opacity: .76;
+  pointer-events: none;
+  transition: opacity var(--ui-transition);
+}
+
+.ab-step-num {
+  font: 900 56px/1 var(--font-display);
+  font-variant-numeric: lining-nums tabular-nums;
+  background: linear-gradient(
+    145deg,
+    rgb(248 247 251 / .92),
+    rgb(217 222 244 / .9) 52%,
+    rgb(143 157 214 / .88)
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  padding-inline-end: 4px;
+}
+
+.ab-step-title {
+  font: 800 24px/1.15 var(--font-display);
+  letter-spacing: -.01em;
+  text-wrap: balance;
+}
+
+.ab-step-list {
+  display: grid;
+  gap: 8px;
+  padding-left: 20px;
+  list-style: disc;
+  color: rgb(248 247 251 / .8);
+  font: 400 16px/1.6 var(--font-body);
+}
+
+.ab-step-list li::marker {
+  color: #d28ebe;
+}
+
+.ab-step-rule {
+  margin-top: auto;
+  border: 0;
+  height: 1px;
+  width: 34%;
+  background: linear-gradient(
+    90deg,
+    rgb(217 222 244 / .55),
+    rgb(248 247 251 / .32) 30%,
+    rgb(248 247 251 / .16)
+  );
+  transform-origin: left;
+  transition: width var(--ui-transition);
+}
+
+.ab-step-summary {
+  color: rgb(248 247 251 / .8);
+  font: 400 16px/1.6 var(--font-body);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .ab-step:hover {
+    border-color: rgb(184 192 230 / .34);
+  }
+
+  .ab-step:hover::after {
+    opacity: 1;
+  }
+
+  .ab-step:hover .ab-step-rule {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ab-step,
+  .ab-step::after,
+  .ab-step-rule {
+    transition: none;
+  }
+}

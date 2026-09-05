@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import "./video-embed.css";
 
 export interface VideoEmbedProps {
   videoId: string;

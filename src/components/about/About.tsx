@@ -5,6 +5,7 @@ import { GradientTitle } from "../layout/GradientTitle";
 import { Section } from "../layout/Section";
 import { StepCard } from "./StepCard";
 import { VideoEmbed } from "./VideoEmbed";
+import "./about.css";
 
 export function About() {
   return (
