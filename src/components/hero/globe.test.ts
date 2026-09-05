@@ -1,5 +1,9 @@
 import {
+  FRAME_MS,
   GLOBE_POINTS,
+  GLOBE_SPEED,
+  MAX_STEP_MS,
+  angleStep,
   drawGlobe,
   fibonacciSphere,
   globeLayout,
@@ -45,6 +49,21 @@ describe("latitudeColor", () => {
     expect(latitudeColor(1)).toBe("rgb(210, 142, 190)");
     expect(latitudeColor(0)).toBe("rgb(59, 77, 161)");
     expect(latitudeColor(-1)).toBe("rgb(123, 194, 199)");
+  });
+});
+
+describe("angleStep", () => {
+  it("держит скорость вращения на любой частоте кадров", () => {
+    expect(angleStep(FRAME_MS)).toBeCloseTo(GLOBE_SPEED, 12);
+    // 120Hz: вдвое чаще, значит вдвое меньший шаг.
+    expect(angleStep(FRAME_MS / 2)).toBeCloseTo(GLOBE_SPEED / 2, 12);
+    // Просевший кадр догоняет за один шаг.
+    expect(angleStep(FRAME_MS * 3)).toBeCloseTo(GLOBE_SPEED * 3, 12);
+  });
+
+  it("не даёт глобусу прыгнуть после долгой паузы", () => {
+    expect(angleStep(60_000)).toBe(angleStep(MAX_STEP_MS));
+    expect(angleStep(-100)).toBe(0);
   });
 });
 
