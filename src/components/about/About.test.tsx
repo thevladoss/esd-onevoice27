@@ -25,6 +25,13 @@ describe("Секция About", () => {
     expect(screen.getByRole("region", { name: aboutCopy.title })).toBe(section);
   });
 
+  it("не пропускает уровни заголовков: один H2 и три H3", () => {
+    render(<About />);
+
+    const levels = screen.getAllByRole("heading").map((heading) => heading.tagName);
+    expect(levels).toEqual(["H2", "H3", "H3", "H3"]);
+  });
+
   it("держит видео за фасадом: кнопка есть, iframe нет", () => {
     const { container } = render(<About />);
 
