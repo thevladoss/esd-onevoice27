@@ -46,7 +46,6 @@ export function Hero() {
     <section id="hero" className="hero" aria-labelledby="hero-title">
       <Starfield />
       <GlobeCanvas />
-      <div className="hero__overlay" aria-hidden="true" />
       <div className="hero__content">
         {reduce ? (
           <>
