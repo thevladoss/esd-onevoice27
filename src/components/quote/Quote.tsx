@@ -1,5 +1,6 @@
 import { quoteCopy } from "../../data/copy.quote";
 import { Eyebrow } from "../layout/Eyebrow";
+import { Reveal } from "../layout/Reveal";
 import { WorldSilhouette } from "./WorldSilhouette";
 
 export function Quote() {
@@ -14,7 +15,10 @@ export function Quote() {
         className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_22%_30%,rgb(158_67_154/.18),transparent_42%),radial-gradient(circle_at_78%_68%,rgb(84_164_172/.16),transparent_44%)]"
       />
       <div className="mx-auto max-w-[72rem] px-4 py-16 md:px-8 md:py-24">
-        <figure className="relative z-[1] mx-auto flex max-w-3xl flex-col items-center text-center">
+        <Reveal
+          as="figure"
+          className="relative z-[1] mx-auto flex max-w-3xl flex-col items-center text-center"
+        >
           <Eyebrow>{quoteCopy.eyebrow}</Eyebrow>
           <span
             aria-hidden="true"
@@ -32,7 +36,7 @@ export function Quote() {
               {quoteCopy.cite}
             </cite>
           </figcaption>
-        </figure>
+        </Reveal>
       </div>
     </section>
   );
