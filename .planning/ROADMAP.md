@@ -174,8 +174,8 @@ Plans:
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
-- [ ] 05-05-PLAN.md — App.test, Header.test, добор CountryChips/LightForm/Resources, ноль предупреждений act (QA-02)
-- [ ] 05-06-PLAN.md — Чанк vendor-map, зачистка console.*, scripts/check-dist.mjs, README «Проверка», docs/qa/SMOKE.md (MOTION-04, QA-04)
+- [x] 05-05-PLAN.md — App.test, Header.test, добор CountryChips/LightForm/Resources, ноль предупреждений act (QA-02)
+- [x] 05-06-PLAN.md — Чанк vendor-map, зачистка console.*, scripts/check-dist.mjs, README «Проверка», docs/qa/SMOKE.md (MOTION-04, QA-04)
 
 **Wave 4** *(blocked on Wave 3 completion)*
 
@@ -194,4 +194,4 @@ Phase 3 и Phase 4 обе зависят только от Phase 2 и незав
 | 2. Hero и карта | 5/5 | Complete   | 2026-09-05 |
 | 3. Форма, О проекте, Участие | 4/4 | Complete   | 2026-09-05 |
 | 4. Новости, Ресурсы, Цитата | 4/4 | Complete   | 2026-09-05 |
-| 5. Полировка и финальный прогон | 4/7 | In Progress|  |
+| 5. Полировка и финальный прогон | 6/7 | In Progress|  |
