@@ -35,6 +35,9 @@ jobs:
       - run: npm run lint
       - run: npm test
       - run: npm run build
+      # Приёмка собранного билда стоит в воротах, а не в ручном чеклисте: регрессия base,
+      # потерянный чанк vendor-map или чужой хост в index.html не уедут на Pages.
+      - run: npm run check:dist
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
