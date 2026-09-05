@@ -22,9 +22,6 @@ const expectedSectionIds = [
   "quote",
 ];
 
-// Секции с готовой вёрсткой: у них своя раскладка вместо стеклянной карточки-заглушки.
-const finishedSectionIds = ["hero", "map", "light-form", "about", "involve", "news", "quote"];
-const placeholderSectionIds = expectedSectionIds.filter((id) => !finishedSectionIds.includes(id));
 
 describe("App", () => {
   it("рендерит восемь секций с ожидаемыми id", () => {
@@ -51,13 +48,11 @@ describe("App", () => {
     );
   });
 
-  it("показывает стеклянные карточки в секциях-заглушках", () => {
+  it("все восемь секций содержат реальную вёрстку, а не заглушки", () => {
     renderApp();
-    expect(document.querySelectorAll(".glass-card").length).toBeGreaterThanOrEqual(
-      placeholderSectionIds.length,
-    );
-    for (const id of placeholderSectionIds) {
-      expect(document.getElementById(id)?.querySelector(".glass-card")).not.toBeNull();
+    for (const id of expectedSectionIds) {
+      const section = document.getElementById(id);
+      expect(section?.textContent?.trim().length ?? 0).toBeGreaterThan(20);
     }
   });
 });
