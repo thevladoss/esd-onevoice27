@@ -1,3 +1,4 @@
+import { ESD_COUNTRIES } from "../data/countries";
 import {
   EMAIL_RE,
   initialLightFormValues,
@@ -67,6 +68,18 @@ describe("validateLightForm", () => {
       "Нужно согласие на обработку данных",
     );
     expect(validateLightForm({ ...valid, consent: true }).consent).toBeUndefined();
+  });
+
+  it("принимает только двенадцать стран дивизиона", () => {
+    for (const country of ESD_COUNTRIES) {
+      const errors = validateLightForm({ ...valid, countryId: String(country.id) });
+      expect(errors.countryId).toBeUndefined();
+    }
+
+    // Значение select меняет не только пользователь: autofill, расширение браузера, DevTools.
+    for (const countryId of ["840", "0", "-643", "643.5", "643abc", "abc", " ", "Infinity"]) {
+      expect(validateLightForm({ ...valid, countryId }).countryId).toBe("Выберите страну");
+    }
   });
 
   it("на валидном наборе возвращает пустой объект", () => {

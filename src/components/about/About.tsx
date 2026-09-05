@@ -10,7 +10,7 @@ import "./about.css";
 export function About() {
   return (
     <Section id="about" className="ab-section">
-      <div className="ab-head max-w-[42rem]">
+      <div className="ab-head">
         <Eyebrow>{aboutCopy.eyebrow}</Eyebrow>
         <GradientTitle as="h2" variant="section" className="mt-2">
           {aboutCopy.title}
@@ -24,7 +24,7 @@ export function About() {
           className="ab-video"
         />
       </div>
-      <div className="ab-steps mt-12 grid gap-6 lg:grid-cols-3 lg:items-stretch">
+      <div className="ab-steps mt-12">
         {aboutSteps.map((step) => (
           <StepCard key={step.number} {...step} />
         ))}

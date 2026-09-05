@@ -7,6 +7,9 @@ export interface VideoEmbedProps {
   className?: string;
 }
 
+/** id ролика на YouTube: ровно 11 символов из латиницы, цифр, дефиса и подчёркивания. */
+const YOUTUBE_ID_RE = /^[\w-]{11}$/;
+
 export function VideoEmbed({ videoId, title, className }: VideoEmbedProps) {
   const [active, setActive] = useState(false);
   const [posterFailed, setPosterFailed] = useState(false);
@@ -18,6 +21,12 @@ export function VideoEmbed({ videoId, title, className }: VideoEmbedProps) {
     }
   }, [active]);
 
+  // Чужой id мог бы дописать свой путь и параметры к адресу эмбеда, поэтому фасад молчит.
+  if (!YOUTUBE_ID_RE.test(videoId)) {
+    return null;
+  }
+
+  const safeId = encodeURIComponent(videoId);
   const rootClassName = ["ve", active ? "ve--active" : "", className ?? ""]
     .filter((token) => token !== "")
     .join(" ");
@@ -28,7 +37,7 @@ export function VideoEmbed({ videoId, title, className }: VideoEmbedProps) {
         <iframe
           ref={iframeRef}
           className="ve-frame"
-          src={`https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0`}
+          src={`https://www.youtube-nocookie.com/embed/${safeId}?autoplay=1&rel=0`}
           title={title}
           allow="autoplay; encrypted-media; picture-in-picture"
           allowFullScreen
@@ -44,7 +53,7 @@ export function VideoEmbed({ videoId, title, className }: VideoEmbedProps) {
           ) : (
             <img
               className="ve-poster"
-              src={`https://img.youtube.com/vi/${videoId}/hqdefault.jpg`}
+              src={`https://img.youtube.com/vi/${safeId}/hqdefault.jpg`}
               alt=""
               loading="lazy"
               decoding="async"

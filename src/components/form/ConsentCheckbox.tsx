@@ -1,31 +1,35 @@
 import { formCopy } from "../../data/copy.form";
 
-const CONSENT_ID = "light-form-consent";
-const ERROR_ID = `${CONSENT_ID}-error`;
-
-/** Согласие на обработку данных: нативный чекбокс скрыт, галочку рисует свой бокс. */
+/**
+ * Согласие на обработку данных: нативный чекбокс скрыт, галочку рисует свой бокс.
+ * id приходит сверху — тот же источник, по которому форма ищет поле для фокуса.
+ */
 export function ConsentCheckbox({
+  id,
   checked,
   error,
   onChange,
   onBlur,
 }: {
+  id: string;
   checked: boolean;
   error?: string;
   onChange: (next: boolean) => void;
   onBlur: () => void;
 }) {
+  const errorId = `${id}-error`;
+
   return (
     <div className="lf-consent">
-      <label className="lf-check flex min-h-11 items-start gap-3" htmlFor={CONSENT_ID}>
+      <label className="lf-check" htmlFor={id}>
         <input
           className="sr-only"
-          id={CONSENT_ID}
+          id={id}
           type="checkbox"
           name="consent"
           checked={checked}
           aria-invalid={error ? true : undefined}
-          aria-describedby={error ? ERROR_ID : undefined}
+          aria-describedby={error ? errorId : undefined}
           onChange={(event) => onChange(event.target.checked)}
           onBlur={onBlur}
         />
@@ -44,7 +48,7 @@ export function ConsentCheckbox({
         <span className="lf-check-text">{formCopy.consent}</span>
       </label>
       {error ? (
-        <p className="lf-error" id={ERROR_ID}>
+        <p className="lf-error" id={errorId}>
           {error}
         </p>
       ) : null}

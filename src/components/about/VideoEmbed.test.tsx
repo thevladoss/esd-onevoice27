@@ -66,4 +66,13 @@ describe("VideoEmbed", () => {
 
     expect(container.firstElementChild).toHaveClass("ve", "ab-video");
   });
+
+  it("ничего не рендерит, если id не похож на id ролика YouTube", () => {
+    for (const badId of ["YpLD6p-z00g?list=PL", "../../watch", "short", "YpLD6p z00g", ""]) {
+      const { container, unmount } = render(<VideoEmbed videoId={badId} title={title} />);
+
+      expect(container.firstElementChild).toBeNull();
+      unmount();
+    }
+  });
 });

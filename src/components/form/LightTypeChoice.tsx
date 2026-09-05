@@ -15,7 +15,7 @@ export function LightTypeChoice({
   onChange: (next: LightType) => void;
 }) {
   return (
-    <fieldset className="lf-types grid gap-4 md:grid-cols-2">
+    <fieldset className="lf-types">
       <legend className="lf-legend">{formCopy.typeLegend}</legend>
       {OPTIONS.map((option) => (
         <label key={option.value} className="lf-type" data-type={option.value}>

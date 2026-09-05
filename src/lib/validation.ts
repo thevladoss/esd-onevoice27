@@ -1,3 +1,4 @@
+import { countryById } from "../data/countries";
 import { formCopy } from "../data/copy.form";
 import type { LightType as MapLightType } from "../data/lights";
 
@@ -57,7 +58,14 @@ export function validateLightForm(values: LightFormValues): LightFormErrors {
     errors.lastName = formCopy.errors.lastName;
   }
 
-  if (values.countryId === "") {
+  // Членство в справочнике проверяем здесь: дальше id уходит в createLight, а тот
+  // на неизвестной стране бросает исключение прямо внутри reducer'а.
+  const countryId = Number(values.countryId);
+  if (
+    values.countryId.trim() === "" ||
+    !Number.isInteger(countryId) ||
+    countryById(countryId) === undefined
+  ) {
     errors.countryId = formCopy.errors.countryId;
   }
 

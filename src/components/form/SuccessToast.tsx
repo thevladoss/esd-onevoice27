@@ -16,7 +16,10 @@ function wantsInstantClose(): boolean {
   return query?.matches === true;
 }
 
-/** Живая область успеха: закрывается по таймеру или по клику в любую точку, кнопки внутри нет. */
+/**
+ * Визуальная копия успеха. Объявление скринридеру делает живой регион формы, поэтому карточка
+ * помечена aria-hidden и закрывается по таймеру, по клику по карточке или по Escape.
+ */
 export function SuccessToast({
   open,
   message,
@@ -69,28 +72,51 @@ function LiveToast({
     }, CLOSE_DURATION);
   }, [onClose]);
 
+  // Свежий requestClose лежит в ref, поэтому автотаймеру не нужна его идентичность.
+  const requestCloseRef = useRef(requestClose);
   useEffect(() => {
-    const autoTimer = setTimeout(requestClose, duration);
+    requestCloseRef.current = requestClose;
+  });
 
-    return () => {
-      clearTimeout(autoTimer);
+  // Автозакрытие отсчитывается один раз: новая ссылка onClose у родителя его не перезапускает.
+  useEffect(() => {
+    const autoTimer = setTimeout(() => requestCloseRef.current(), duration);
 
+    return () => clearTimeout(autoTimer);
+  }, [duration]);
+
+  // Клавиатуре нужен свой способ убрать сообщение: кнопки внутри нет, кликнуть нечем.
+  useEffect(() => {
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        requestCloseRef.current();
+      }
+    }
+
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
+  // Таймер фазы ухода живёт до размонтирования: иначе тост завис бы прозрачным и ловил клики.
+  useEffect(
+    () => () => {
       if (closeTimer.current !== null) {
         clearTimeout(closeTimer.current);
         closeTimer.current = null;
       }
-    };
-  }, [duration, requestClose]);
+    },
+    [],
+  );
 
   return createPortal(
     <div
-      className="lf-toast pointer-events-none fixed inset-x-0 bottom-6 z-[60] flex justify-center"
+      className="lf-toast"
       data-state={closing ? "closing" : "open"}
-      role="status"
-      aria-live="polite"
+      aria-hidden="true"
       onClick={requestClose}
     >
-      <GlassCard className="lf-toast-card pointer-events-auto">
+      <GlassCard className="lf-toast-card">
         <span className="lf-toast-icon" aria-hidden="true">
           <svg viewBox="0 0 12 12" focusable="false">
             <path
