@@ -52,7 +52,22 @@ export function Header() {
     setMenuOpen(false);
     // Отступ берётся из --header-offset: живой замер пилюли давал другое число,
     // потому что к концу плавной прокрутки шапка уже уплотнилась.
-    scrollToSection(href);
+    if (!scrollToSection(href)) {
+      return;
+    }
+
+    // Переход по якорю отменён preventDefault, поэтому адрес и фокус двигаем
+    // сами: иначе ссылку на раздел не скопировать, «Назад» не отматывает
+    // переходы, а клавиатурный обход продолжается с шапки.
+    const target = document.getElementById(href.replace(/^#/, ""));
+    if (!target) {
+      history.pushState(null, "", `${location.pathname}${location.search}`);
+      return;
+    }
+
+    history.pushState(null, "", href);
+    target.setAttribute("tabindex", "-1");
+    target.focus({ preventScroll: true });
   }, []);
 
   const handleClick = (event: MouseEvent<HTMLAnchorElement>, href: string) => {

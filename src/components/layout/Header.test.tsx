@@ -26,6 +26,7 @@ describe("Header", () => {
 
   afterEach(() => {
     document.querySelectorAll("body > section").forEach((section) => section.remove());
+    history.pushState(null, "", location.pathname);
   });
 
   it("рендерит ландмарку banner и навигацию с подписью", () => {
@@ -75,13 +76,37 @@ describe("Header", () => {
     expect(scrollTo).toHaveBeenCalledWith({ top: 1100, behavior: "smooth" });
   });
 
+  it("пишет якорь в адрес и переносит фокус в секцию", async () => {
+    const user = userEvent.setup();
+    const section = addSection("about", 1200);
+    render(<Header />);
+
+    await user.click(screen.getByRole("link", { name: "Что это?" }));
+
+    expect(location.hash).toBe("#about");
+    expect(section).toHaveAttribute("tabindex", "-1");
+    expect(document.activeElement).toBe(section);
+  });
+
+  it("убирает якорь из адреса по клику на вордмарк", async () => {
+    const user = userEvent.setup();
+    history.pushState(null, "", "#about");
+    render(<Header />);
+
+    await user.click(screen.getByRole("link", { name: "Единый голос 27, на главную" }));
+
+    expect(location.hash).toBe("");
+  });
+
   it("молчит по клику на пункт, у которого нет секции", async () => {
     const user = userEvent.setup();
     render(<Header />);
 
+    const hashBefore = location.hash;
     await user.click(screen.getByRole("link", { name: "Новости" }));
 
     expect(scrollTo).not.toHaveBeenCalled();
+    expect(location.hash).toBe(hashBefore);
   });
 
   it("возвращает страницу наверх по клику на вордмарк", async () => {
