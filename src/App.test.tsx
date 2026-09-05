@@ -77,3 +77,119 @@ describe("App", () => {
     }
   });
 });
+
+describe("App: контракт оболочки", () => {
+  // Шпион пропускает вызов дальше, поэтому предупреждения React (act, ключи,
+  // невалидная вложенность DOM) остаются видны в выводе прогона и одновременно
+  // роняют тест.
+  const consoleError = vi.spyOn(console, "error");
+  const consoleWarn = vi.spyOn(console, "warn");
+
+  beforeEach(() => {
+    consoleError.mockClear();
+    consoleWarn.mockClear();
+  });
+
+  afterAll(() => {
+    consoleError.mockRestore();
+    consoleWarn.mockRestore();
+  });
+
+  it("рендерит страницу молча: ни ошибок, ни предупреждений в консоли", () => {
+    expect(() => renderApp()).not.toThrow();
+
+    expect(consoleError).not.toHaveBeenCalled();
+    expect(consoleWarn).not.toHaveBeenCalled();
+  });
+
+  it("называет каждую секцию её заголовком через aria-labelledby", () => {
+    renderApp();
+
+    const labelIds = expectedSectionIds.map((id) => {
+      const section = document.getElementById(id);
+      const labelId = section?.getAttribute("aria-labelledby");
+      expect(labelId, `у секции #${id} нет aria-labelledby`).toBeTruthy();
+
+      const label = document.getElementById(labelId as string);
+      expect(label, `aria-labelledby секции #${id} ведёт в пустоту`).not.toBeNull();
+      expect(label?.textContent?.trim()).not.toBe("");
+
+      return labelId;
+    });
+
+    expect(labelIds).toEqual([
+      "hero-title",
+      "map-title",
+      "form-title",
+      "about-title",
+      "involve-title",
+      "news-title",
+      "resources-title",
+      "quote-title",
+    ]);
+  });
+
+  it("держит на странице ровно один h1", () => {
+    renderApp();
+
+    const headings = document.querySelectorAll("h1");
+    expect(headings).toHaveLength(1);
+    expect(headings[0].id).toBe("hero-title");
+  });
+
+  it("ставит ссылку пропуска первой ссылкой документа и выше шапки", () => {
+    renderApp();
+
+    const first = document.querySelector("a");
+    expect(first).toHaveTextContent("Перейти к содержимому");
+    expect(first?.getAttribute("href")).toMatch(/#main$/);
+    expect(document.querySelector("main#main")).not.toBeNull();
+
+    const header = document.querySelector("header") as HTMLElement;
+    const position = (first as HTMLElement).compareDocumentPosition(header);
+    expect(position & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  });
+
+  it("объявляет ландмарки навигации и подвала", () => {
+    renderApp();
+
+    expect(screen.getByRole("navigation", { name: "Основная навигация" })).toBeInTheDocument();
+    expect(screen.getByRole("navigation", { name: "Внешние ссылки" })).toBeInTheDocument();
+    expect(document.querySelector("footer")).not.toBeNull();
+  });
+
+  it("не отдаёт внешним вкладкам доступ к opener", () => {
+    renderApp();
+
+    const external = document.querySelectorAll('a[target="_blank"]');
+    expect(external.length).toBeGreaterThan(0);
+    expect(document.querySelectorAll('a[target="_blank"]:not([rel~="noopener"])')).toHaveLength(0);
+  });
+
+  it("держит data-anim в словаре политики движения", () => {
+    // Словарь из 05-UI-SPEC: блок reduced motion в global.css гасит движение по
+    // этим же именам, и любое новое значение прошло бы мимо него.
+    const known = new Set([
+      "stars",
+      "globe",
+      "beam",
+      "pulse",
+      "new-light",
+      "particles",
+      "atmosphere",
+      "wave",
+      "halo",
+    ]);
+
+    renderApp();
+
+    const used = new Set(
+      Array.from(document.querySelectorAll<HTMLElement>("[data-anim]")).map(
+        (node) => node.dataset.anim as string,
+      ),
+    );
+
+    expect(used.size).toBeGreaterThan(0);
+    expect([...used].filter((name) => !known.has(name))).toEqual([]);
+  });
+});
