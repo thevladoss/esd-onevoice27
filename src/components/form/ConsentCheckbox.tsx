@@ -21,7 +21,7 @@ export function ConsentCheckbox({
 
   return (
     <div className="lf-consent">
-      <label className="lf-check flex min-h-11 items-start gap-3" htmlFor={id}>
+      <label className="lf-check" htmlFor={id}>
         <input
           className="sr-only"
           id={id}

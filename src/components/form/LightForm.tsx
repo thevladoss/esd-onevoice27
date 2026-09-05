@@ -127,16 +127,16 @@ export function LightForm() {
 
   return (
     <Section id="light-form" className="lf-section">
-      <div className="lf-head text-center">
+      <div className="lf-head">
         <Eyebrow>{formCopy.eyebrow}</Eyebrow>
         <GradientTitle as="h2" variant="section">
           {formCopy.title}
         </GradientTitle>
-        <p className="lf-lead mx-auto max-w-[42rem]">{formCopy.lead}</p>
+        <p className="lf-lead">{formCopy.lead}</p>
       </div>
 
-      <GlassCard className="lf-card mx-auto max-w-4xl">
-        <form className="lf-form flex flex-col gap-8" noValidate onSubmit={handleSubmit}>
+      <GlassCard className="lf-card">
+        <form className="lf-form" noValidate onSubmit={handleSubmit}>
           {/* Пока идёт отправка, поля заблокированы: иначе набор за эти 1200 мс стёрся бы сбросом. */}
           <fieldset className="lf-fields" disabled={submitting}>
             <LightTypeChoice
@@ -144,7 +144,7 @@ export function LightForm() {
               onChange={(type) => setValues((prev) => ({ ...prev, type }))}
             />
 
-            <div className="lf-grid grid gap-4 md:grid-cols-2">
+            <div className="lf-grid">
               <FormField
                 id={fieldId("firstName")}
                 label={formCopy.fields.firstName.label}
@@ -226,7 +226,7 @@ export function LightForm() {
                 id={fieldId("email")}
                 label={formCopy.fields.email.label}
                 error={errors.email}
-                className="lf-span md:col-span-2"
+                className="lf-span"
               >
                 {(control) => (
                   <input
@@ -257,7 +257,7 @@ export function LightForm() {
             type="submit"
             variant="primary"
             id={SUBMIT_ID}
-            className="lf-submit w-full"
+            className="lf-submit"
             disabled={submitting}
             aria-busy={submitting || undefined}
           >

@@ -98,12 +98,12 @@ function LiveToast({
 
   return createPortal(
     <div
-      className="lf-toast pointer-events-none fixed inset-x-0 bottom-6 z-[60] flex justify-center"
+      className="lf-toast"
       data-state={closing ? "closing" : "open"}
       aria-hidden="true"
       onClick={requestClose}
     >
-      <GlassCard className="lf-toast-card pointer-events-auto">
+      <GlassCard className="lf-toast-card">
         <span className="lf-toast-icon" aria-hidden="true">
           <svg viewBox="0 0 12 12" focusable="false">
             <path

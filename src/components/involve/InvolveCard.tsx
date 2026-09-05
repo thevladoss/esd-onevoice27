@@ -19,9 +19,9 @@ export function InvolveCard({
       <div className="inv-media" aria-hidden="true">
         {art}
       </div>
-      <div className="inv-body flex flex-col gap-4 p-8">
-        <h3 className="inv-title font-display">{title}</h3>
-        <a className="inv-action font-body" href={href}>
+      <div className="inv-body">
+        <h3 className="inv-title">{title}</h3>
+        <a className="inv-action" href={href}>
           {action}
           <span className="inv-arrow" aria-hidden="true">
             →

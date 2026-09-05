@@ -11,8 +11,12 @@
   overflow-x: clip;
 }
 
-.inv-lead {
+/* Ширину текстовой колонки держит заголовочный блок, лид её наследует */
+.inv-head {
   max-width: 42rem;
+}
+
+.inv-lead {
   color: rgb(248 247 251 / .8);
 }
 
