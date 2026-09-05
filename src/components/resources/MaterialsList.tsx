@@ -79,8 +79,7 @@ export function MaterialsList({ items = materials }: { items?: readonly Material
           <li key={item.id}>
             <a
               href={item.href}
-              target="_blank"
-              rel="noopener noreferrer"
+              target="_blank" rel="noopener noreferrer"
               className="group flex items-center gap-4 rounded-xl border border-paper/10 bg-paper/5 p-4 transition-[transform,border-color,background-color] duration-[240ms] ease-ui hover:border-[rgb(123_194_199/.4)] hover:bg-paper/[.06] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-horizon-400 motion-safe:hover:translate-x-1"
             >
               <span className="shrink-0 text-horizon-200">

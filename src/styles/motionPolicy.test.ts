@@ -109,6 +109,18 @@ describe("оболочка страницы", () => {
     expect(GLOBAL_CSS).toContain("outline-offset: 4px");
   });
 
+  it("защищает каждую ссылку в новую вкладку от reverse tabnabbing", () => {
+    const unprotected = filesWithExt([".tsx"]).flatMap((path) =>
+      readFileSync(path, "utf8")
+        .split("\n")
+        .filter((line) => line.includes('target="_blank"') && !line.includes("noopener noreferrer"))
+        .map((line) => `${path}: ${line.trim()}`),
+    );
+
+    // Пара атрибутов держится в одной строке: так пропажу rel видно на ревью.
+    expect(unprotected).toEqual([]);
+  });
+
   it("нигде в исходниках не снимает обводку фокуса", () => {
     // Скобки вокруг дефиса нужны, чтобы сам тест не попал под свой же поиск.
     const ringOff = /outline:\s*none|outline-width:\s*0|\boutline[-]none\b/;
