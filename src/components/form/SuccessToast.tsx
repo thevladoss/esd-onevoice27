@@ -16,7 +16,10 @@ function wantsInstantClose(): boolean {
   return query?.matches === true;
 }
 
-/** Живая область успеха: закрывается по таймеру или по клику в любую точку, кнопки внутри нет. */
+/**
+ * Визуальная копия успеха. Объявление скринридеру делает живой регион формы, поэтому карточка
+ * помечена aria-hidden и закрывается по таймеру или по клику по карточке.
+ */
 export function SuccessToast({
   open,
   message,
@@ -86,8 +89,7 @@ function LiveToast({
     <div
       className="lf-toast pointer-events-none fixed inset-x-0 bottom-6 z-[60] flex justify-center"
       data-state={closing ? "closing" : "open"}
-      role="status"
-      aria-live="polite"
+      aria-hidden="true"
       onClick={requestClose}
     >
       <GlassCard className="lf-toast-card pointer-events-auto">

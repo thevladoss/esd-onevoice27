@@ -50,6 +50,16 @@ function clickSubmit() {
   fireEvent.click(screen.getByRole("button", { name: /Зажечь свой свет/ }));
 }
 
+/** Визуальная карточка тоста: она aria-hidden, поэтому ищется по классу, а не по роли. */
+function toastCard(): HTMLElement | null {
+  return document.querySelector<HTMLElement>(".lf-toast");
+}
+
+/** Живой регион формы: смонтирован всегда, текст появляется только после успеха. */
+function liveRegion(): HTMLElement {
+  return screen.getByRole("status");
+}
+
 function fillValidForm() {
   fireEvent.click(screen.getByRole("radio", { name: /Групповой маяк/ }));
   fireEvent.change(control("firstName"), { target: { value: "Иван" } });
@@ -195,8 +205,8 @@ describe("LightForm: успешная отправка", () => {
       '{"type":"group","countryId":643}',
     );
 
-    const toast = screen.getByRole("status");
-    expect(toast).toHaveTextContent("Ваш свет зажжён! Огонёк уже на карте.");
+    expect(liveRegion()).toHaveTextContent("Ваш свет зажжён! Огонёк уже на карте.");
+    expect(toastCard()).toHaveTextContent("Ваш свет зажжён! Огонёк уже на карте.");
 
     expect(control("firstName").value).toBe("");
     expect(control("lastName").value).toBe("");
@@ -213,6 +223,53 @@ describe("LightForm: успешная отправка", () => {
   });
 });
 
+describe("LightForm: объявление успеха", () => {
+  it("держит живой регион пустым до отправки и наполняет его после успеха", () => {
+    renderForm();
+
+    const region = liveRegion();
+    expect(region).toBeInTheDocument();
+    expect(region).toHaveAttribute("aria-live", "polite");
+    expect(region.textContent).toBe("");
+
+    fillValidForm();
+    clickSubmit();
+    act(() => {
+      vi.advanceTimersByTime(1200);
+    });
+
+    expect(liveRegion()).toBe(region);
+    expect(region.textContent).toBe("Ваш свет зажжён! Огонёк уже на карте.");
+  });
+
+  it("прячет визуальную карточку от скринридера и оставляет одну живую область", () => {
+    renderForm();
+    fillValidForm();
+    clickSubmit();
+    act(() => {
+      vi.advanceTimersByTime(1200);
+    });
+
+    expect(toastCard()).toHaveAttribute("aria-hidden", "true");
+    expect(screen.getAllByRole("status")).toHaveLength(1);
+  });
+
+  it("очищает живой регион, когда тост закрылся", () => {
+    renderForm();
+    fillValidForm();
+    clickSubmit();
+    act(() => {
+      vi.advanceTimersByTime(1200);
+    });
+    act(() => {
+      vi.advanceTimersByTime(4000 + 200);
+    });
+
+    expect(toastCard()).toBeNull();
+    expect(liveRegion().textContent).toBe("");
+  });
+});
+
 describe("LightForm: тост", () => {
   it("убирает тост через четыре секунды", () => {
     renderForm();
@@ -222,17 +279,17 @@ describe("LightForm: тост", () => {
     act(() => {
       vi.advanceTimersByTime(1200);
     });
-    expect(screen.getByRole("status")).toBeInTheDocument();
+    expect(toastCard()).toBeInTheDocument();
 
     act(() => {
       vi.advanceTimersByTime(4000);
     });
-    expect(screen.getByRole("status")).toHaveAttribute("data-state", "closing");
+    expect(toastCard()).toHaveAttribute("data-state", "closing");
 
     act(() => {
       vi.advanceTimersByTime(200);
     });
-    expect(screen.queryByRole("status")).toBeNull();
+    expect(toastCard()).toBeNull();
   });
 
   it("закрывает тост по клику раньше таймера", () => {
@@ -244,18 +301,18 @@ describe("LightForm: тост", () => {
       vi.advanceTimersByTime(1200);
     });
 
-    fireEvent.click(screen.getByRole("status"));
-    expect(screen.getByRole("status")).toHaveAttribute("data-state", "closing");
+    fireEvent.click(toastCard() as HTMLElement);
+    expect(toastCard()).toHaveAttribute("data-state", "closing");
 
     act(() => {
       vi.advanceTimersByTime(200);
     });
-    expect(screen.queryByRole("status")).toBeNull();
+    expect(toastCard()).toBeNull();
 
     act(() => {
       vi.advanceTimersByTime(4000);
     });
-    expect(screen.queryByRole("status")).toBeNull();
+    expect(toastCard()).toBeNull();
   });
 
   it("при уменьшенном движении убирает тост по клику без фазы ухода", () => {
@@ -267,14 +324,14 @@ describe("LightForm: тост", () => {
     act(() => {
       vi.advanceTimersByTime(1200);
     });
-    expect(screen.getByRole("status")).toHaveAttribute("data-state", "open");
+    expect(toastCard()).toHaveAttribute("data-state", "open");
 
-    fireEvent.click(screen.getByRole("status"));
-    expect(screen.queryByRole("status")).toBeNull();
+    fireEvent.click(toastCard() as HTMLElement);
+    expect(toastCard()).toBeNull();
 
     act(() => {
       vi.advanceTimersByTime(4000);
     });
-    expect(screen.queryByRole("status")).toBeNull();
+    expect(toastCard()).toBeNull();
   });
 });

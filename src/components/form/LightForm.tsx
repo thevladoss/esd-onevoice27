@@ -259,6 +259,14 @@ export function LightForm() {
         </form>
       </GlassCard>
 
+      {/*
+        Живой регион смонтирован всегда и пустой до успеха: скринридер объявляет отправку
+        сменой текста внутри уже существующего региона. Тост ниже — только визуальная копия.
+      */}
+      <p className="sr-only" role="status" aria-live="polite">
+        {toastOpen ? formCopy.success : ""}
+      </p>
+
       <SuccessToast
         key={toastKey}
         open={toastOpen}
