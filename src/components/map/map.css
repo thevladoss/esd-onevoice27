@@ -42,14 +42,21 @@
   color: var(--light-group);
 }
 
+/*
+ * Радиус делится на масштаб вьюпорта прямо в CSS: во время жеста меняется одна
+ * переменная на группе, а не атрибут r у 1884 кругов через рендер React.
+ * Атрибут r остаётся запасным для движков без геометрических свойств в CSS.
+ */
 .light-core {
   fill: currentColor;
   opacity: .9;
+  r: calc(var(--light-core-r, 2.2px) / var(--zoom-k, 1));
 }
 
 .light-halo {
   fill: currentColor;
   opacity: .22;
+  r: calc(var(--light-halo-r, 6px) / var(--zoom-k, 1));
 }
 
 .light-ring {
@@ -57,6 +64,7 @@
   stroke: currentColor;
   stroke-width: 1px;
   opacity: .5;
+  r: calc(var(--light-halo-r, 6px) / var(--zoom-k, 1));
 }
 
 .light.pulse {

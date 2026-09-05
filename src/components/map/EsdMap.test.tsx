@@ -211,6 +211,21 @@ describe("зум карты", () => {
     expect(Number(halo?.getAttribute("r"))).toBeCloseTo(LIGHT_HALO_RADIUS / k, 3);
   });
 
+  it("на кадре жеста двигает только вьюпорт, а огоньки не пересобирает", () => {
+    const { container } = render(<EsdMap lights={lights} size={SIZE} />);
+    const svg = container.querySelector("svg") as SVGSVGElement;
+    const core = container.querySelector(".light-core") as SVGCircleElement;
+    const radiusBefore = core.getAttribute("r");
+
+    fireEvent.wheel(svg, { deltaY: -240, ctrlKey: true, clientX: 600, clientY: 350 });
+
+    const viewport = container.querySelector("g.map-viewport") as SVGGElement;
+    expect(viewport.getAttribute("transform")).toContain("scale(8)");
+    expect(viewport.style.getPropertyValue("--zoom-k")).toBe("8");
+    // Атрибут r у 942 кругов на кадрах жеста не переписывается: радиус считает CSS.
+    expect(core.getAttribute("r")).toBe(radiusBefore);
+  });
+
   it("оставляет странице вертикальный скролл одним пальцем", () => {
     const { container } = render(<EsdMap lights={lights} size={SIZE} />);
     const svg = container.querySelector("svg");

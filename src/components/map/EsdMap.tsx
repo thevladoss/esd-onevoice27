@@ -1,6 +1,7 @@
 import { geoPath } from "d3-geo";
 import type { ZoomTransform } from "d3-zoom";
 import { zoomIdentity } from "d3-zoom";
+import type { CSSProperties } from "react";
 import {
   useCallback,
   useEffect,
@@ -55,6 +56,7 @@ export function EsdMap({
 }: EsdMapProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const svgRef = useRef<SVGSVGElement>(null);
+  const viewportRef = useRef<SVGGElement>(null);
   const [measured, setMeasured] = useState<Size | null>(null);
   const titleId = useId();
   const descId = useId();
@@ -160,11 +162,22 @@ export function EsdMap({
     [width, height],
   );
 
+  // Кадр жеста и полёта пишется прямо в атрибуты группы вьюпорта: React на этом
+  // пути не участвует, поэтому огоньки не пересобираются по 60 раз в секунду.
+  const handleFrame = useCallback((next: ZoomTransform) => {
+    const node = viewportRef.current;
+    if (!node) return;
+
+    node.setAttribute("transform", next.toString());
+    node.style.setProperty("--zoom-k", String(next.k));
+  }, []);
+
   const { transform, dragging, zoomTo } = useMapZoom(svgRef, {
     width,
     height,
     enabled: projection !== null && !hasError,
     onUserZoom: handleUserZoom,
+    onFrame: handleFrame,
   });
 
   // Что уже отыграл полёт: по этой записи видно, сменился выбор или только размер контейнера.
@@ -251,7 +264,20 @@ export function EsdMap({
             preserveAspectRatio="xMidYMid meet"
           >
             <title id={titleId}>{mapCopy.mapTitle}</title>
-            <g className="map-viewport" transform={transform.toString()}>
+            <g
+              ref={viewportRef}
+              className="map-viewport"
+              transform={transform.toString()}
+              // Радиусы огоньков считает CSS из этих переменных: атрибут r остаётся
+              // запасным для движков без геометрических свойств.
+              style={
+                {
+                  "--zoom-k": String(transform.k),
+                  "--light-core-r": `${LIGHT_CORE_RADIUS}px`,
+                  "--light-halo-r": `${LIGHT_HALO_RADIUS}px`,
+                } as CSSProperties
+              }
+            >
               <g className="map-countries" aria-hidden="true">
                 {countries.map((country) => {
                   const selected = selectedCountryId === country.id;

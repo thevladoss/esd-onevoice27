@@ -45,6 +45,11 @@ export interface UseMapZoomOptions {
   enabled: boolean;
   /** Вызывается только на жестах посетителя, не на программном полёте. */
   onUserZoom?: (transform: ZoomTransform) => void;
+  /**
+   * Кадр жеста или полёта. Сюда уходит императивная отрисовка вьюпорта: состояние
+   * React обновляется один раз в конце, иначе каждый кадр пересобирает всю карту.
+   */
+  onFrame?: (transform: ZoomTransform) => void;
 }
 
 export interface MapZoomApi {
@@ -114,24 +119,31 @@ export function constrainTransform(
 
 export function useMapZoom(
   svgRef: RefObject<SVGSVGElement | null>,
-  { width, height, enabled, onUserZoom }: UseMapZoomOptions,
+  { width, height, enabled, onUserZoom, onFrame }: UseMapZoomOptions,
 ): MapZoomApi {
   const [transform, setTransform] = useState<ZoomTransform>(zoomIdentity);
   const [dragging, setDragging] = useState(false);
   const behaviorRef = useRef<ZoomBehavior<SVGSVGElement, unknown> | null>(null);
   const flightRef = useRef<number | null>(null);
   const onUserZoomRef = useRef(onUserZoom);
+  const onFrameRef = useRef(onFrame);
 
   useEffect(() => {
     onUserZoomRef.current = onUserZoom;
-  }, [onUserZoom]);
+    onFrameRef.current = onFrame;
+  }, [onUserZoom, onFrame]);
 
   const cancelFlight = useCallback(() => {
-    if (flightRef.current !== null) {
-      cancelAnimationFrame(flightRef.current);
-      flightRef.current = null;
-    }
-  }, []);
+    if (flightRef.current === null) return;
+
+    cancelAnimationFrame(flightRef.current);
+    flightRef.current = null;
+
+    // Полёт оборвали на середине: состояние догоняет то, что уже нарисовано,
+    // иначе следующий рендер вернул бы вьюпорт к позиции до полёта.
+    const node = svgRef.current;
+    if (node) setTransform(zoomTransform(node));
+  }, [svgRef]);
 
   useEffect(() => {
     const node = svgRef.current;
@@ -149,11 +161,17 @@ export function useMapZoom(
         if (event.sourceEvent?.type === "mousedown") setDragging(true);
       })
       .on("zoom", (event: D3ZoomEvent<SVGSVGElement, unknown>) => {
-        setTransform(event.transform);
+        // Кадр рисуется мимо React: setTransform на каждый кадр пересобирал бы
+        // около 2900 узлов SVG, и на телефоне жест превращался в слайдшоу.
+        onFrameRef.current?.(event.transform);
         // sourceEvent есть только у жестов: программный полёт сюда не попадает.
         if (event.sourceEvent) onUserZoomRef.current?.(event.transform);
       })
-      .on("end", () => setDragging(false));
+      .on("end", (event: D3ZoomEvent<SVGSVGElement, unknown>) => {
+        setDragging(false);
+        // Конец полёта состояние ставит сам: здесь ждём только конца жеста.
+        if (flightRef.current === null) setTransform(event.transform);
+      });
 
     svg.call(behavior);
     // d3-zoom ставит touch-action: none; возвращаем pan-y, чтобы один палец скроллил страницу.
@@ -196,8 +214,16 @@ export function useMapZoom(
           .translate(lerp(from.x, bounded.x, eased), lerp(from.y, bounded.y, eased))
           .scale(lerp(from.k, bounded.k, eased));
 
-        behavior.transform(svg, constrainTransform(current, extent, translateExtent));
-        flightRef.current = t < 1 ? requestAnimationFrame(step) : null;
+        const frame = constrainTransform(current, extent, translateExtent);
+        behavior.transform(svg, frame);
+
+        if (t < 1) {
+          flightRef.current = requestAnimationFrame(step);
+          return;
+        }
+
+        flightRef.current = null;
+        setTransform(frame);
       };
 
       flightRef.current = requestAnimationFrame(step);
