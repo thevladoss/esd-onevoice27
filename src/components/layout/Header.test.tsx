@@ -118,6 +118,103 @@ describe("Header", () => {
   });
 });
 
+describe("Header: десктопная навигация", () => {
+  const defaultMatchMedia = window.matchMedia;
+  let notify: IntersectionObserverCallback | null = null;
+
+  /** matchMedia, который отвечает `true` только на запросы из `truthy`. */
+  function mockMatchMedia(truthy: string) {
+    window.matchMedia = ((query: string) => ({
+      matches: query.includes(truthy),
+      media: query,
+      onchange: null,
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+      addListener: vi.fn(),
+      removeListener: vi.fn(),
+      dispatchEvent: vi.fn(),
+    })) as unknown as typeof window.matchMedia;
+  }
+
+  function enters(id: string) {
+    const target = document.getElementById(id);
+    if (!target || !notify) {
+      throw new Error(`Нет цели #${id} или наблюдателя`);
+    }
+
+    const rect = target.getBoundingClientRect();
+    const callback = notify;
+    act(() =>
+      callback(
+        [
+          {
+            target,
+            isIntersecting: true,
+            intersectionRatio: 0.05,
+            boundingClientRect: rect,
+            intersectionRect: rect,
+            rootBounds: null,
+            time: 0,
+          },
+        ],
+        null as unknown as IntersectionObserver,
+      ),
+    );
+  }
+
+  beforeEach(() => {
+    notify = null;
+    mockMatchMedia("min-width: 768px");
+
+    class ObserverSpy {
+      constructor(callback: IntersectionObserverCallback) {
+        notify = callback;
+      }
+      observe = vi.fn();
+      unobserve = vi.fn();
+      disconnect = vi.fn();
+      takeRecords = () => [];
+    }
+
+    vi.stubGlobal("IntersectionObserver", ObserverSpy);
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+    window.matchMedia = defaultMatchMedia;
+    document.querySelectorAll("body > section").forEach((section) => section.remove());
+  });
+
+  it("наблюдает за секциями только на широком экране", () => {
+    addSection("about", 1200);
+    render(<Header />);
+    expect(notify).not.toBeNull();
+
+    notify = null;
+    mockMatchMedia("(никогда не совпадёт)");
+    render(<Header />);
+    expect(notify).toBeNull();
+  });
+
+  it("помечает aria-current пункт секции, на которую смотрит посетитель", () => {
+    addSection("about", 1200);
+    addSection("involve", 2400);
+    render(<Header />);
+
+    const about = screen.getByRole("link", { name: "Что это?" });
+    const involve = screen.getByRole("link", { name: "Участвовать" });
+    expect(about).not.toHaveAttribute("aria-current");
+
+    enters("about");
+    expect(about).toHaveAttribute("aria-current", "true");
+    expect(involve).not.toHaveAttribute("aria-current");
+
+    enters("involve");
+    expect(about).toHaveAttribute("aria-current", "true");
+    expect(involve).not.toHaveAttribute("aria-current");
+  });
+});
+
 describe("Header: мобильный оверлей", () => {
   const scrollTo = vi.mocked(window.scrollTo);
 
