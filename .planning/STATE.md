@@ -5,13 +5,13 @@ milestone_name: milestone
 status: milestone_complete
 stopped_at: Milestone complete (Phase 05 was final phase)
 last_updated: 2026-09-05T19:25:23.311Z
-last_activity: 2026-09-05 -- План 05-08: глобус без shadowBlur, smoke заполнен, прод 121 fps; фаза 5 ждёт верификацию
+last_activity: 2026-09-05 -- Фаза 6 «Точность оригинала» по правкам пользователя: планы 06-01 шапка, 06-02 кнопка, 06-03 фоны исполняются
 progress:
-  total_phases: 5
+  total_phases: 6
   completed_phases: 5
-  total_plans: 26
+  total_plans: 30
   completed_plans: 26
-  percent: 100
+  percent: 87
 ---
 
 # Project State
@@ -30,7 +30,7 @@ Plan: Not started
 Status: Milestone complete
 Last activity: 2026-09-05
 
-Progress: [██████████] 100%
+Progress: [████████▋ ] 87%
 
 ## Performance Metrics
 
