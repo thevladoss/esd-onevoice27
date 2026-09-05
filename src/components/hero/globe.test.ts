@@ -1,6 +1,11 @@
 import {
   FRAME_MS,
+  GLOBE_BACK_ALPHA,
+  GLOBE_FRONT_ALPHA,
+  GLOBE_GLOW_ALPHA,
   GLOBE_POINTS,
+  GLOBE_POINT_MAX,
+  GLOBE_POINT_MIN,
   GLOBE_SPEED,
   MAX_STEP_MS,
   angleStep,
@@ -8,6 +13,8 @@ import {
   fibonacciSphere,
   globeLayout,
   latitudeColor,
+  pointAlpha,
+  pointSize,
   shouldAnimate,
 } from "./globe";
 
@@ -20,6 +27,7 @@ function createMockContext() {
     ellipse: vi.fn(),
     stroke: vi.fn(),
     setTransform: vi.fn(),
+    createRadialGradient: vi.fn(() => ({ addColorStop: vi.fn() })),
     globalAlpha: 1,
     globalCompositeOperation: "source-over",
     shadowBlur: 0,
@@ -31,9 +39,9 @@ function createMockContext() {
 }
 
 describe("fibonacciSphere", () => {
-  it("раскладывает 1800 точек по единичной сфере", () => {
+  it("раскладывает точки по единичной сфере", () => {
     const points = fibonacciSphere(GLOBE_POINTS);
-    expect(points.length).toBe(5400);
+    expect(points.length).toBe(GLOBE_POINTS * 3);
 
     for (let i = 0; i < GLOBE_POINTS; i++) {
       const x = points[i * 3];
@@ -92,8 +100,29 @@ describe("globeLayout", () => {
   });
 });
 
+describe("яркость сферы", () => {
+  it("держит переднюю сторону непрозрачной, а заднюю просвечивающей", () => {
+    // Контракт фазы 5: замер после фазы 2 показал 10/255 на области глобуса.
+    expect(GLOBE_FRONT_ALPHA).toBeGreaterThanOrEqual(0.85);
+    expect(GLOBE_BACK_ALPHA).toBeCloseTo(0.25, 2);
+    expect(pointAlpha(0.4)).toBe(GLOBE_FRONT_ALPHA);
+    expect(pointAlpha(0)).toBe(GLOBE_FRONT_ALPHA);
+    expect(pointAlpha(-0.4)).toBe(GLOBE_BACK_ALPHA);
+  });
+
+  it("держит размер точки в диапазоне 1.4–2.6px и растит его с глубиной", () => {
+    expect(GLOBE_POINT_MIN).toBeGreaterThanOrEqual(1.4);
+    expect(GLOBE_POINT_MAX).toBeLessThanOrEqual(2.6);
+    expect(pointSize(-1)).toBeCloseTo(GLOBE_POINT_MIN, 6);
+    expect(pointSize(1)).toBeCloseTo(GLOBE_POINT_MAX, 6);
+    expect(pointSize(0)).toBeCloseTo((GLOBE_POINT_MIN + GLOBE_POINT_MAX) / 2, 6);
+    // Значения за пределами отрезка не раздувают точку.
+    expect(pointSize(4)).toBeCloseTo(GLOBE_POINT_MAX, 6);
+  });
+});
+
 describe("drawGlobe", () => {
-  it("рисует одну дугу на точку и три орбитальные дуги", () => {
+  it("рисует одну дугу на точку, свечение, лимб и три орбитальные дуги", () => {
     const ctx = createMockContext();
     drawGlobe(
       ctx as unknown as CanvasRenderingContext2D,
@@ -104,9 +133,53 @@ describe("drawGlobe", () => {
       600,
     );
 
-    expect(ctx.arc).toHaveBeenCalledTimes(GLOBE_POINTS);
+    // Точки плюс диск атмосферы и лимб по краю.
+    expect(ctx.arc).toHaveBeenCalledTimes(GLOBE_POINTS + 2);
     expect(ctx.ellipse).toHaveBeenCalledTimes(3);
     expect(ctx.clearRect).toHaveBeenCalledWith(0, 0, 1200, 600);
     expect(ctx.globalAlpha).toBe(1);
+  });
+
+  it("складывает свечение с точками вместо перекрытия", () => {
+    const ctx = createMockContext();
+    const composites: string[] = [];
+    // Режим пишется в свойство: снимаем его значение на каждой отрисовке точки.
+    ctx.fill.mockImplementation(() => composites.push(ctx.globalCompositeOperation));
+
+    drawGlobe(
+      ctx as unknown as CanvasRenderingContext2D,
+      fibonacciSphere(GLOBE_POINTS),
+      0,
+      globeLayout(1200, 600),
+      1200,
+      600,
+    );
+
+    expect(new Set(composites)).toEqual(new Set(["lighter"]));
+    // После кадра режим возвращается к обычному, иначе следующий clearRect неполон.
+    expect(ctx.globalCompositeOperation).toBe("source-over");
+  });
+
+  it("подкладывает под точки атмосферный диск заявленной яркости", () => {
+    const ctx = createMockContext();
+
+    drawGlobe(
+      ctx as unknown as CanvasRenderingContext2D,
+      fibonacciSphere(GLOBE_POINTS),
+      0,
+      globeLayout(1440, 800),
+      1440,
+      800,
+    );
+
+    expect(ctx.createRadialGradient).toHaveBeenCalledTimes(1);
+
+    const gradient = ctx.createRadialGradient.mock.results[0].value;
+    const stops = gradient.addColorStop.mock.calls;
+    // Ядро диска светит на заявленную непрозрачность, край сходит в прозрачный.
+    expect(stops[0][0]).toBe(0);
+    expect(stops[0][1]).toContain(String(GLOBE_GLOW_ALPHA));
+    expect(stops[stops.length - 1][0]).toBe(1);
+    expect(stops[stops.length - 1][1]).toContain("0)");
   });
 });

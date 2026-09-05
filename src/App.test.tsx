@@ -48,6 +48,17 @@ describe("App", () => {
     );
   });
 
+  it("ставит ссылку пропуска первой в обходе с клавиатуры", () => {
+    const { container } = renderApp();
+    const focusable = container.querySelectorAll<HTMLElement>(
+      'a[href], button, input, select, textarea, [tabindex]:not([tabindex="-1"])',
+    );
+
+    expect(focusable[0]).toHaveAccessibleName("Перейти к содержимому");
+    // Дальше по контракту идут вордмарк и пункты меню, то есть шапка.
+    expect(focusable[1].closest("header")).not.toBeNull();
+  });
+
   it("делает main фокусируемым, чтобы ссылка пропуска доводила фокус до контента", () => {
     renderApp();
     const main = document.querySelector("main#main");

@@ -4,7 +4,12 @@ import "./Footer.css";
 
 export function Footer() {
   return (
-    <footer className="site-footer">
+    // Волны дрейфуют фоном самого footer, поэтому носитель атрибута — он сам.
+    <footer className="site-footer" data-anim="wave">
+      {/* Гало вынесено из ::before в отдельный узел: статичное правило блока
+          reduced motion возвращает смещение по горизонтали именно ему, а на
+          footer оно сдвинуло бы всю секцию. */}
+      <div className="site-footer__halo" data-anim="halo" aria-hidden="true" />
       <div className="site-footer__inner mx-auto max-w-[72rem] px-4 md:px-8">
         <div className="site-footer__grid">
           <div className="site-footer__brand">

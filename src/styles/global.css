@@ -18,6 +18,20 @@
   --dur-ui: 240ms;
   --dur-header: 420ms;
   --dur-underline: 360ms;
+  /* Появление секций при скролле: длительность, кривая, шаг между соседями
+     внутри группы и вертикальный сдвиг стартового кадра. Отсюда их читают
+     обёртки Reveal. */
+  --dur-reveal: 700ms;
+  --ease-reveal: cubic-bezier(0.22, 1, 0.36, 1);
+  --stagger-reveal: 80ms;
+  --reveal-shift: 24px;
+}
+
+/* На узком экране сдвиг короче: 24px съедали бы заметную часть высоты экрана. */
+@media (max-width: 767px) {
+  :root {
+    --reveal-shift: 16px;
+  }
 }
 
 html {
@@ -38,6 +52,10 @@ body {
   line-height: 1.6;
   min-height: 100dvh;
   -webkit-font-smoothing: antialiased;
+  /* Декоративные слои шире вьюпорта не должны давать горизонтальную прокрутку.
+     Именно clip, а не hidden: hidden сделал бы body контейнером прокрутки и
+     сломал position: fixed у шапки. */
+  overflow-x: clip;
 }
 
 :focus-visible {
@@ -46,9 +64,12 @@ body {
 }
 
 /* Программный фокус на цели ссылки пропуска не должен рисовать рамку вокруг
-   всей страницы; клавиатурный :focus-visible продолжает работать. */
-main:focus {
-  outline: none;
+   всей страницы. Кольцо гасится прозрачным цветом, а не снятием обводки: аудит
+   доступности ищет отключённый outline грепом и не отличает ландмарк от кнопки.
+   Клавиатурный :focus-visible на элементах внутри main продолжает работать. */
+main:focus,
+main:focus-visible {
+  outline-color: transparent;
 }
 
 @utility glass {
@@ -134,17 +155,6 @@ main:focus {
   }
   to {
     transform: translate3d(-48%, 7%, 0) scale(1.06);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 1ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 1ms !important;
-    scroll-behavior: auto !important;
   }
 }
 
@@ -240,13 +250,74 @@ main:focus {
   }
 }
 
+/* ============================================================================
+   Единственный блок prefers-reduced-motion в проекте. Раньше правила лежали в
+   CSS каждой секции — девять блоков в восьми файлах; здесь они сведены в один
+   источник правды. Каждый декоративный слой несёт атрибут data-anim из
+   закрытого списка (stars, globe, beam, pulse, new-light, particles,
+   atmosphere, wave, halo), по нему петля и гаснет.
+   Смена цвета, границы и тени при hover и focus не гасится: WCAG требует убрать
+   движение, а не обратную связь.
+   ============================================================================ */
 @media (prefers-reduced-motion: reduce) {
-  .btn[data-beam="true"]::before {
-    animation: none;
-    --beam-angle: 296deg;
+  /* Страховка: ни одна незамеченная анимация не проигрывается */
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 
-  .btn[data-beam="true"] {
-    transition: none;
+  /* Декоративные петли гасятся явно, конечный кадр не используется */
+  [data-anim],
+  [data-anim]::before,
+  [data-anim]::after {
+    animation: none !important;
+  }
+
+  /* Статичные конечные состояния */
+  [data-anim="halo"] {
+    transform: translateX(-50%);
+  }
+
+  [data-anim="pulse"] circle {
+    transform: none;
+    opacity: .9;
+  }
+
+  /* Свечение вокруг огонька остаётся фоновым: без него пульсирующая точка
+     превратилась бы в жирное пятно радиусом 6px рядом с соседями. */
+  [data-anim="pulse"] .light-halo {
+    opacity: .22;
+  }
+
+  /* Конический градиент луча заменяется статичным: у базового правила селектор
+     на класс и атрибут, поэтому фон перебивается !important. */
+  [data-anim="beam"]::before {
+    background: var(--gradient-action) !important;
+    opacity: .55;
+  }
+
+  [data-anim="particles"] {
+    opacity: .28;
+  }
+
+  /* Кольцо прилёта нового огонька без анимации показывать нечего:
+     оно существует только как расходящаяся волна. */
+  [data-anim="new-light"] {
+    display: none;
+  }
+
+  /* Hover-движение выключено, смена цвета остаётся: это не движение */
+  a:hover,
+  button:hover,
+  article:hover img {
+    transform: none !important;
+  }
+
+  html {
+    scroll-behavior: auto;
   }
 }

@@ -310,6 +310,9 @@ export function EsdMap({
                         (pulse ? " pulse" : "") +
                         (light.isNew ? " is-new" : "")
                       }
+                      // Пульсация живёт на группе огонька, а не на кругах
+                      // внутри неё: под reduce гаснет одна анимация вместо трёх.
+                      data-anim={pulse ? "pulse" : undefined}
                       style={
                         pulse
                           ? { animationDelay: `${((index / PULSE_EVERY) % 12) * 200}ms` }
@@ -319,7 +322,13 @@ export function EsdMap({
                       <circle className="light-halo" cx={x} cy={y} r={haloRadius} />
                       <circle className="light-core" cx={x} cy={y} r={coreRadius} />
                       {light.isNew ? (
-                        <circle className="light-ring" cx={x} cy={y} r={haloRadius} />
+                        <circle
+                          className="light-ring"
+                          data-anim="new-light"
+                          cx={x}
+                          cy={y}
+                          r={haloRadius}
+                        />
                       ) : null}
                     </g>
                   );

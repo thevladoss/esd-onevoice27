@@ -155,17 +155,6 @@
   color: rgb(248 247 251 / .86);
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .light.pulse {
-    animation: none;
-    opacity: .9;
-  }
-
-  .light.is-new .light-ring {
-    display: none;
-  }
-}
-
 /* Счётчики: стеклянная карточка на градиентах, размытие фона тут не нужно. */
 .counter {
   width: 240px;
@@ -406,11 +395,5 @@
 
   .map-hint__touch {
     display: none;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .chip {
-    transition: none;
   }
 }

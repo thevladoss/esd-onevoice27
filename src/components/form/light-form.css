@@ -380,18 +380,3 @@ select.lf-control option {
   width: 12px;
   height: 12px;
 }
-
-/* Автозакрытие через 4 с остаётся: это таймер, а не анимация */
-@media (prefers-reduced-motion: reduce) {
-  .lf-toast-card {
-    animation: none;
-  }
-
-  .lf-type,
-  .lf-type-dot,
-  .lf-control,
-  .lf-check-box,
-  .lf-check-box svg {
-    transition: none;
-  }
-}

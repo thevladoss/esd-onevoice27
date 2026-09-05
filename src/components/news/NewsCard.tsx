@@ -35,8 +35,7 @@ export function NewsCard({ item }: { item: NewsItem }) {
     <article className="h-full">
       <a
         href={item.href}
-        target="_blank"
-        rel="noopener noreferrer"
+        target="_blank" rel="noopener noreferrer"
         className="group relative block h-full overflow-hidden rounded-card border border-[var(--glass-border)] bg-midnight-900 transition-colors duration-[420ms] ease-header hover:border-[rgb(123_194_199/.4)] focus-within:border-[rgb(123_194_199/.4)] focus-visible:outline-2 focus-visible:outline-offset-[3px] focus-visible:outline-horizon-400"
       >
         <div className="aspect-[4/5] w-full overflow-hidden">

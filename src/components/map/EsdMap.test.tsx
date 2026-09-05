@@ -81,6 +81,21 @@ describe("EsdMap", () => {
     expect(count(".light.is-new")).toBe(1);
   });
 
+  it("помечает пульсирующие огоньки и кольцо нового атрибутами реестра движения", async () => {
+    render(
+      <LightsProvider initialLights={lights}>
+        <AddLightHarness />
+      </LightsProvider>,
+    );
+
+    // Атрибут стоит на группе огонька, а не на каждом круге внутри неё.
+    expect(count('[data-anim="pulse"]')).toBe(count(".light.pulse"));
+    expect(count('circle[data-anim="pulse"]')).toBe(0);
+
+    await userEvent.click(screen.getByRole("button", { name: "зажечь" }));
+    expect(count('.light.is-new circle[data-anim="new-light"]')).toBe(1);
+  });
+
   it("обходится без filter на огоньках", () => {
     const { container } = render(<EsdMap lights={lights} size={SIZE} />);
     expect(container.querySelectorAll("[filter]")).toHaveLength(0);

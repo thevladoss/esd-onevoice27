@@ -30,9 +30,10 @@
   animation: footer-wave-drift 28s linear infinite alternate;
 }
 
-/* Гало под клином верхней грани. */
-.site-footer::before {
-  content: "";
+/* Гало под клином верхней грани. Отдельный узел, а не ::before: под reduced
+   motion статичное смещение по горизонтали возвращается ровно ему, тогда как
+   правило на псевдоэлементе било бы по всему footer. */
+.site-footer__halo {
   position: absolute;
   z-index: -1;
   top: calc(var(--footer-wedge) - 34%);
@@ -103,15 +104,4 @@
   line-height: 1.7;
   color: rgb(248 247 251 / .72);
   text-wrap: balance;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .site-footer::before,
-  .site-footer::after {
-    animation: none;
-  }
-
-  .site-footer::before {
-    transform: translateX(-50%);
-  }
 }

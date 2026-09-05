@@ -4,7 +4,9 @@
     "target": "es2023",
     "lib": ["ES2023", "DOM"],
     "module": "esnext",
-    "types": ["vite/client", "vitest/globals"],
+    /* node нужен тестам-инвариантам: они читают исходники с диска, потому что
+       vitest с css: false отдаёт содержимое CSS-модулей пустой строкой. */
+    "types": ["vite/client", "vitest/globals", "node"],
     "allowArbitraryExtensions": true,
     "skipLibCheck": true,
 
