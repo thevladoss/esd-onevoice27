@@ -283,6 +283,7 @@ export function LightForm() {
               as="button"
               type="submit"
               variant="primary"
+              size="form"
               id={submitId}
               className="lf-submit"
               disabled={submitting}

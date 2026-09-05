@@ -160,95 +160,126 @@ main:focus-visible {
   }
 }
 
-/* Луч по границе CTA: кнопка получает атрибут data-beam="true".
-   Селектор с .btn перебивает min-height и hover примитива .btn--primary. */
-@property --beam-angle {
+/* Луч по границе CTA. Кнопка несёт атрибут data-beam: поверхность лежит в
+   padding-box, а бегущий конический градиент — в border-box рамки 1.5px, поэтому
+   свет идёт ровно по краю пилюли. Угол хранит --ov-hero-beam: зарегистрированное
+   через @property свойство типа <angle>, только такое браузер анимирует.
+   Селектор с .btn перебивает border, min-height и hover примитива .btn--primary. */
+@property --ov-hero-beam {
   syntax: "<angle>";
   inherits: false;
   initial-value: 0deg;
 }
 
-.btn[data-beam="true"] {
-  position: relative;
-  isolation: isolate;
-  overflow: visible;
-  min-height: 56px;
-  transition:
-    transform 320ms cubic-bezier(0.22, 1, 0.36, 1),
-    box-shadow 320ms cubic-bezier(0.22, 1, 0.36, 1);
+@keyframes hero-beam {
+  to {
+    --ov-hero-beam: 360deg;
+  }
 }
 
-.btn[data-beam="true"]::before {
+.btn[data-beam] {
+  --ov-hero-beam: 0deg;
+
+  position: relative;
+  z-index: 0;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 52px;
+  padding: 16px 40px;
+  border: 1.5px solid transparent;
+  border-radius: 999px;
+  background:
+    linear-gradient(125deg, rgb(108 44 104) 0%, rgb(59 77 161) 50%, rgb(57 114 126) 100%) padding-box,
+    conic-gradient(from var(--ov-hero-beam), transparent 0deg 238deg, rgb(170 217 220) 270deg, rgb(248 234 244) 294deg, white 304deg, rgb(240 211 231) 316deg, transparent 348deg 360deg) border-box;
+  box-shadow:
+    inset 0 0 0 1px rgb(217 222 244 / .34),
+    0 10px 30px rgb(59 77 161 / .34),
+    0 2px 10px rgb(3 2 18 / .28);
+  color: rgb(248 247 251);
+  font-family: var(--font-body);
+  font-size: .875rem;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  overflow: hidden;
+  transform: translateY(0);
+  animation: hero-beam 3s linear infinite;
+  transition:
+    box-shadow 320ms ease,
+    transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.btn[data-beam]::before,
+.btn[data-beam]::after {
   content: "";
   position: absolute;
-  inset: -1.5px;
-  z-index: -1;
   border-radius: inherit;
-  padding: 1.5px;
-  background: conic-gradient(from var(--beam-angle),
-    transparent 0deg 238deg,
-    #aad9dc 270deg,
-    #f8eaf4 294deg,
-    #fff 304deg,
-    #f0d3e7 316deg,
-    transparent 346deg
-  );
-  -webkit-mask:
-    linear-gradient(#000 0 0) content-box,
-    linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-  mask:
-    linear-gradient(#000 0 0) content-box,
-    linear-gradient(#000 0 0);
-  mask-composite: exclude;
-  animation: beam 3s linear infinite;
   pointer-events: none;
 }
 
-/* Текстура точек поверх градиента кнопки и под её текстом */
-.btn[data-beam="true"]::after {
-  content: "";
-  position: absolute;
+/* Блик: пятно света в левом верхнем углу и косая полоса поперёк пилюли */
+.btn[data-beam]::before {
+  inset: 1px;
+  z-index: 0;
+  background:
+    radial-gradient(circle at 20% 12%, rgb(248 234 244 / .16), transparent 34%),
+    linear-gradient(110deg, transparent 30%, rgb(255 255 255 / .08) 50%, transparent 70%);
+}
+
+/* Сетка точек шагом 7px видна только в секторе за лучом: маской работает тот же
+   конический градиент на том же угле, поэтому точки проявляются вслед за светом
+   и гаснут позади него. */
+.btn[data-beam]::after {
   inset: 2px;
-  z-index: -1;
-  border-radius: inherit;
+  z-index: 1;
+  opacity: .42;
   background-image: radial-gradient(circle, rgb(248 247 251 / .72) 0.8px, transparent 1.1px);
   background-size: 7px 7px;
-  opacity: .42;
-  pointer-events: none;
+  -webkit-mask-image: conic-gradient(from var(--ov-hero-beam), transparent 0deg 242deg, rgb(0 0 0 / .18) 260deg, black 286deg 316deg, rgb(0 0 0 / .18) 338deg, transparent 356deg 360deg);
+  mask-image: conic-gradient(from var(--ov-hero-beam), transparent 0deg 242deg, rgb(0 0 0 / .18) 260deg, black 286deg 316deg, rgb(0 0 0 / .18) 338deg, transparent 356deg 360deg);
+  animation: hero-beam 3s linear infinite;
 }
 
-@keyframes beam {
-  to {
-    --beam-angle: 360deg;
-  }
+/* Точки лежат над поверхностью (z-index 1), поэтому подпись поднимается выше:
+   Button заворачивает её в span именно ради этого слоя. */
+.btn[data-beam] > * {
+  position: relative;
+  z-index: 2;
 }
 
-.btn[data-beam="true"]:hover {
+.btn[data-beam]:hover,
+.btn[data-beam]:focus-visible {
+  background:
+    linear-gradient(125deg, rgb(132 53 127) 0%, rgb(79 93 175) 50%, rgb(67 139 150) 100%) padding-box,
+    conic-gradient(from var(--ov-hero-beam), transparent 0deg 238deg, rgb(170 217 220) 270deg, rgb(248 234 244) 294deg, white 304deg, rgb(240 211 231) 316deg, transparent 348deg 360deg) border-box;
   transform: translateY(-1px);
   box-shadow:
-    0 14px 34px rgb(59 77 161 / .42),
-    0 2px 10px rgb(3 2 18 / .3);
+    inset 0 0 0 1px rgb(217 222 244 / .34),
+    0 14px 34px rgb(59 77 161 / .40),
+    0 2px 10px rgb(3 2 18 / .28);
 }
 
-.btn[data-beam="true"]:active {
-  transform: translateY(0);
+/* Submit формы: та же кнопка во всю ширину карточки и под высоту полей */
+.btn[data-beam][data-size="form"] {
+  width: 100%;
+  min-height: 54px;
+  padding: 14px 28px;
 }
 
-.btn[data-beam="true"]:focus-visible {
-  outline: 2px solid #aad9dc;
-  outline-offset: 4px;
-}
-
+/* Без конического градиента вся сокращённая запись background отбрасывается —
+   кнопка осталась бы прозрачной, поэтому запасной вариант красит её плоско. */
 @supports not (background: conic-gradient(from 1deg, #000, #000)) {
-  .btn[data-beam="true"]::before {
-    display: none;
+  .btn[data-beam] {
+    background: var(--gradient-action);
+    border-color: rgb(184 192 230 / .3);
   }
 
-  .btn[data-beam="true"] {
-    box-shadow:
-      0 0 0 1.5px rgb(184 192 230 / .3),
-      0 10px 30px rgb(59 77 161 / .34);
+  .btn[data-beam]::after {
+    display: none;
   }
 }
 
@@ -295,11 +326,12 @@ main:focus-visible {
     opacity: .22;
   }
 
-  /* Конический градиент луча заменяется статичным: у базового правила селектор
-     на класс и атрибут, поэтому фон перебивается !important. */
-  [data-anim="beam"]::before {
-    background: var(--gradient-action) !important;
-    opacity: .55;
+  /* Луч и маска точек замирают: угол --ov-hero-beam остаётся 0deg, поэтому
+     точки видны статичным сектором 286-316deg, а рамка светится в нём же.
+     Цвет, тень и подпись кнопки не трогаем — гасится только движение. */
+  .btn[data-beam],
+  .btn[data-beam]::after {
+    animation: none;
   }
 
   [data-anim="particles"] {
