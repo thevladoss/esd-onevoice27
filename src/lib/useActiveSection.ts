@@ -26,24 +26,21 @@ export function useActiveSection(ids: readonly string[], enabled: boolean): stri
       return;
     }
 
-    const priority = new Map(ids.map((id, index) => [id, index]));
+    // Наблюдатель присылает только изменившиеся записи, поэтому статус каждой
+    // секции копится здесь: иначе секция, которая давно в полосе внимания, не
+    // участвовала бы в сравнении.
+    const visible = new Map<string, boolean>();
     const observer = new IntersectionObserver(
       (entries) => {
-        const visible = entries.filter((entry) => entry.isIntersecting);
-        if (visible.length === 0) {
-          return;
+        entries.forEach((entry) => visible.set(entry.target.id, entry.isIntersecting));
+
+        // Побеждает первая по порядку в документе, а не самая крупная по площади:
+        // intersectionRatio считается от размера самой секции, поэтому короткая
+        // секция закрывала полосу целиком и всегда обходила длинную.
+        const leader = ids.find((id) => visible.get(id) === true);
+        if (leader !== undefined) {
+          setActive(leader);
         }
-
-        const leader = visible.reduce((winner, entry) => {
-          if (entry.intersectionRatio !== winner.intersectionRatio) {
-            return entry.intersectionRatio > winner.intersectionRatio ? entry : winner;
-          }
-          const entryOrder = priority.get(entry.target.id) ?? Number.MAX_SAFE_INTEGER;
-          const winnerOrder = priority.get(winner.target.id) ?? Number.MAX_SAFE_INTEGER;
-          return entryOrder < winnerOrder ? entry : winner;
-        });
-
-        setActive(leader.target.id);
       },
       { rootMargin: ROOT_MARGIN, threshold: 0 },
     );
