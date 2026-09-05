@@ -1,0 +1,308 @@
+/* Семантические алиасы цветов огоньков: живут рядом с картой, палитра проекта их не знает. */
+.map-section {
+  --light-person: #d28ebe;
+  --light-group: #7bc2c7;
+}
+
+.esd-map {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.esd-map__svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Страны */
+.country {
+  fill: rgb(33 26 62 / .55);
+  stroke: rgb(184 192 230 / .28);
+  stroke-width: 0.6px;
+}
+
+.country--esd {
+  fill: rgb(59 77 161 / .55);
+}
+
+.country--selected {
+  fill: rgb(59 77 161 / .78);
+  stroke: rgb(170 217 220 / .55);
+  stroke-width: 1px;
+}
+
+/* Огоньки: свечение рисуется вторым кругом, а не тенью, иначе сотни точек не тянет ни один браузер. */
+.light--person {
+  color: var(--light-person);
+}
+
+.light--group {
+  color: var(--light-group);
+}
+
+.light-core {
+  fill: currentColor;
+  opacity: .9;
+}
+
+.light-halo {
+  fill: currentColor;
+  opacity: .22;
+}
+
+.light-ring {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1px;
+  opacity: .5;
+}
+
+.light.pulse {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: light-pulse 2.4s ease-in-out infinite;
+}
+
+@keyframes light-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: .9;
+  }
+  50% {
+    transform: scale(1.8);
+    opacity: .45;
+  }
+}
+
+.light.is-new .light-ring {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: light-arrive 900ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes light-arrive {
+  from {
+    transform: scale(1);
+    opacity: .5;
+  }
+  to {
+    transform: scale(3.4);
+    opacity: 0;
+  }
+}
+
+/* Пустое состояние */
+.map-empty {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  text-align: center;
+  gap: 8px;
+  padding: 16px;
+  pointer-events: none;
+}
+
+.map-empty a {
+  pointer-events: auto;
+}
+
+.map-empty__title {
+  margin: 0;
+  font-family: "Onest", "Noto Sans", sans-serif;
+  font-weight: 900;
+  font-size: 20px;
+  line-height: 1.2;
+  color: #f8f7fb;
+}
+
+.map-empty__body {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.6;
+  color: rgb(248 247 251 / .82);
+}
+
+.map-empty a {
+  color: #aad9dc;
+  text-decoration: underline;
+}
+
+.map-empty a:focus-visible {
+  outline: 2px solid #aad9dc;
+  outline-offset: 2px;
+}
+
+/* Ошибка карты */
+.map-error {
+  display: grid;
+  place-items: center;
+  height: 100%;
+  padding: 16px;
+  text-align: center;
+  font-size: 16px;
+  color: rgb(248 247 251 / .86);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .light.pulse {
+    animation: none;
+    opacity: .9;
+  }
+
+  .light.is-new .light-ring {
+    display: none;
+  }
+}
+
+/* Счётчики: стеклянная карточка на градиентах, размытие фона тут не нужно. */
+.counter {
+  width: 240px;
+  min-height: 112px;
+  padding: 16px;
+  border-radius: 16px;
+  border: 1px solid rgb(184 192 230 / .22);
+  box-shadow:
+    0 30px 72px rgb(18 12 52 / .62),
+    0 10px 24px rgb(18 12 52 / .42),
+    inset 0 1px 0 rgb(248 247 251 / .08);
+  color: #f8f7fb;
+}
+
+.counter--people {
+  background:
+    radial-gradient(circle at 12% 0%, rgb(158 67 154 / .16), transparent 52%),
+    linear-gradient(145deg, rgb(48 63 131 / .86), rgb(7 2 16 / .76));
+  --counter-accent: var(--light-person);
+}
+
+.counter--groups {
+  background:
+    radial-gradient(circle at 88% 0%, rgb(84 164 172 / .15), transparent 52%),
+    linear-gradient(145deg, rgb(48 63 131 / .82), rgb(7 2 16 / .76));
+  --counter-accent: var(--light-group);
+}
+
+.counter__label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: 0;
+  font-family: "Noto Sans", sans-serif;
+  font-weight: 700;
+  font-size: 12px;
+  line-height: 1.4;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: rgb(248 247 251 / .8);
+}
+
+.counter__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--counter-accent);
+  color: var(--counter-accent);
+  box-shadow: 0 0 8px currentColor;
+}
+
+.counter__value {
+  margin: 12px 0 0;
+  font-family: "Onest", "Noto Sans", sans-serif;
+  font-weight: 900;
+  font-size: clamp(3.5rem, 9vw, 4.5rem);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  color: var(--counter-accent);
+}
+
+.counters {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.counters .counter {
+  flex: 1;
+  width: auto;
+  min-height: 96px;
+}
+
+@media (min-width: 768px) {
+  .counters {
+    position: absolute;
+    top: 88px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 3;
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    margin: 0;
+  }
+
+  .counters .counter {
+    flex: none;
+    width: 240px;
+    min-height: 112px;
+  }
+}
+
+/* Секция карты */
+.map-section {
+  position: relative;
+  background: #070210;
+  color: #f8f7fb;
+  overflow: hidden;
+  background-image:
+    radial-gradient(circle at 50% -42%, rgb(48 63 131 / .24), transparent 46%),
+    radial-gradient(circle at 88% -22%, rgb(84 164 172 / .2), transparent 40%);
+}
+
+/* Скос режет только внутренний слой: фон родителя тот же, поэтому по краям не появляются дырки. */
+.map-section__skew {
+  clip-path: polygon(0 46px, 100% 0, 100% calc(100% - 46px), 0 100%);
+  background: #070210;
+}
+
+.map-section__inner {
+  max-width: 72rem;
+  margin-inline: auto;
+  padding: 64px 16px;
+}
+
+.map-section__header {
+  text-align: center;
+  max-width: 42rem;
+  margin-inline: auto;
+  display: grid;
+  gap: 24px;
+}
+
+.map-stage {
+  position: relative;
+  margin-top: 32px;
+}
+
+.map-container {
+  position: relative;
+  height: clamp(520px, 70vh, 880px);
+  touch-action: pan-y;
+  cursor: grab;
+  overflow: hidden;
+  border-radius: 16px;
+}
+
+.map-container.is-dragging {
+  cursor: grabbing;
+}
+
+@media (min-width: 768px) {
+  .map-section__inner {
+    padding: 96px 32px;
+  }
+}
