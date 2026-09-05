@@ -13,3 +13,4 @@ To require interactive approval on these prompts, set `workflow.auto_approve_non
 | 2026-09-05 14:18:23 UTC | /bm:autonomous | Smart discuss phase 3: рекомендованные ответы приняты автоматически (пользователь недоступен, режим параллельного конвейера) | .planning/phases/03-*/03-CONTEXT.md |
 | 2026-09-05 14:18:23 UTC | /bm:autonomous | Smart discuss phase 4: рекомендованные ответы приняты автоматически (пользователь недоступен, режим параллельного конвейера) | .planning/phases/04-*/04-CONTEXT.md |
 | 2026-09-05 14:18:23 UTC | /bm:autonomous | Smart discuss phase 5: рекомендованные ответы приняты автоматически (пользователь недоступен, режим параллельного конвейера) | .planning/phases/05-*/05-CONTEXT.md |
+| 2026-09-05 14:35:29 UTC | /bm:autonomous | UI-SPEC фаз 1–3: H2 секций и счётчики Onest 900 (как в оригинале), правка контракта фазы 1 оркестратором | .planning/phases/01-scaffold-and-deploy/01-UI-SPEC.md |
