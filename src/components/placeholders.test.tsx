@@ -3,7 +3,6 @@ import type { ReactElement } from "react";
 import { copy } from "../data/copy";
 import { News } from "./news/News";
 import { Resources } from "./resources/Resources";
-import { Quote } from "./quote/Quote";
 
 type Placeholder = {
   name: string;
@@ -13,7 +12,7 @@ type Placeholder = {
   text: { eyebrow: string; title: string; body: string };
 };
 
-// Готовые секции (hero, map, light-form, about, involve) живут в собственных наборах тестов
+// Готовые секции (hero, map, light-form, about, involve, quote) живут в собственных наборах тестов
 // рядом с компонентами; здесь проверяются только оставшиеся заглушки фазы 1.
 const placeholders: Placeholder[] = [
   { name: "News", Component: News, id: "news", headingLevel: 2, text: copy.sections.news },
@@ -24,7 +23,6 @@ const placeholders: Placeholder[] = [
     headingLevel: 2,
     text: copy.sections.resources,
   },
-  { name: "Quote", Component: Quote, id: "quote", headingLevel: 2, text: copy.sections.quote },
 ];
 
 const forbiddenWords = ["скоро", "coming soon", "todo", "lorem"];

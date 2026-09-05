@@ -23,7 +23,7 @@ const expectedSectionIds = [
 ];
 
 // Секции с готовой вёрсткой: у них своя раскладка вместо стеклянной карточки-заглушки.
-const finishedSectionIds = ["hero", "map", "light-form", "about", "involve"];
+const finishedSectionIds = ["hero", "map", "light-form", "about", "involve", "quote"];
 const placeholderSectionIds = expectedSectionIds.filter((id) => !finishedSectionIds.includes(id));
 
 describe("App", () => {
