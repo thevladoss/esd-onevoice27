@@ -141,7 +141,16 @@ Plans:
   3. Component-тесты дополнительно покрывают навигацию header и чипы стран (в дополнение к форме и панелям ресурсов, проверенным в фазах 2–4)
   4. Сайт на https://thevladoss.github.io/esd-onevoice27/ совпадает с локальным vite preview, а Playwright smoke подтверждает наличие всех секций и чистую консоль на 1440 и 390px
 
-**Plans**: TBD
+**Plans**: 7 plans
+
+Plans:
+- [ ] 05-01-PLAN.md — Reveal/RevealGroup/RevealItem на motion, тесты reduce, обёртки семи секций, fade hero (MOTION-01)
+- [ ] 05-02-PLAN.md — Единый блок reduced motion и токены reveal в global.css, data-anim на слоях оболочки, skip-link, ландмарки, кольцо фокуса, overflow-x clip (MOTION-02, MOTION-03)
+- [ ] 05-03-PLAN.md — Аудит a11y и адаптива hero/map/light-form/about/involve: aria-labelledby, карта, счётчики, чипы, форма, стек 390 (MOTION-03)
+- [ ] 05-04-PLAN.md — Слияние VideoFacade в VideoEmbed, a11y и адаптив news/resources/quote, data-anim частиц (MOTION-02, MOTION-03)
+- [ ] 05-05-PLAN.md — App.test, Header.test, добор CountryChips/LightForm/Resources, ноль предупреждений act (QA-02)
+- [ ] 05-06-PLAN.md — Чанк vendor-map, зачистка console.*, scripts/check-dist.mjs, README «Проверка», docs/qa/SMOKE.md (MOTION-04, QA-04)
+- [ ] 05-07-PLAN.md — Деплой в main, gh run watch, сверка прода с dist, Playwright smoke через оркестратора, скриншоты (QA-04, MOTION-04)
 **UI hint**: yes
 
 ## Progress
@@ -155,4 +164,4 @@ Phase 3 и Phase 4 обе зависят только от Phase 2 и незав
 | 2. Hero и карта | 0/5 | Planned | - |
 | 3. Форма, О проекте, Участие | 0/4 | Not started | - |
 | 4. Новости, Ресурсы, Цитата | 0/4 | Planned | - |
-| 5. Полировка и финальный прогон | 0/TBD | Not started | - |
+| 5. Полировка и финальный прогон | 0/7 | Planned | - |
