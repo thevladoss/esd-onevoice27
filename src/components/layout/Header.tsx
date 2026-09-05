@@ -4,6 +4,7 @@ import { copy, sectionIds } from "../../data/copy";
 import { navQuery } from "../../lib/breakpoints";
 import { scrollToSection } from "../../lib/scrollToSection";
 import { useActiveSection } from "../../lib/useActiveSection";
+import { useHeaderHide } from "../../lib/useHeaderHide";
 import { BurgerButton } from "./BurgerButton";
 import { MobileMenu } from "./MobileMenu";
 import { Wordmark } from "./Wordmark";
@@ -35,6 +36,7 @@ export function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const navInline = useMediaQuery(navQuery());
   const activeSection = useActiveSection(sectionIds, navInline);
+  const hidden = useHeaderHide({ menuOpen });
 
   const closeMenu = useCallback(() => setMenuOpen(false), []);
 
@@ -65,8 +67,16 @@ export function Header() {
     navigate(href);
   };
 
+  const headerClass = [
+    "site-header",
+    hidden ? "is-header-hidden" : "",
+    menuOpen ? "is-menu-open" : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
+
   return (
-    <header className={menuOpen ? "site-header is-menu-open" : "site-header"}>
+    <header className={headerClass}>
       <div className="site-header__content">
         <a
           className="site-header__brand"

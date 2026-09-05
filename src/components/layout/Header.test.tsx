@@ -154,6 +154,34 @@ describe("Header", () => {
     expect(within(brand).getByText("Единый голос 27")).not.toHaveClass("text-gradient-brand");
   });
 
+  it("прячет шапку при прокрутке вниз и возвращает при прокрутке вверх", () => {
+    // Кадр анимации выполняется сразу: отрисовки, которая его запустила бы, в
+    // jsdom нет.
+    vi.stubGlobal("requestAnimationFrame", (callback: FrameRequestCallback) => {
+      callback(0);
+      return 1;
+    });
+    vi.stubGlobal("cancelAnimationFrame", vi.fn());
+
+    try {
+      render(<Header />);
+      const header = screen.getByRole("banner");
+
+      expect(header).not.toHaveClass("is-header-hidden");
+
+      setScrollY(400);
+      fireEvent.scroll(window);
+      expect(header).toHaveClass("is-header-hidden");
+
+      setScrollY(200);
+      fireEvent.scroll(window);
+      expect(header).not.toHaveClass("is-header-hidden");
+    } finally {
+      vi.unstubAllGlobals();
+      setScrollY(0);
+    }
+  });
+
   it("даёт бургеру подпись и связь с оверлеем", () => {
     render(<Header />);
     const burger = screen.getByRole("button", { name: "Открыть меню" });
