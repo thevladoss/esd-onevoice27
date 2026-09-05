@@ -1,0 +1,139 @@
+/* Градиентные заголовки */
+.gradient-title {
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  text-wrap: balance;
+  font-weight: 900;
+  /* Компенсация обрезки выносных элементов кириллицы при background-clip: text */
+  padding: 0.08em 0 0.12em;
+  margin: -0.08em 0 -0.12em;
+}
+
+.gradient-title--section {
+  background-image: var(--gradient-title);
+  font-size: var(--text-section);
+  letter-spacing: -0.035em;
+  line-height: 1.05;
+}
+
+.gradient-title--hero {
+  background-image: linear-gradient(
+    90deg,
+    #d28ebe 0%,
+    #bb6cae 7%,
+    #9e439a 17%,
+    #943393 22%,
+    #713d98 32%,
+    #4a489e 45%,
+    #3b4da1 52%,
+    rgb(61 84 162 / 0.99) 60%,
+    rgb(67 107 164 / 0.96) 71%,
+    rgb(78 144 169 / 0.91) 83%,
+    rgb(84 164 172 / 0.88) 89%,
+    rgb(84 164 172 / 0.88) 100%
+  );
+  font-size: clamp(2.75rem, 8vw, 4.5rem);
+  letter-spacing: -0.055em;
+  line-height: 0.94;
+}
+
+/* Пилюли-кнопки */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  text-align: center;
+  cursor: pointer;
+  transition:
+    transform var(--dur-ui) var(--ease-ui),
+    box-shadow var(--dur-ui) var(--ease-ui),
+    border-color var(--dur-ui) var(--ease-ui),
+    color var(--dur-ui) var(--ease-ui);
+}
+
+.btn--primary {
+  padding: 16px 40px;
+  min-height: 52px;
+  border: 0;
+  background: var(--gradient-action);
+  color: var(--color-paper);
+  box-shadow:
+    var(--shadow-button),
+    inset 0 0 0 1px rgb(255 255 255 / .12);
+}
+
+.btn--primary:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 16px 40px rgb(59 77 161 / .42),
+    inset 0 0 0 1px rgb(255 255 255 / .16);
+}
+
+.btn--primary:active {
+  transform: translateY(0);
+}
+
+.btn--ghost {
+  padding: 16px 32px;
+  min-height: 48px;
+  background: transparent;
+  border: 1.5px solid var(--glass-border);
+  color: rgb(248 247 251 / .9);
+}
+
+.btn--ghost:hover {
+  border-color: rgb(170 217 220 / .58);
+  color: var(--color-horizon-200);
+}
+
+.btn:disabled,
+.btn[aria-disabled="true"] {
+  opacity: .5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Стеклянные карточки: фон, рамка, радиус и тень приходят из утилиты glass */
+.glass-card {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.glass-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  box-shadow:
+    inset 1px 1px 0 rgb(255 255 255 / .06),
+    inset -1px -1px 0 rgb(7 2 16 / .35);
+  opacity: .58;
+}
+
+.glass-card--interactive {
+  transition:
+    border-color var(--dur-ui) var(--ease-ui),
+    box-shadow var(--dur-ui) var(--ease-ui);
+}
+
+.glass-card--interactive:hover {
+  border-color: rgb(184 192 230 / .34);
+  box-shadow:
+    0 36px 80px rgb(18 12 52 / .7),
+    0 12px 28px rgb(18 12 52 / .48),
+    inset 0 1px 0 rgb(248 247 251 / .1);
+}

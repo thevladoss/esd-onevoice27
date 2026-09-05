@@ -36,4 +36,12 @@ describe("App", () => {
       "#main",
     );
   });
+
+  it("показывает стеклянные карточки во всех секциях", () => {
+    render(<App />);
+    expect(document.querySelectorAll(".glass-card").length).toBeGreaterThanOrEqual(8);
+    for (const id of expectedSectionIds) {
+      expect(document.getElementById(id)?.querySelector(".glass-card")).not.toBeNull();
+    }
+  });
 });
