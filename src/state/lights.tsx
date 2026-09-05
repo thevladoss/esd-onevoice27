@@ -57,7 +57,6 @@ const GOLDEN_ANGLE = 2.39996;
 export function tryCreateLight(lights: readonly Light[], input: AddLightInput): Light | null {
   const country = countryById(input.countryId);
   if (!country) {
-    console.warn(`Страна вне дивизиона, огонёк не зажжён: ${input.countryId}`);
     return null;
   }
 
