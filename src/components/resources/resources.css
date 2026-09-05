@@ -1,11 +1,6 @@
 /* Секция ресурсов: звёздный фон, дрейфующие частицы, поверхность карточек и раскрытие панели.
    Файл живёт вне слоёв Tailwind, поэтому его правила перекрывают утилиту .glass. */
 
-.resources {
-  /* Акцент карточки «Музыка» из 04-UI-SPEC; фаза 5 поднимет токен в tokens.css @theme. */
-  --color-unity-200: #8f9dd6;
-}
-
 /* Звёздный фон: статичный слой мелких точек под содержимым секции. */
 .resources::before {
   content: "";
@@ -19,12 +14,61 @@
     radial-gradient(circle at 79px 41px, rgb(143 157 214 / .78) 0 .9px, transparent 1.55px) 17px 31px / 139px 157px repeat;
 }
 
-/* Три слоя частиц дрейфуют с разной скоростью, отсюда разброс --dur. */
+/* Атмосфера секции: три радиальных пятна под содержимым. На раскрытой панели слой
+   медленно наезжает и красится акцентом открытой карточки — тот же приём, что
+   ov-resources-zoom-* в оригинале. Наезд гасит единый блок reduce по data-anim. */
+.resources-atmosphere {
+  inset: -6%;
+  transform: scale(1);
+  transform-origin: center;
+  background:
+    radial-gradient(circle at 16% 18%, rgb(158 67 154 / .18), transparent 32%),
+    radial-gradient(circle at 82% 28%, rgb(84 164 172 / .16), transparent 38%),
+    radial-gradient(circle at 52% 84%, rgb(48 63 131 / .22), transparent 42%);
+  transition: background 620ms var(--ease-header);
+}
+
+.resources-atmosphere:not([data-kind="none"]) {
+  animation: resources-zoom 1200ms var(--ease-header) forwards;
+}
+
+.resources-atmosphere[data-kind="music"] {
+  background:
+    radial-gradient(circle at 18% 24%, rgb(59 77 161 / .42), transparent 34%),
+    radial-gradient(circle at 76% 18%, rgb(84 164 172 / .18), transparent 38%),
+    radial-gradient(circle at 68% 82%, rgb(158 67 154 / .24), transparent 42%);
+}
+
+.resources-atmosphere[data-kind="materials"] {
+  background:
+    radial-gradient(circle at 82% 24%, rgb(84 164 172 / .40), transparent 34%),
+    radial-gradient(circle at 22% 74%, rgb(48 63 131 / .32), transparent 40%),
+    radial-gradient(circle at 54% 16%, rgb(158 67 154 / .18), transparent 36%);
+}
+
+.resources-atmosphere[data-kind="video"] {
+  background:
+    radial-gradient(circle at 52% 82%, rgb(210 142 190 / .34), transparent 34%),
+    radial-gradient(circle at 14% 20%, rgb(84 164 172 / .26), transparent 40%),
+    radial-gradient(circle at 88% 26%, rgb(48 63 131 / .24), transparent 38%);
+}
+
+@keyframes resources-zoom {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.06);
+  }
+}
+
+/* Три слоя частиц дрейфуют с разной скоростью, отсюда разброс --dur.
+   will-change здесь не ставим: три слоя на всю секцию держали бы постоянный
+   композитный слой ради петли, которая гаснет при reduce (аудит MOTION-02). */
 .resources-particles {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  will-change: transform, opacity;
   animation: resources-particles var(--dur) ease-in-out infinite alternate;
 }
 

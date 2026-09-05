@@ -32,10 +32,10 @@ export function ResourceCard({
       aria-controls={isOpen ? "resources-panel" : undefined}
       onClick={onToggle}
       style={{ "--accent": card.accent } as CSSProperties}
-      className="resource-card glass flex min-h-64 w-full flex-col justify-between p-6 text-left transition-[transform,border-color] duration-[420ms] ease-header hover:border-[color:var(--accent)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[color:var(--accent)] motion-safe:hover:-translate-y-1 aria-expanded:border-[color:var(--accent)]"
+      className="resource-card glass flex min-h-64 w-full flex-col justify-between p-6 text-left transition-[transform,border-color] duration-[420ms] ease-header hover:border-[color:var(--accent)] focus-visible:outline-2 focus-visible:-outline-offset-3 focus-visible:outline-[color:var(--accent)] motion-safe:hover:-translate-y-1 aria-expanded:border-[color:var(--accent)]"
     >
       <span className="flex items-center justify-between">
-        <span className="font-body text-xs font-bold uppercase leading-[1.4] tracking-[0.08em] text-paper/60">
+        <span className="font-body text-xs font-bold uppercase leading-[1.4] tracking-[0.08em] text-paper/62">
           {card.label}
         </span>
         <span
@@ -45,10 +45,12 @@ export function ResourceCard({
       </span>
 
       <span className="block">
-        <h3 className="font-display text-[22px] font-extrabold leading-[1.15] tracking-[-0.03em] text-paper">
+        {/* Заголовок карточки идёт span-ом: внутри button поточный контент невалиден,
+            а роль заголовка внутри кнопки скринридеры всё равно не озвучивают. */}
+        <span className="block font-display text-[22px] font-extrabold leading-[1.15] tracking-[-0.03em] text-paper">
           {card.title}
-        </h3>
-        <p className="mt-2 font-body text-base leading-[1.5] text-paper/80">{card.description}</p>
+        </span>
+        <p className="mt-2 font-body text-base leading-[1.5] text-paper/78">{card.description}</p>
         <span className="resource-card__trigger mt-4 inline-block font-body text-xs font-bold uppercase tracking-[0.08em] text-paper">
           {card.cta}
         </span>

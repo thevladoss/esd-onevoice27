@@ -8,7 +8,7 @@ type ResourceCard = {
   title: string;
   description: string;
   cta: string;
-  /** Цвет точки-индикатора и рамки активной карточки. */
+  /** Цвет точки-индикатора и рамки активной карточки: ссылка на токен палитры. */
   accent: string;
 };
 
@@ -29,21 +29,21 @@ export const resourcesCopy: {
       title: "Пойте вместе",
       description: "Официальная песня и версии для общинного пения.",
       cta: "Открыть музыку",
-      accent: "#8f9dd6",
+      accent: "var(--color-unity-200)",
     },
     materials: {
       label: "МАТЕРИАЛЫ",
       title: "Будьте готовы",
       description: "Скачайте материалы для церкви, малых групп и соцсетей.",
       cta: "Открыть материалы",
-      accent: "#7bc2c7",
+      accent: "var(--color-horizon-400)",
     },
     video: {
       label: "ВИДЕО",
       title: "Смотрите и делитесь",
       description: "16 роликов дивизиона: от приветствий руководителей до свидетельств.",
       cta: "Открыть видео",
-      accent: "#d28ebe",
+      accent: "var(--color-signal-300)",
     },
   },
   panel: {

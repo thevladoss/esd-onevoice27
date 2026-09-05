@@ -11,6 +11,21 @@ function cardButtons() {
   return Array.from(document.querySelectorAll<HTMLButtonElement>("button[data-kind]"));
 }
 
+/** Именованная секция сама стала ландмарком region, поэтому панель ищем внутри неё. */
+function resourcesSection() {
+  const section = document.querySelector<HTMLElement>("section#resources");
+  expect(section).not.toBeNull();
+  return section as HTMLElement;
+}
+
+function panelRegion() {
+  return within(resourcesSection()).getByRole("region");
+}
+
+function queryPanelRegion() {
+  return within(resourcesSection()).queryByRole("region");
+}
+
 afterEach(() => {
   history.replaceState(null, "", window.location.pathname);
 });
@@ -30,7 +45,7 @@ describe("Resources: карточки и панели", () => {
     for (const card of cards) {
       expect(card.getAttribute("aria-expanded")).toBe("false");
     }
-    expect(screen.queryByRole("region")).toBeNull();
+    expect(queryPanelRegion()).toBeNull();
   });
 
   it("клик по «Материалы» раскрывает панель с пятью внешними ссылками и отдаёт ей фокус", () => {
@@ -41,7 +56,7 @@ describe("Resources: карточки и панели", () => {
 
     expect(materialsBtn.getAttribute("aria-expanded")).toBe("true");
 
-    const region = screen.getByRole("region");
+    const region = panelRegion();
     const labelId = region.getAttribute("aria-labelledby");
     expect(labelId).toBeTruthy();
     expect(document.getElementById(labelId as string)).toHaveTextContent("Будьте готовы");
@@ -64,11 +79,11 @@ describe("Resources: карточки и панели", () => {
 
     const materialsBtn = screen.getByRole("button", { name: CARD_MATERIALS });
     fireEvent.click(materialsBtn);
-    expect(screen.getByRole("region")).toBeInTheDocument();
+    expect(panelRegion()).toBeInTheDocument();
 
     fireEvent.click(materialsBtn);
     expect(materialsBtn.getAttribute("aria-expanded")).toBe("false");
-    expect(screen.queryByRole("region")).toBeNull();
+    expect(queryPanelRegion()).toBeNull();
   });
 
   it("клик по «Видео» показывает 16 фасадов и переключает aria-expanded между карточками", () => {
@@ -79,14 +94,14 @@ describe("Resources: карточки и панели", () => {
 
     fireEvent.click(videoBtn);
 
-    let region = screen.getByRole("region");
+    let region = panelRegion();
     expect(within(region).getAllByRole("button", { name: FACADE })).toHaveLength(16);
     expect(videoBtn.getAttribute("aria-expanded")).toBe("true");
     expect(materialsBtn.getAttribute("aria-expanded")).toBe("false");
 
     fireEvent.click(materialsBtn);
 
-    region = screen.getByRole("region");
+    region = panelRegion();
     expect(within(region).getAllByRole("link")).toHaveLength(5);
     expect(within(region).queryAllByRole("button", { name: FACADE })).toHaveLength(0);
     expect(materialsBtn.getAttribute("aria-expanded")).toBe("true");
@@ -98,7 +113,7 @@ describe("Resources: карточки и панели", () => {
 
     fireEvent.click(screen.getByRole("button", { name: CARD_MUSIC }));
 
-    const region = screen.getByRole("region");
+    const region = panelRegion();
     expect(within(region).getByText("Песня ещё в работе")).toBeInTheDocument();
     expect(
       within(region).getByText(
@@ -126,7 +141,7 @@ describe("Resources: карточки и панели", () => {
 
     fireEvent.click(materialsBtn);
 
-    const region = screen.getByRole("region");
+    const region = panelRegion();
     expect(region.getAttribute("id")).toBe("resources-panel");
     expect(document.getElementById("resources-panel")).toBe(region);
     expect(materialsBtn.getAttribute("aria-controls")).toBe("resources-panel");
@@ -153,10 +168,10 @@ describe("панель: клавиатура и deep link", () => {
     const materialsBtn = screen.getByRole("button", { name: CARD_MATERIALS });
     fireEvent.click(materialsBtn);
 
-    const region = screen.getByRole("region");
+    const region = panelRegion();
     fireEvent.keyDown(region, { key: "Escape" });
 
-    expect(screen.queryByRole("region")).toBeNull();
+    expect(queryPanelRegion()).toBeNull();
     expect(materialsBtn.getAttribute("aria-expanded")).toBe("false");
     expect(document.activeElement).toBe(materialsBtn);
   });
@@ -169,7 +184,7 @@ describe("панель: клавиатура и deep link", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "Свернуть панель" }));
 
-    expect(screen.queryByRole("region")).toBeNull();
+    expect(queryPanelRegion()).toBeNull();
     expect(videoBtn.getAttribute("aria-expanded")).toBe("false");
     expect(document.activeElement).toBe(videoBtn);
   });
@@ -179,7 +194,7 @@ describe("панель: клавиатура и deep link", () => {
 
     render(<Resources />);
 
-    const region = screen.getByRole("region");
+    const region = panelRegion();
     expect(within(region).getAllByRole("link")).toHaveLength(5);
     expect(
       screen.getByRole("button", { name: CARD_MATERIALS }).getAttribute("aria-expanded"),
@@ -188,12 +203,12 @@ describe("панель: клавиатура и deep link", () => {
 
   it("открывает панель материалов по смене хэша внутри уже открытой страницы", () => {
     render(<Resources />);
-    expect(screen.queryByRole("region")).toBeNull();
+    expect(queryPanelRegion()).toBeNull();
 
     window.location.hash = "#resources-materials";
     fireEvent(window, new Event("hashchange"));
 
-    const region = screen.getByRole("region");
+    const region = panelRegion();
     expect(within(region).getAllByRole("link")).toHaveLength(5);
     expect(
       screen.getByRole("button", { name: CARD_MATERIALS }).getAttribute("aria-expanded"),
@@ -207,7 +222,8 @@ describe("панель: клавиатура и deep link", () => {
     window.location.hash = "#resources-materials";
     fireEvent(window, new Event("hashchange"));
 
-    expect(screen.queryByRole("region")).toBeNull();
+    expect(document.querySelector("section#resources")).toBeNull();
+    expect(document.getElementById("resources-panel")).toBeNull();
   });
 
   it("держит три слоя частиц в декоративном фоне секции", () => {
@@ -218,5 +234,51 @@ describe("панель: клавиатура и deep link", () => {
     expect(
       section.querySelectorAll("[data-particles] > span[aria-hidden='true']"),
     ).toHaveLength(3);
+  });
+
+  it("помечает частицы и атмосферу атрибутами политики движения", () => {
+    render(<Resources />);
+
+    const section = document.querySelector("section#resources") as HTMLElement;
+
+    const particles = Array.from(section.querySelectorAll('[data-anim="particles"]'));
+    expect(particles).toHaveLength(3);
+    for (const layer of particles) {
+      expect(layer).toHaveAttribute("aria-hidden", "true");
+    }
+
+    const atmosphere = section.querySelector('[data-anim="atmosphere"]');
+    expect(atmosphere).not.toBeNull();
+    expect(atmosphere).toHaveAttribute("aria-hidden", "true");
+    expect(atmosphere).toHaveAttribute("data-kind", "none");
+    expect(atmosphere?.className).toContain("pointer-events-none");
+  });
+
+  it("переводит атмосферу на акцент открытой карточки и возвращает обратно", () => {
+    render(<Resources />);
+
+    const atmosphere = document.querySelector('[data-anim="atmosphere"]') as HTMLElement;
+    const videoBtn = screen.getByRole("button", { name: CARD_VIDEO });
+
+    fireEvent.click(videoBtn);
+    expect(atmosphere).toHaveAttribute("data-kind", "video");
+
+    fireEvent.click(videoBtn);
+    expect(atmosphere).toHaveAttribute("data-kind", "none");
+  });
+
+  it("именует секцию заголовком и не прячет заголовки внутрь кнопок", () => {
+    render(<Resources />);
+
+    const section = document.querySelector("section#resources") as HTMLElement;
+    expect(section).toHaveAttribute("aria-labelledby", "resources-title");
+
+    const label = document.getElementById("resources-title");
+    expect(label).toHaveTextContent("Всё, что нужно для старта");
+    expect(label?.closest("h2")).not.toBeNull();
+
+    for (const card of cardButtons()) {
+      expect(card.querySelector("h1, h2, h3, h4, h5, h6")).toBeNull();
+    }
   });
 });

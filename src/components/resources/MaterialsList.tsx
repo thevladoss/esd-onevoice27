@@ -89,11 +89,11 @@ export function MaterialsList({ items = materials }: { items?: readonly Material
                 <span className="font-body text-base font-bold leading-[1.5] text-paper">
                   {item.title}
                 </span>
-                <span className="font-body text-xs font-bold uppercase leading-[1.4] tracking-[0.08em] text-paper/80">
+                <span className="font-body text-xs font-bold uppercase leading-[1.4] tracking-[0.08em] text-paper/78">
                   {item.caption}
                 </span>
               </span>
-              <span aria-hidden="true" className="ml-auto text-base text-paper/80">
+              <span aria-hidden="true" className="ml-auto text-base text-paper/78">
                 →
               </span>
             </a>
