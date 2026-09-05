@@ -60,14 +60,18 @@ describe("useHeaderHide", () => {
     expect(result.current).toBe(false);
   });
 
-  it("не реагирует на дрожание в пару пикселей", () => {
+  it("не возвращает спрятанную шапку на дрожание в пару пикселей", () => {
     const { result } = renderHook(() => useHeaderHide({ menuOpen: false }));
 
     scrollTo(300);
-    scrollTo(150);
-    expect(result.current).toBe(false);
+    expect(result.current).toBe(true);
 
-    scrollTo(152);
+    // Меньше STEP: инерция тачпада и resize адресной строки шапку не возвращают.
+    scrollTo(298);
+    expect(result.current).toBe(true);
+
+    // Больше STEP: жест вверх засчитан.
+    scrollTo(280);
     expect(result.current).toBe(false);
   });
 
