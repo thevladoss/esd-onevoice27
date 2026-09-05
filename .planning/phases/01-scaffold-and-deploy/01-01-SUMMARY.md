@@ -217,3 +217,7 @@ completed: 2026-09-05
 ---
 *Phase: 01-scaffold-and-deploy*
 *Completed: 2026-09-05*
+
+## Self-Check: PASSED
+
+Все заявленные файлы существуют, все коммиты (`ab1c59d`, `bc91155`, `fbe76d8`, `730208a`, `652d8ad`) на месте.

@@ -39,10 +39,18 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 Plans:
 
-- [ ] 01-01-PLAN.md — Скаффолд Vite 8 + React 19 + Tailwind v4 + Vitest, контракты (tokens, global.css, copy.ts, Wordmark, SkipLink, App.tsx, setup.ts), workflow и первый живой деплой (wave 1)
+**Wave 1**
+
+- [x] 01-01-PLAN.md — Скаффолд Vite 8 + React 19 + Tailwind v4 + Vitest, контракты (tokens, global.css, copy.ts, Wordmark, SkipLink, App.tsx, setup.ts), workflow и первый живой деплой (wave 1)
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
 - [ ] 01-02-PLAN.md — Примитивы Section/Eyebrow/GradientTitle/Button/GlassCard и восемь секций-заглушек с телом в GlassCard, h1 и CTA в hero (wave 2)
 - [ ] 01-03-PLAN.md — Header-пилюля: стекло, скос, четыре якоря, уплотнение, aria-current, бургер и оверлей с фокус-трапом, scrollToSection (wave 2)
 - [ ] 01-04-PLAN.md — Footer: клин, градиент, дрейф волн и гало, подпись, © строка, внешние ссылки с noopener noreferrer (wave 2)
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
 - [ ] 01-05-PLAN.md — Финальный пуш, прогон workflow, проверка живого URL и ассетов, браузерный smoke на 1440/390px (wave 3)
 
 **UI hint**: yes
@@ -182,7 +190,7 @@ Phase 3 и Phase 4 обе зависят только от Phase 2 и незав
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Каркас и деплой | 0/5 | Not started | - |
+| 1. Каркас и деплой | 1/5 | In Progress|  |
 | 2. Hero и карта | 0/5 | Planned | - |
 | 3. Форма, О проекте, Участие | 0/4 | Not started | - |
 | 4. Новости, Ресурсы, Цитата | 0/4 | Planned | - |

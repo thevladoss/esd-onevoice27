@@ -13,8 +13,8 @@
 - [ ] **SHELL-02**: На экране до 768px меню сворачивается в бургер; оверлей открывается и закрывается кнопкой и клавишей Esc, блокирует скролл и возвращает фокус
 - [ ] **SHELL-03**: Клик по пункту меню плавно прокручивает к секции с учётом высоты header
 - [ ] **SHELL-04**: Посетитель видит footer с дрейфующими волнами, логотипом, подписью «Официальный сайт Церкви христиан адвентистов седьмого дня», строкой «© 2026 Евро-Азиатский дивизион» и ссылками на esd.adventist.org и onevoice27.org
-- [ ] **SHELL-05**: Страница использует токены палитры оригинала (midnight, unity, signal, horizon, paper), шрифты Onest для заголовков и Noto Sans для текста, стеклянные карточки с border `rgba(184,192,230,.22)`, radius 16px и тенью оригинала
-- [ ] **SHELL-06**: `index.html` содержит `lang="ru"`, title «Единый голос 27 — Евро-Азиатский дивизион», описание и базовые Open Graph теги
+- [x] **SHELL-05**: Страница использует токены палитры оригинала (midnight, unity, signal, horizon, paper), шрифты Onest для заголовков и Noto Sans для текста, стеклянные карточки с border `rgba(184,192,230,.22)`, radius 16px и тенью оригинала
+- [x] **SHELL-06**: `index.html` содержит `lang="ru"`, title «Единый голос 27 — Евро-Азиатский дивизион», описание и базовые Open Graph теги
 
 ### Hero (HERO)
 
@@ -74,7 +74,7 @@
 
 - [ ] **QA-01**: Vitest-тесты покрывают генератор огоньков (точки внутри bbox стран, детерминизм), форматирование чисел, валидацию формы, редьюсер огоньков и пагинацию новостей
 - [ ] **QA-02**: Component-тесты покрывают форму (добавление огонька и счётчик), чипы стран, панели ресурсов и навигацию header
-- [ ] **QA-03**: GitHub Actions workflow запускает `npm ci`, `npm test`, `npm run build` и деплоит `dist` на GitHub Pages при пуше в `main`
+- [x] **QA-03**: GitHub Actions workflow запускает `npm ci`, `npm test`, `npm run build` и деплоит `dist` на GitHub Pages при пуше в `main`
 - [ ] **QA-04**: Сайт доступен по адресу `https://thevladoss.github.io/esd-onevoice27/` и совпадает с локальным `vite preview`; Playwright smoke подтверждает наличие всех секций и чистую консоль на 1440 и 390px
 
 ## v2 Requirements
@@ -115,9 +115,9 @@
 | SHELL-02 | Phase 1 | Pending |
 | SHELL-03 | Phase 1 | Pending |
 | SHELL-04 | Phase 1 | Pending |
-| SHELL-05 | Phase 1 | Pending |
-| SHELL-06 | Phase 1 | Pending |
-| QA-03 | Phase 1 | Pending |
+| SHELL-05 | Phase 1 | Complete |
+| SHELL-06 | Phase 1 | Complete |
+| QA-03 | Phase 1 | Complete |
 | HERO-01 | Phase 2 | Pending |
 | HERO-02 | Phase 2 | Pending |
 | HERO-03 | Phase 2 | Pending |
