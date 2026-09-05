@@ -79,7 +79,9 @@ export function Resources() {
       id="resources"
       ref={sectionRef}
       aria-labelledby="resources-title"
-      className="resources relative isolate overflow-hidden bg-midnight-950"
+      className={
+        "resources relative isolate overflow-hidden" + (active ? ` is-${active}-active` : "")
+      }
     >
       {/* Атмосфера наезжает на раскрытой панели и красится акцентом её карточки. */}
       <div
@@ -89,10 +91,9 @@ export function Resources() {
         className="resources-atmosphere pointer-events-none absolute -z-10"
       />
 
+      {/* Звёздное поле одним слоем: пять градиентов точек с разными шагами повтора. */}
       <div aria-hidden="true" data-particles className="pointer-events-none absolute -inset-6 -z-10">
-        <span aria-hidden="true" data-anim="particles" className="resources-particles resources-particles--1" />
-        <span aria-hidden="true" data-anim="particles" className="resources-particles resources-particles--2" />
-        <span aria-hidden="true" data-anim="particles" className="resources-particles resources-particles--3" />
+        <span aria-hidden="true" data-anim="particles" className="resources-particles" />
       </div>
 
       <div className="mx-auto max-w-[72rem] px-4 py-16 md:px-8 md:py-24">

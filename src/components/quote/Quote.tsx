@@ -8,7 +8,8 @@ export function Quote() {
     <section
       id="quote"
       aria-labelledby="quote-title"
-      className="relative isolate overflow-hidden bg-[linear-gradient(180deg,#120c34,#211a3e)]"
+      // Градиент лежит на самой секции, поэтому идёт во всю ширину окна.
+      className="relative isolate overflow-hidden bg-[linear-gradient(rgb(18_12_52),rgb(33_26_62))]"
     >
       <WorldSilhouette className="absolute inset-0 -z-10 h-full w-full [mask-image:radial-gradient(ellipse_at_center,black_55%,transparent_100%)]" />
       <div
