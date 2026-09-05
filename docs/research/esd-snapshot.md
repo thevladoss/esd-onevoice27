@@ -1,0 +1,95 @@
+- generic [ref=f1e1]:
+  - document [ref=f1e4]:
+    - banner [ref=f1e6]
+    - main [ref=f1e16]:
+      - generic [ref=f1e19]:
+        - heading [level=2] [ref=f1e20]: Единое глобальное движение. Единая весть. Евро-Азиатский дивизион присоединяется к этому движению
+        - generic [ref=f1e21]:
+          - link [ref=f1e23] [cursor=pointer]:
+            - /url: https://esd-map.vercel.app/#register
+            - generic [ref=f1e27]: Я участвую
+          - link [ref=f1e29] [cursor=pointer]:
+            - /url: https://esd-map.vercel.app
+            - generic [ref=f1e33]: Посмотреть карту
+      - generic [ref=f1e34]:
+        - generic [ref=f1e35]:
+          - generic [ref=f1e41]:
+            - heading [level=4] [ref=f1e42]: Content blocked following your privacy preferences
+            - generic [ref=f1e43]:
+              - generic [ref=f1e44]:
+                - paragraph [ref=f1e45]: This content is not being displayed in order to fullfil your privacy preferences (you didn't accept 'Tracking and performance cookies').
+                - paragraph [ref=f1e46]: "Do you want to see this anyway? You can change your preferences here:"
+              - button [ref=f1e48] [cursor=pointer]:
+                - generic [ref=f1e49]: Accept YouTube
+          - button [ref=f1e50] [cursor=pointer]
+        - generic [ref=f1e57]:
+          - generic [ref=f1e58]:
+            - generic [ref=f1e65]:
+              - heading [level=4] [ref=f1e66]: Content blocked following your privacy preferences
+              - generic [ref=f1e67]:
+                - generic [ref=f1e68]:
+                  - paragraph [ref=f1e69]: This content is not being displayed in order to fullfil your privacy preferences (you didn't accept 'Tracking and performance cookies').
+                  - paragraph [ref=f1e70]: "Do you want to see this anyway? You can change your preferences here:"
+                - button [ref=f1e72] [cursor=pointer]:
+                  - generic [ref=f1e73]: Accept YouTube
+            - paragraph [ref=f1e74]: Международный день молитвы – Единый голос27
+          - generic [ref=f1e75]:
+            - generic [ref=f1e82]:
+              - heading [level=4] [ref=f1e83]: Content blocked following your privacy preferences
+              - generic [ref=f1e84]:
+                - generic [ref=f1e85]:
+                  - paragraph [ref=f1e86]: This content is not being displayed in order to fullfil your privacy preferences (you didn't accept 'Tracking and performance cookies').
+                  - paragraph [ref=f1e87]: "Do you want to see this anyway? You can change your preferences here:"
+                - button [ref=f1e89] [cursor=pointer]:
+                  - generic [ref=f1e90]: Accept YouTube
+            - paragraph [ref=f1e91]: "Единый голос-27: Михаил Каминский"
+          - generic [ref=f1e92]:
+            - generic [ref=f1e99]:
+              - heading [level=4] [ref=f1e100]: Content blocked following your privacy preferences
+              - generic [ref=f1e101]:
+                - generic [ref=f1e102]:
+                  - paragraph [ref=f1e103]: This content is not being displayed in order to fullfil your privacy preferences (you didn't accept 'Tracking and performance cookies').
+                  - paragraph [ref=f1e104]: "Do you want to see this anyway? You can change your preferences here:"
+                - button [ref=f1e106] [cursor=pointer]:
+                  - generic [ref=f1e107]: Accept YouTube
+            - paragraph [ref=f1e108]: "Единый голос-27: Эртон Келер"
+        - link [ref=f1e112] [cursor=pointer]:
+          - /url: /materials/video
+          - generic [ref=f1e116]: Посмотреть все видео
+        - generic [ref=f1e117]:
+          - heading [level=2] [ref=f1e118]: Скачайте все материалы прямо сейчас и запустите проект в своей церкви.
+          - generic [ref=f1e119]:
+            - link [ref=f1e121] [cursor=pointer]:
+              - /url: /materials
+              - generic [ref=f1e125]: Скачать материалы (на русском)
+            - link [ref=f1e127] [cursor=pointer]:
+              - /url: https://gcsda.sharepoint.com/:f:/s/digitalmediateam/EtNk5tgXbZRMiJ7Nk1nOlRsBhAq-Xx8Oc7vfWiJzI86OJA?e=sSsYtg
+              - generic [ref=f1e131]: Материалы (на английском)
+      - figure [ref=f1e133]
+      - figure [ref=f1e135]
+      - figure [ref=f1e137]
+      - generic [ref=f1e139]:
+        - paragraph [ref=f1e140]: Пусть каждый работник в винограднике Господа исследует, планирует, разрабатывает методы работы с людьми. Нам необходимо предпринимать нечто выходящее за рамки обычного порядка вещей.
+        - paragraph [ref=f1e141]: Мы обязаны приковывать внимание людей. Нам следует быть чрезвычайно серьезными. Мы стоим на самом пороге времени бедствий и смут, которые трудно вообразить
+        - paragraph [ref=f1e142]: Евангелизм, стр. 122
+    - contentinfo [ref=f1e143]:
+      - generic [ref=f1e144]:
+        - paragraph [ref=f1e150]: Официальный сайт Церкви христиан адвентистов седьмого дня.
+        - navigation [ref=f1e151]
+        - navigation [ref=f1e152]
+        - generic [ref=f1e153]: © 2026 General Conference Corporation of Seventh-day Adventists 12501 Old Columbia Pike Silver Spring, MD 20904 USA 301-680-6000
+  - alert [ref=f1e154]
+  - dialog [ref=f1e158]:
+    - generic [ref=f1e159]:
+      - heading "We use cookies" [level=2] [ref=f1e160]
+      - paragraph [ref=f1e161]: We use cookies and other technologies to improve your browsing experience on our website, to show you personalized content and to analyze our website traffic to understand where our visitors are coming from.
+      - generic [ref=f1e162]:
+        - group [ref=f1e163]:
+          - button "Strictly necessary cookies" [ref=f1e164] [cursor=pointer]:
+            - checkbox [checked] [disabled] [ref=f1e172]
+        - group [ref=f1e173]:
+          - button "Tracking and performance cookies" [ref=f1e174] [cursor=pointer]:
+            - checkbox [ref=f1e182]
+      - generic [ref=f1e183]:
+        - button "Allow everything" [active] [ref=f1e184] [cursor=pointer]
+        - button "Allow selected" [ref=f1e186] [cursor=pointer]

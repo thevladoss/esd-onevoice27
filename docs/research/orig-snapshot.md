@@ -1,0 +1,255 @@
+- generic [ref=f1e1]:
+  - document [ref=f1e4]:
+    - generic [ref=f1e6]:
+      - link [ref=f1e33] [cursor=pointer]:
+        - /url: /
+      - list [ref=f1e36]:
+        - listitem [ref=f1e37]:
+          - link [ref=f1e38] [cursor=pointer]:
+            - /url: "#ov-about"
+            - generic [ref=f1e39]: What is it?
+        - listitem [ref=f1e42]:
+          - link [ref=f1e43] [cursor=pointer]:
+            - /url: "#ov-involve"
+            - generic [ref=f1e44]: Participate
+        - listitem [ref=f1e47]:
+          - link [ref=f1e48] [cursor=pointer]:
+            - /url: "#ov-news"
+            - generic [ref=f1e49]: News
+        - listitem [ref=f1e52]:
+          - link [ref=f1e53] [cursor=pointer]:
+            - /url: "#ov-resources-copy"
+            - generic [ref=f1e54]: Resources
+    - main [ref=f1e57]:
+      - generic [ref=f1e60]:
+        - paragraph [ref=f1e61]: One global movement
+        - heading [level=1] [ref=f1e62]: Together, one voice
+        - paragraph [ref=f1e63]: Across nations, cultures, and communities, people are uniting around one message—one person and one group at a time.
+        - link [ref=f1e65] [cursor=pointer]:
+          - /url: "#ov-map-form"
+          - generic [ref=f1e66]: Add your light
+      - generic [ref=f1e67]:
+        - generic:
+          - generic:
+            - paragraph: All together
+            - heading [level=2]: Lighting the world together
+        - generic [ref=f1e69]:
+          - generic [ref=f1e70]:
+            - region [ref=f1e71]
+            - link [ref=f1e73] [cursor=pointer]:
+              - /url: https://www.mapbox.com/
+            - generic: Use two fingers to move the map
+            - generic: Use ⌘ + scroll to zoom the map
+          - generic:
+            - generic:
+              - generic: People
+              - generic: 4,268
+            - generic:
+              - generic: Groups
+              - generic: 1,150
+        - generic [ref=f1e76]:
+          - generic [ref=f1e77]:
+            - paragraph [ref=f1e78]: Participate with us
+            - heading [level=2] [ref=f1e79]: Add your light
+            - paragraph [ref=f1e80]: Add your light as an individual or group and join the movement in your community. Your details stay private—only your light appears on the map.
+          - generic [ref=f1e82]:
+            - generic [ref=f1e83]:
+              - generic [ref=f1e84]:
+                - generic [ref=f1e85]:
+                  - generic [ref=f1e86] [cursor=pointer]: Light type
+                  - generic [ref=f1e94]:
+                    - generic [ref=f1e95] [cursor=pointer]:
+                      - radio [ref=f1e96]
+                      - generic [ref=f1e97]: Individual light
+                      - generic [ref=f1e100]: I'm committing personally — to prayer, study, and mission where I live.
+                    - generic [ref=f1e101] [cursor=pointer]:
+                      - radio [ref=f1e102]
+                      - generic [ref=f1e103]: Group beacon
+                      - generic [ref=f1e106]: A church, school, small group, family, or workplace committing together.
+                - generic [ref=f1e107]:
+                  - generic [ref=f1e108] [cursor=pointer]: First name
+                  - textbox [ref=f1e116]
+                - generic [ref=f1e117]:
+                  - generic [ref=f1e118] [cursor=pointer]: Last name
+                  - textbox [ref=f1e126]
+                - generic [ref=f1e128]:
+                  - generic [ref=f1e129] [cursor=pointer]: Address
+                  - generic [ref=f1e132]:
+                    - combobox [ref=f1e133]
+                    - textbox [aria-hidden] [ref=f1e134]
+                - generic [ref=f1e135]:
+                  - generic [ref=f1e136] [cursor=pointer]: Email address
+                  - textbox [ref=f1e144]
+              - generic [ref=f1e148] [cursor=pointer]:
+                - checkbox [ref=f1e149]
+                - generic [ref=f1e150]: I give consent for my personal details to be used solely for receiving the newsletter.
+            - button [ref=f1e158] [cursor=pointer]:
+              - generic [ref=f1e159]: Add your light
+      - generic [ref=f1e164]:
+        - generic [ref=f1e165]:
+          - paragraph [ref=f1e166]: A global impact
+          - heading [level=2] [ref=f1e167]: What is OneVoice 27?
+          - paragraph [ref=f1e168]: In September 2027, on the 2,000-year anniversary of Jesus' baptism, the Seventh-day Adventist Church around the world will proclaim the Messiah together, in every nation, through every medium.
+        - generic [ref=f1e170]:
+          - generic [ref=f1e176]:
+            - heading [level=4] [ref=f1e177]: Content blocked following your privacy preferences
+            - generic [ref=f1e178]:
+              - generic [ref=f1e179]:
+                - paragraph [ref=f1e180]: This content is not being displayed in order to fullfil your privacy preferences (you didn't accept 'Tracking and performance cookies').
+                - paragraph [ref=f1e181]: "Do you want to see this anyway? You can change your preferences here:"
+              - button [ref=f1e183] [cursor=pointer]:
+                - generic [ref=f1e184]: Accept Jetstream
+          - button
+        - generic [ref=f1e185]:
+          - generic [ref=f1e186]:
+            - generic [ref=f1e187]:
+              - paragraph [ref=f1e188]: "1"
+              - heading [level=3] [ref=f1e189]: Project
+            - generic [ref=f1e190]:
+              - list [ref=f1e192]:
+                - listitem [ref=f1e193]:
+                  - paragraph [ref=f1e194]: Worldwide in September 2027
+                - listitem [ref=f1e195]:
+                  - paragraph [ref=f1e196]: "All media: Church-operated to member-driven"
+                - listitem [ref=f1e197]:
+                  - paragraph [ref=f1e198]: "Christ-focused: celebrating 2,000 years from His baptism and entering ministry."
+              - separator [ref=f1e200]
+              - paragraph [ref=f1e201]: The largest evangelistic initiative of the Seventh-day Adventist Church in our generation.
+          - generic [ref=f1e202]:
+            - generic [ref=f1e203]:
+              - paragraph [ref=f1e204]: "2"
+              - heading [level=3] [ref=f1e205]: Preparation
+            - generic [ref=f1e206]:
+              - generic [ref=f1e207]:
+                - list [ref=f1e208]:
+                  - listitem [ref=f1e209]:
+                    - paragraph [ref=f1e210]: Global prayer initiative
+                  - listitem [ref=f1e211]:
+                    - paragraph [ref=f1e212]: Reading and reflecting on Christ's life in The Desire of Ages
+                - list [ref=f1e213]:
+                  - listitem [ref=f1e214]:
+                    - paragraph [ref=f1e215]: Study of the prophetic books of Daniel and Revelation
+              - separator [ref=f1e217]
+              - paragraph [ref=f1e218]: Prepare spiritually through prayer, reflection on Christ’s life, and the study of Daniel and Revelation.
+          - generic [ref=f1e219]:
+            - generic [ref=f1e220]:
+              - paragraph [ref=f1e221]: "3"
+              - heading [level=3] [ref=f1e222]: Purpose
+            - generic [ref=f1e223]:
+              - list [ref=f1e225]:
+                - listitem [ref=f1e226]:
+                  - paragraph [ref=f1e227]: Mobilize worldwide Church family
+                - listitem [ref=f1e228]:
+                  - paragraph [ref=f1e229]: "All media: Church-operated to member-driven"
+                - listitem [ref=f1e230]:
+                  - paragraph [ref=f1e231]: Global harvest events, contexualized to each region in September 2027
+              - separator [ref=f1e233]
+              - paragraph [ref=f1e234]: Unite and equip the worldwide Church family to share Christ through every form of media and locally relevant outreach.
+      - generic [ref=f1e236]:
+        - generic [ref=f1e237]:
+          - paragraph [ref=f1e238]: Getting involved
+          - heading [level=2] [ref=f1e239]: Turn conviction into action
+          - paragraph [ref=f1e240]: Prepare personally, equip your community, and share OneVoice27 with a united voice.
+        - generic [ref=f1e241]:
+          - generic [ref=f1e242]:
+            - figure [ref=f1e243]
+            - generic [ref=f1e245]:
+              - heading [level=3] [ref=f1e246]: Personal Transformation
+              - link [ref=f1e247] [cursor=pointer]:
+                - /url: "#ov-news"
+                - generic [ref=f1e248]: Begin the journey
+          - generic [ref=f1e252]:
+            - figure [ref=f1e253]
+            - generic [ref=f1e255]:
+              - heading [level=3] [ref=f1e256]: Branding Kit
+              - link [ref=f1e257] [cursor=pointer]:
+                - /url: "#ov-resources"
+                - generic [ref=f1e258]: Get the toolkit
+          - generic [ref=f1e262]:
+            - figure [ref=f1e263]
+            - generic [ref=f1e265]:
+              - heading [level=3] [ref=f1e266]: Sharing
+              - link [ref=f1e267] [cursor=pointer]:
+                - /url: "#ov-sheet"
+                - generic [ref=f1e268]: Explore ways to share
+      - generic [ref=f1e273]:
+        - generic [ref=f1e274]:
+          - paragraph [ref=f1e275]: Across every channel
+          - heading [level=2] [ref=f1e276]: Every platform becomes a voice
+          - paragraph [ref=f1e277]: OneVoice27 meets people exactly where they already are, on every screen and every frequency.
+        - generic [ref=f1e279]:
+          - generic [ref=f1e280]:
+            - article [ref=f1e281]:
+              - link [ref=f1e283] [cursor=pointer]:
+                - /url: https://adventist.news/news/inter-american-division-prepares-for-worldwide-launch-of-onevoice27
+            - article [ref=f1e286]:
+              - link [ref=f1e288] [cursor=pointer]:
+                - /url: https://adventist.news/news/east-central-africa-division-content-creators-challenged-to-turn-influence-into-mission
+            - article [ref=f1e291]:
+              - link [ref=f1e293] [cursor=pointer]:
+                - /url: https://adventist.news/news/inter-americas-digital-creators-mobilize-for-onevoice27
+            - article [ref=f1e296]:
+              - link [ref=f1e298] [cursor=pointer]:
+                - /url: https://adventist.news/news/general-conference-president-encourages-babcock-university-to-advance-global-mission
+            - article [ref=f1e301]:
+              - link [ref=f1e303] [cursor=pointer]:
+                - /url: https://adventist.news/news/content-creators-challenged-to-see-themselves-as-ministers-on-a-mission
+            - article [ref=f1e306]:
+              - link [ref=f1e308] [cursor=pointer]:
+                - /url: https://adventist.news/news/french-polynesia-invests-in-young-digital-disciples
+          - generic [ref=f1e312]:
+            - generic [ref=f1e313]: "1"
+            - link [ref=f1e314] [cursor=pointer]:
+              - /url: /?page=2
+              - text: "2"
+            - link [ref=f1e315] [cursor=pointer]:
+              - /url: /?page=3
+              - text: "3"
+            - link [ref=f1e316] [cursor=pointer]:
+              - /url: /?page=2
+      - generic [ref=f1e321]:
+        - generic [ref=f1e322]:
+          - paragraph [ref=f1e323]: Resources
+          - heading [level=2] [ref=f1e324]: Everything you need to get started
+          - paragraph [ref=f1e325]: Explore music, videos, and materials created to help you share the initiative with your church and community.
+        - generic [ref=f1e326]:
+          - paragraph [ref=f1e328]: Music
+          - generic [ref=f1e329]:
+            - paragraph [ref=f1e330]: Sing along
+            - paragraph [ref=f1e331]: Discover the official song and share it with others.
+            - link [ref=f1e333] [cursor=pointer]:
+              - /url: "#ov-resources-panel-music"
+              - generic [ref=f1e334]: Explore music
+        - generic [ref=f1e335]:
+          - paragraph [ref=f1e337]: Materials
+          - generic [ref=f1e338]:
+            - paragraph [ref=f1e339]: Get equipped
+            - paragraph [ref=f1e340]: Download helpful resources available in multiple languages.
+            - link [ref=f1e342] [cursor=pointer]:
+              - /url: "#ov-resources-panel-materials"
+              - generic [ref=f1e343]: Explore materials
+        - generic [ref=f1e344]:
+          - paragraph [ref=f1e346]: Video
+          - generic [ref=f1e347]:
+            - paragraph [ref=f1e348]: Watch and share
+            - paragraph [ref=f1e349]: Find videos to present the initiative and inspire your community.
+            - link [ref=f1e351] [cursor=pointer]:
+              - /url: "#ov-resources-panel-video"
+              - generic [ref=f1e352]: Explore videos
+    - contentinfo [ref=f1e355]:
+      - generic [ref=f1e356]: © 2026 General Conference Corporation of Seventh-day Adventists 12501 Old Columbia Pike Silver Spring, MD 20904 USA 301-680-6000
+  - alert [ref=f1e362]
+  - dialog [ref=f1e366]:
+    - generic [ref=f1e367]:
+      - heading "We use cookies" [level=2] [ref=f1e368]
+      - paragraph [ref=f1e369]: We use cookies and other technologies to improve your browsing experience on our website, to show you personalized content and to analyze our website traffic to understand where our visitors are coming from.
+      - generic [ref=f1e370]:
+        - group [ref=f1e371]:
+          - button "Strictly necessary cookies" [ref=f1e372] [cursor=pointer]:
+            - checkbox [checked] [disabled] [ref=f1e380]
+        - group [ref=f1e381]:
+          - button "Tracking and performance cookies" [ref=f1e382] [cursor=pointer]:
+            - checkbox [ref=f1e390]
+      - generic [ref=f1e391]:
+        - button "Allow everything" [active] [ref=f1e392] [cursor=pointer]
+        - button "Allow selected" [ref=f1e394] [cursor=pointer]
