@@ -1,9 +1,20 @@
 import { geoPath } from "d3-geo";
-import { useEffect, useId, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { zoomIdentity } from "d3-zoom";
+import {
+  useCallback,
+  useEffect,
+  useId,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 
 import { mapCopy } from "../../data/copy.map";
 import type { Light } from "../../data/lights";
-import { isEsd, makeProjection, worldFeatures } from "../../lib/geo";
+import { featureById, isEsd, makeProjection, worldFeatures } from "../../lib/geo";
+import { usePrefersReducedMotion } from "../../lib/useReducedMotion";
+import { ZOOM_MAX, ZOOM_MIN, useMapZoom } from "./useMapZoom";
 import "./map.css";
 
 export interface EsdMapProps {
@@ -26,13 +37,25 @@ export const PULSE_EVERY = 24;
 /** Опорная точка проверки проекции: Москва. */
 const PROBE: [number, number] = [37.6, 55.7];
 
+/** Доля вьюбокса, которую занимает страна после полёта: остальное поля вокруг неё. */
+const COUNTRY_FIT = 0.8;
+/** Насколько посетитель должен изменить масштаб, чтобы выбор страны сбросился. */
+const ZOOM_AWAY_RATIO = 0.15;
+
 interface Size {
   width: number;
   height: number;
 }
 
-export function EsdMap({ lights, selectedCountryId = null, onError, size }: EsdMapProps) {
+export function EsdMap({
+  lights,
+  selectedCountryId = null,
+  onUserZoomAway,
+  onError,
+  size,
+}: EsdMapProps) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const svgRef = useRef<SVGSVGElement>(null);
   const [measured, setMeasured] = useState<Size | null>(null);
   const titleId = useId();
   const descId = useId();
@@ -108,10 +131,54 @@ export function EsdMap({ lights, selectedCountryId = null, onError, size }: EsdM
     return { people, groups };
   }, [lights]);
 
-  // Масштаб вьюпорта карты: радиусы огоньков делятся на него, чтобы зум не раздувал точки.
-  const scale = 1;
-  const coreRadius = LIGHT_CORE_RADIUS / scale;
-  const haloRadius = LIGHT_HALO_RADIUS / scale;
+  const reduced = usePrefersReducedMotion();
+  const selectedRef = useRef(selectedCountryId);
+  const zoomAwayRef = useRef(onUserZoomAway);
+  // Масштаб, на котором страна оказалась после полёта: от него считается уход камеры.
+  const kAtSelectionRef = useRef(ZOOM_MIN);
+
+  useEffect(() => {
+    selectedRef.current = selectedCountryId;
+    zoomAwayRef.current = onUserZoomAway;
+  }, [selectedCountryId, onUserZoomAway]);
+
+  const handleUserZoom = useCallback((k: number) => {
+    if (selectedRef.current === null) return;
+    const base = kAtSelectionRef.current;
+    if (base <= 0) return;
+    if (Math.abs(k / base - 1) > ZOOM_AWAY_RATIO) zoomAwayRef.current?.();
+  }, []);
+
+  const { transform, dragging, zoomTo } = useMapZoom(svgRef, {
+    width,
+    height,
+    enabled: projection !== null && !hasError,
+    onUserZoom: handleUserZoom,
+  });
+
+  useEffect(() => {
+    if (!projection) return;
+
+    const feature = selectedCountryId === null ? undefined : featureById(selectedCountryId);
+    let target = zoomIdentity;
+
+    if (feature) {
+      const [[x0, y0], [x1, y1]] = geoPath(projection).bounds(feature);
+      const fit = COUNTRY_FIT / Math.max((x1 - x0) / width, (y1 - y0) / height);
+      const k = Math.min(ZOOM_MAX, Math.max(ZOOM_MIN, fit));
+      target = zoomIdentity
+        .translate(width / 2, height / 2)
+        .scale(k)
+        .translate(-(x0 + x1) / 2, -(y0 + y1) / 2);
+    }
+
+    kAtSelectionRef.current = target.k;
+    zoomTo(target, !reduced);
+  }, [projection, selectedCountryId, width, height, reduced, zoomTo]);
+
+  // Радиусы огоньков делятся на масштаб вьюпорта: на любом зуме точка одного экранного размера.
+  const coreRadius = LIGHT_CORE_RADIUS / transform.k;
+  const haloRadius = LIGHT_HALO_RADIUS / transform.k;
 
   if (hasError) {
     return (
@@ -124,10 +191,11 @@ export function EsdMap({ lights, selectedCountryId = null, onError, size }: EsdM
   }
 
   return (
-    <div className="esd-map" ref={containerRef}>
+    <div className={"esd-map" + (dragging ? " is-dragging" : "")} ref={containerRef}>
       {projection ? (
         <>
           <svg
+            ref={svgRef}
             className="esd-map__svg"
             role="img"
             aria-labelledby={titleId}
@@ -138,7 +206,7 @@ export function EsdMap({ lights, selectedCountryId = null, onError, size }: EsdM
             preserveAspectRatio="xMidYMid meet"
           >
             <title id={titleId}>{mapCopy.mapTitle}</title>
-            <g className="map-viewport">
+            <g className="map-viewport" transform={transform.toString()}>
               <g className="map-countries" aria-hidden="true">
                 {countries.map((country) => {
                   const selected = selectedCountryId === country.id;

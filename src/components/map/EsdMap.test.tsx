@@ -1,10 +1,12 @@
+import { select } from "d3-selection";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { ESD_IDS } from "../../data/countries";
 import { generateLights } from "../../data/lights";
 import { LightsProvider, useLights } from "../../state/lights";
-import { EsdMap } from "./EsdMap";
+import { EsdMap, LIGHT_CORE_RADIUS, LIGHT_HALO_RADIUS } from "./EsdMap";
+import { ZOOM_MAX, ZOOM_MIN, zoomEventFilter } from "./useMapZoom";
 
 const SIZE = { width: 1200, height: 700 };
 
@@ -116,5 +118,119 @@ describe("EsdMap", () => {
     expect(selected).toHaveLength(1);
     expect(selected[0]).toHaveAttribute("data-country-id", "643");
     expect(selected[0]).toHaveClass("country--selected");
+  });
+});
+
+const realMatchMedia = window.matchMedia;
+
+/** Полёт камеры при reduced motion применяется мгновенно: тесту не нужны кадры rAF. */
+function stubReducedMotion() {
+  window.matchMedia = vi.fn((query: string) => ({
+    matches: query.includes("prefers-reduced-motion"),
+    media: query,
+    onchange: null,
+    addEventListener: vi.fn(),
+    removeEventListener: vi.fn(),
+    addListener: vi.fn(),
+    removeListener: vi.fn(),
+    dispatchEvent: vi.fn(),
+  })) as unknown as typeof window.matchMedia;
+}
+
+function readTransform(container: HTMLElement): string {
+  return container.querySelector("g.map-viewport")?.getAttribute("transform") ?? "";
+}
+
+function readScale(container: HTMLElement): number {
+  return Number(/scale\(([\d.]+)\)/.exec(readTransform(container))?.[1]);
+}
+
+function fakeEvent(event: Record<string, unknown>): Event {
+  return event as unknown as Event;
+}
+
+describe("зум карты", () => {
+  beforeEach(stubReducedMotion);
+  afterEach(() => {
+    window.matchMedia = realMatchMedia;
+  });
+
+  it("держит вьюпорт в исходном положении, пока страна не выбрана", () => {
+    const { container } = render(<EsdMap lights={lights} size={SIZE} selectedCountryId={null} />);
+    expect(readTransform(container)).toBe("translate(0,0) scale(1)");
+  });
+
+  it("приближает выбранную страну в пределах масштаба", () => {
+    const { container, rerender } = render(
+      <EsdMap lights={lights} size={SIZE} selectedCountryId={643} />,
+    );
+    // Россия занимает почти весь вьюбокс: её собственный масштаб упирается в нижний предел.
+    const russia = readScale(container);
+    expect(russia).toBe(ZOOM_MIN);
+    expect(readTransform(container)).not.toBe("translate(0,0) scale(1)");
+
+    rerender(<EsdMap lights={lights} size={SIZE} selectedCountryId={398} />);
+    const kazakhstan = readScale(container);
+    expect(kazakhstan).toBeGreaterThan(russia);
+    expect(kazakhstan).toBeLessThanOrEqual(ZOOM_MAX);
+
+    rerender(<EsdMap lights={lights} size={SIZE} selectedCountryId={51} />);
+    expect(readScale(container)).toBeGreaterThan(kazakhstan);
+    expect(readScale(container)).toBe(ZOOM_MAX);
+  });
+
+  it("делит радиусы огоньков на масштаб", () => {
+    const { container } = render(<EsdMap lights={lights} size={SIZE} selectedCountryId={51} />);
+    const k = readScale(container);
+    expect(k).toBeGreaterThan(1);
+
+    const core = container.querySelector(".light-core");
+    const halo = container.querySelector(".light-halo");
+    expect(Number(core?.getAttribute("r"))).toBeCloseTo(LIGHT_CORE_RADIUS / k, 3);
+    expect(Number(halo?.getAttribute("r"))).toBeCloseTo(LIGHT_HALO_RADIUS / k, 3);
+  });
+
+  it("оставляет странице вертикальный скролл одним пальцем", () => {
+    const { container } = render(<EsdMap lights={lights} size={SIZE} />);
+    const svg = container.querySelector("svg");
+    expect(svg?.style.getPropertyValue("touch-action")).toBe("pan-y");
+  });
+
+  it("не сбрасывает выбор во время программного полёта", () => {
+    const onUserZoomAway = vi.fn();
+    const { rerender } = render(
+      <EsdMap
+        lights={lights}
+        size={SIZE}
+        selectedCountryId={643}
+        onUserZoomAway={onUserZoomAway}
+      />,
+    );
+
+    rerender(
+      <EsdMap lights={lights} size={SIZE} selectedCountryId={51} onUserZoomAway={onUserZoomAway} />,
+    );
+    expect(onUserZoomAway).not.toHaveBeenCalled();
+  });
+
+  it("вешает обработчики зума и переживает повторное монтирование", () => {
+    const first = render(<EsdMap lights={lights} size={SIZE} />);
+    const svg = first.container.querySelector("svg") as SVGSVGElement;
+    expect(typeof select(svg).on("wheel.zoom")).toBe("function");
+    expect(typeof select(svg).on("mousedown.zoom")).toBe("function");
+
+    first.unmount();
+    expect(select(svg).on("wheel.zoom")).toBeUndefined();
+    expect(() => render(<EsdMap lights={lights} size={SIZE} />)).not.toThrow();
+  });
+
+  it("пропускает колесо только с Ctrl или ⌘, а touch только двумя пальцами", () => {
+    expect(zoomEventFilter(fakeEvent({ type: "wheel", ctrlKey: false, metaKey: false }))).toBe(false);
+    expect(zoomEventFilter(fakeEvent({ type: "wheel", ctrlKey: true, metaKey: false }))).toBe(true);
+    expect(zoomEventFilter(fakeEvent({ type: "wheel", ctrlKey: false, metaKey: true }))).toBe(true);
+    expect(zoomEventFilter(fakeEvent({ type: "touchstart", touches: { length: 1 } }))).toBe(false);
+    expect(zoomEventFilter(fakeEvent({ type: "touchmove", touches: { length: 2 } }))).toBe(true);
+    expect(zoomEventFilter(fakeEvent({ type: "mousedown", button: 0 }))).toBe(true);
+    expect(zoomEventFilter(fakeEvent({ type: "mousedown", button: 2 }))).toBe(false);
   });
 });

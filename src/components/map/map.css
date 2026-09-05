@@ -297,7 +297,7 @@
   border-radius: 16px;
 }
 
-.map-container.is-dragging {
+.esd-map.is-dragging {
   cursor: grabbing;
 }
 
