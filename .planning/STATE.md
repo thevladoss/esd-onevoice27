@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: executing
-stopped_at: Completed 06-04-PLAN.md, фаза 06 ждёт верификацию
-last_updated: "2026-09-05T20:45:00.000Z"
+status: milestone_complete
+stopped_at: Milestone complete (Phase 06 was final phase)
+last_updated: 2026-09-05T21:04:57.436Z
 last_activity: 2026-09-05 -- Фаза 6 «Точность оригинала» по правкам пользователя: планы 06-01 шапка, 06-02 кнопка, 06-03 фоны исполняются
 progress:
   total_phases: 6
   completed_phases: 5
   total_plans: 30
   completed_plans: 30
-  percent: 100
+  percent: 83
 ---
 
 # Project State
@@ -21,14 +21,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-09-05)
 
 **Core value:** Посетитель открывает страницу и видит красивый, живой лендинг уровня оригинала onevoice27.org, но про ЕАД: узнаёт, что такое «Единый голос 27», видит карту движения по дивизиону и может «зажечь свой свет».
-**Current focus:** Phase 06 — original-fidelity (правки пользователя после приёмки фазы 5)
+**Current focus:** Milestone complete
 
 ## Current Position
 
-Phase: 06 (original-fidelity) — EXECUTING
-Plan: 4 of 4
-Status: Все планы фазы 06 слиты и приняты в браузере (SMOKE.md «Фаза 6»), ожидается верификация
-Last activity: 2026-09-05 -- 06-04: deep link, крест бургера, overflow-x clip, smoke на 1440/1920/390
+Phase: 06
+Plan: Not started
+Status: Milestone complete
+Last activity: 2026-09-05
 
 Progress: [██████████] 100%
 
@@ -36,7 +36,7 @@ Progress: [██████████] 100%
 
 **Velocity:**
 
-- Total plans completed: 30
+- Total plans completed: 34
 - Average duration: - min
 - Total execution time: 0 hours
 
@@ -49,6 +49,7 @@ Progress: [██████████] 100%
 | 03 | 4 | - | - |
 | 04 | 4 | - | - |
 | 05 | 8 | - | - |
+| 06 | 4 | - | - |
 
 **Recent Trend:**
 
