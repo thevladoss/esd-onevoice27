@@ -42,6 +42,11 @@ describe("Hero", () => {
     expect(starfield).toHaveAttribute("aria-hidden", "true");
   });
 
+  it("включает луч по границе CTA", () => {
+    render(<Hero />);
+    expect(screen.getByRole("link", { name: heroCopy.cta })).toHaveAttribute("data-beam", "true");
+  });
+
   it("кладёт в секцию canvas глобуса", () => {
     render(<Hero />);
     const globe = document.querySelector("#hero canvas.globe-canvas");
