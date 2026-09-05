@@ -21,7 +21,7 @@ import { Section } from "../layout/Section";
 import { ConsentCheckbox } from "./ConsentCheckbox";
 import { FormField } from "./FormField";
 import { LightTypeChoice } from "./LightTypeChoice";
-import { SuccessToast } from "./SuccessToast";
+import { SuccessLiveRegion, SuccessToast } from "./SuccessToast";
 
 const SUBMIT_DELAY = 1200;
 
@@ -275,13 +275,8 @@ export function LightForm() {
         </GlassCard>
       </Reveal>
 
-      {/*
-        Живой регион смонтирован всегда и пустой до успеха: скринридер объявляет отправку
-        сменой текста внутри уже существующего региона. Тост ниже — только визуальная копия.
-      */}
-      <p className="sr-only" role="status" aria-live="polite">
-        {toastOpen ? formCopy.success : ""}
-      </p>
+      {/* Тост ниже — визуальная копия: объявляет успех живой регион, а не карточка. */}
+      <SuccessLiveRegion message={toastOpen ? formCopy.success : ""} />
 
       <SuccessToast
         key={toastKey}

@@ -176,8 +176,24 @@ describe("LightForm: структура секции", () => {
     const ids = Array.from(document.querySelectorAll("form")).flatMap((form) =>
       Array.from(form.querySelectorAll<HTMLElement>("[id]")).map((node) => node.id),
     );
-    expect(ids).toHaveLength(14);
+    // Девять на форму: две радио-карточки, пять полей, согласие и кнопка отправки.
+    expect(ids).toHaveLength(18);
     expect(new Set(ids).size).toBe(ids.length);
+  });
+
+  it("связывает каждый контрол с видимой подписью через htmlFor", () => {
+    const { container } = renderForm();
+
+    const controls = Array.from(
+      container.querySelectorAll<HTMLInputElement>("form input, form select"),
+    );
+    expect(controls).toHaveLength(8);
+
+    for (const control of controls) {
+      const label = container.querySelector(`label[for="${control.id}"]`);
+      expect(label, `нет подписи для контрола #${control.id}`).not.toBeNull();
+      expect(label?.textContent?.trim()).not.toBe("");
+    }
   });
 
   it("не отправляет форму по сети: без action и method", () => {
