@@ -1,0 +1,50 @@
+@theme {
+  /* Палитра */
+  --color-midnight-950: #070210;
+  --color-midnight-900: #120c34;
+  --color-midnight-800: #211a3e;
+  --color-unity-950: #141833;
+  --color-unity-700: #303f83;
+  --color-unity-500: #3b4da1;
+  --color-signal-600: #9e439a;
+  --color-signal-400: #bb6cae;
+  --color-signal-300: #d28ebe;
+  --color-horizon-600: #54a4ac;
+  --color-horizon-400: #7bc2c7;
+  --color-horizon-200: #aad9dc;
+  --color-paper: #f8f7fb;
+
+  /* Шрифты */
+  --font-display: "Onest", "Noto Sans", sans-serif;
+  --font-body: "Noto Sans", sans-serif;
+
+  /* Размеры текста */
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-section: clamp(1.875rem, 4vw, 3rem);
+  --text-wordmark: clamp(1.125rem, 2.2vw, 1.375rem);
+  --text-tagline: 0.625rem;
+
+  /* Радиусы */
+  --radius-card: 16px;
+  --radius-header: 18px;
+  --radius-header-compact: 12px;
+  --radius-pill: 999px;
+
+  /* Тени */
+  --shadow-card:
+    0 30px 72px rgb(18 12 52 / .62),
+    0 10px 24px rgb(18 12 52 / .42),
+    inset 0 1px 0 rgb(248 247 251 / .08);
+  --shadow-header:
+    0 3px 7px rgb(5 3 20 / .28),
+    0 18px 42px rgb(5 3 20 / .30),
+    0 8px 34px rgb(48 63 131 / .13);
+  --shadow-header-mobile: 0 12px 28px rgb(5 3 20 / .22);
+  --shadow-button: 0 10px 30px rgb(59 77 161 / .34);
+
+  /* Движение */
+  --ease-ui: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-header: cubic-bezier(0.32, 0.72, 0, 1);
+}
