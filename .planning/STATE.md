@@ -2,9 +2,9 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: executing
-stopped_at: Completed 05-08-PLAN.md
-last_updated: "2026-09-05T19:20:00.000Z"
+status: milestone_complete
+stopped_at: Milestone complete (Phase 05 was final phase)
+last_updated: 2026-09-05T19:25:23.311Z
 last_activity: 2026-09-05 -- План 05-08: глобус без shadowBlur, smoke заполнен, прод 121 fps; фаза 5 ждёт верификацию
 progress:
   total_phases: 5
@@ -21,14 +21,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-09-05)
 
 **Core value:** Посетитель открывает страницу и видит красивый, живой лендинг уровня оригинала onevoice27.org, но про ЕАД: узнаёт, что такое «Единый голос 27», видит карту движения по дивизиону и может «зажечь свой свет».
-**Current focus:** Phase 05 — polish-and-release
+**Current focus:** Milestone complete
 
 ## Current Position
 
-Phase: 05 (polish-and-release) — EXECUTING
-Plan: 8 of 8
-Status: Все планы фазы 05 закрыты, браузерный smoke принят, ожидается верификация фазы
-Last activity: 2026-09-05 -- План 05-08: глобус без shadowBlur, smoke заполнен, прод 121 fps
+Phase: 05
+Plan: Not started
+Status: Milestone complete
+Last activity: 2026-09-05
 
 Progress: [██████████] 100%
 
@@ -36,7 +36,7 @@ Progress: [██████████] 100%
 
 **Velocity:**
 
-- Total plans completed: 26
+- Total plans completed: 34
 - Average duration: - min
 - Total execution time: 0 hours
 
@@ -48,6 +48,7 @@ Progress: [██████████] 100%
 | 02 | 5 | - | - |
 | 03 | 4 | - | - |
 | 04 | 4 | - | - |
+| 05 | 8 | - | - |
 
 **Recent Trend:**
 
