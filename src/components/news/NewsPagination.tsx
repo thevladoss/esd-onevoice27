@@ -1,7 +1,7 @@
 import { newsCopy } from "../../data/copy.news";
 
 const BUTTON_BASE =
-  "inline-flex min-h-11 min-w-11 items-center justify-center rounded-lg font-body text-xs font-bold uppercase leading-[1.4] tracking-[0.08em] transition-colors duration-[240ms] ease-header focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-horizon-400";
+  "inline-flex min-h-11 min-w-11 items-center justify-center rounded-lg font-body text-xs font-bold uppercase leading-[1.4] tracking-[0.08em] transition-colors duration-[240ms] ease-header focus-visible:outline-2 focus-visible:-outline-offset-3 focus-visible:outline-horizon-400";
 
 function ChevronRight() {
   return (
@@ -50,7 +50,7 @@ export function NewsPagination({
                   BUTTON_BASE +
                   (isCurrent
                     ? " bg-[image:var(--gradient-action)] text-paper shadow-[0_10px_24px_rgb(59_77_161/.34)]"
-                    : " text-paper/62 hover:bg-[rgb(33_26_62/.44)] hover:text-paper")
+                    : " text-paper/78 hover:bg-[rgb(33_26_62/.44)] hover:text-paper")
                 }
               >
                 {n}
@@ -73,7 +73,7 @@ export function NewsPagination({
             }}
             className={
               BUTTON_BASE +
-              " text-paper/62 hover:bg-[rgb(33_26_62/.44)] hover:text-paper aria-disabled:cursor-not-allowed aria-disabled:opacity-[.38] aria-disabled:hover:bg-transparent aria-disabled:hover:text-paper/62"
+              " text-paper/78 hover:bg-[rgb(33_26_62/.44)] hover:text-paper aria-disabled:cursor-not-allowed aria-disabled:opacity-[.38] aria-disabled:hover:bg-transparent aria-disabled:hover:text-paper/78"
             }
           >
             <ChevronRight />

@@ -35,7 +35,7 @@ export function ResourcePanel({
     >
       <div className="flex items-start justify-between gap-4">
         <div>
-          <p className="font-body text-xs font-bold uppercase leading-[1.4] tracking-[0.08em] text-paper/60">
+          <p className="font-body text-xs font-bold uppercase leading-[1.4] tracking-[0.08em] text-paper/62">
             {card.label}
           </p>
           <h3
@@ -44,14 +44,14 @@ export function ResourcePanel({
           >
             {card.title}
           </h3>
-          <p className="mt-2 font-body text-base leading-[1.5] text-paper/80">{card.description}</p>
+          <p className="mt-2 font-body text-base leading-[1.5] text-paper/78">{card.description}</p>
         </div>
 
         <button
           type="button"
           onClick={onClose}
           aria-label={resourcesCopy.panel.closeLabel}
-          className="flex min-h-11 min-w-11 shrink-0 items-center justify-center gap-2 rounded-lg px-3 text-paper/80 transition-colors duration-[240ms] ease-ui hover:bg-paper/[.06] hover:text-paper focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-horizon-400"
+          className="flex min-h-11 min-w-11 shrink-0 items-center justify-center gap-2 rounded-lg px-3 text-paper/78 transition-colors duration-[240ms] ease-ui hover:bg-paper/[.06] hover:text-paper focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-horizon-400"
         >
           <svg
             width="20"
@@ -73,7 +73,10 @@ export function ResourcePanel({
 
       <div className="mt-6">
         {kind === "materials" ? <MaterialsList /> : null}
-        {kind === "video" ? <VideoGrid /> : null}
+        {/* Колонки задаёт панель: на 390px шестнадцать роликов идут в две колонки. */}
+        {kind === "video" ? (
+          <VideoGrid className="grid-cols-2 md:grid-cols-3 lg:grid-cols-4" />
+        ) : null}
         {kind === "music" ? <MusicPlaceholder /> : null}
       </div>
     </div>

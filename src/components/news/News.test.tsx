@@ -94,6 +94,37 @@ describe("News", () => {
     expect(document.activeElement).toBe(quenched);
   });
 
+  it("именует секцию заголовком и держит кольцо фокуса внутри обрезанной карточки", () => {
+    render(<News />);
+
+    const section = document.getElementById("news") as HTMLElement;
+    expect(section).toHaveAttribute("aria-labelledby", "news-title");
+
+    const label = document.getElementById("news-title");
+    expect(label).not.toBeNull();
+    expect(label).toHaveTextContent("Каждая платформа становится голосом");
+    expect(label?.closest("h2")).not.toBeNull();
+
+    for (const article of screen.getAllByRole("article")) {
+      const link = within(article).getByRole("link");
+      expect(link.className).toContain("-outline-offset-3");
+      expect(link.className).toContain("overflow-hidden");
+    }
+  });
+
+  it("держит обложку в пропорции 4:5 и не даёт ей растянуться", () => {
+    render(<News />);
+
+    for (const article of screen.getAllByRole("article")) {
+      const frame = article.querySelector("div.aspect-\\[4\\/5\\]");
+      expect(frame).not.toBeNull();
+
+      const image = article.querySelector("img");
+      expect(image?.className).toContain("object-cover");
+      expect(image?.className).toContain("max-w-full");
+    }
+  });
+
   it("подписывает навигацию пагинации", () => {
     render(<News />);
 
