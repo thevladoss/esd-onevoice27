@@ -81,16 +81,28 @@ export function Header() {
   return (
     <header ref={headerRef} className={headerClass}>
       <div className="site-header__content">
+        {/* Оверлей закрывает вордмарк и пункты пилюли собой, но из дерева доступности
+            их не убирает: ловушка Tab держит только клавиатуру, а виртуальный курсор
+            скринридера и свайп VoiceOver уходили на невидимую ссылку «на главную».
+            inert гасит и обход, и дерево; aria-hidden оставлен явным, потому что его
+            читают проверки разметки. Бургер не трогаем — он закрывает меню. */}
         <a
           className="site-header__brand"
           href="#top"
           aria-label={copy.shell.wordmarkAriaLabel}
+          aria-hidden={menuOpen || undefined}
+          inert={menuOpen}
           onClick={(event) => handleClick(event, "#top")}
         >
           <Wordmark tone="solid" />
         </a>
 
-        <nav className="site-nav" aria-label={copy.shell.navLabel}>
+        <nav
+          className="site-nav"
+          aria-label={copy.shell.navLabel}
+          aria-hidden={menuOpen || undefined}
+          inert={menuOpen}
+        >
           <ul className="site-nav__list">
             {copy.shell.nav.map((item) => (
               <li key={item.href}>

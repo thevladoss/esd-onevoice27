@@ -427,6 +427,32 @@ describe("Header: мобильный оверлей", () => {
     expect(page).not.toHaveAttribute("inert");
   });
 
+  it("выключает вордмарк и пункты пилюли из дерева доступности, пока оверлей открыт", () => {
+    render(<Header />);
+    const header = screen.getByRole("banner");
+    const brand = header.querySelector(".site-header__brand") as HTMLElement;
+    const nav = header.querySelector(".site-nav") as HTMLElement;
+
+    openMenu();
+
+    // Ловушка Tab держит только клавиатуру: виртуальный курсор скринридера
+    // уходил на невидимую под оверлеем ссылку вордмарка.
+    for (const element of [brand, nav]) {
+      expect(element).toHaveAttribute("aria-hidden", "true");
+      expect(element).toHaveAttribute("inert");
+    }
+    expect(screen.queryByRole("link", { name: "Единый голос 27, на главную" })).toBeNull();
+
+    // Бургер остаётся доступным: он же закрывает меню.
+    expect(screen.getByRole("button", { name: "Закрыть меню" })).toBeInTheDocument();
+
+    fireEvent.keyDown(document, { key: "Escape" });
+    for (const element of [brand, nav]) {
+      expect(element).not.toHaveAttribute("aria-hidden");
+      expect(element).not.toHaveAttribute("inert");
+    }
+  });
+
   it("прячет закрытый оверлей от скринридера и клавиатуры", () => {
     render(<Header />);
 
