@@ -396,3 +396,115 @@ describe("Header: мобильный оверлей", () => {
     }
   });
 });
+
+describe("Header: переходы и клавиатура через user-event", () => {
+  const scrollTo = vi.mocked(window.scrollTo);
+  const defaultMatchMedia = window.matchMedia;
+
+  /** matchMedia, который отвечает на запрос уменьшенного движения заданным значением. */
+  function stubReducedMotion(reduced: boolean) {
+    window.matchMedia = ((query: string) => ({
+      matches: query.includes("prefers-reduced-motion") ? reduced : false,
+      media: query,
+      onchange: null,
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+      addListener: vi.fn(),
+      removeListener: vi.fn(),
+      dispatchEvent: vi.fn(),
+    })) as unknown as typeof window.matchMedia;
+  }
+
+  function openMenu() {
+    return screen.getByRole("button", { name: "Открыть меню" });
+  }
+
+  beforeEach(() => {
+    scrollTo.mockClear();
+    setScrollY(0);
+    document.body.style.overflow = "";
+  });
+
+  afterEach(() => {
+    window.matchMedia = defaultMatchMedia;
+    document.body.style.overflow = "";
+    document.querySelectorAll("body > section").forEach((section) => section.remove());
+    history.pushState(null, "", location.pathname);
+  });
+
+  it("ведёт к секции плавно, пока движение разрешено", async () => {
+    const user = userEvent.setup();
+    stubReducedMotion(false);
+    addSection("about", 1200);
+    render(<Header />);
+
+    await user.click(screen.getByRole("link", { name: "Что это?" }));
+
+    expect(scrollTo).toHaveBeenCalledTimes(1);
+    expect(scrollTo).toHaveBeenCalledWith(
+      expect.objectContaining({
+        top: expect.any(Number),
+        behavior: expect.stringMatching(/^(smooth|auto)$/),
+      }),
+    );
+    expect(scrollTo).toHaveBeenCalledWith(expect.objectContaining({ behavior: "smooth" }));
+  });
+
+  it("убирает плавность, когда система просит уменьшить движение", async () => {
+    const user = userEvent.setup();
+    stubReducedMotion(true);
+    addSection("involve", 900);
+    render(<Header />);
+
+    await user.click(screen.getByRole("link", { name: "Участвовать" }));
+
+    expect(scrollTo).toHaveBeenCalledWith(expect.objectContaining({ top: 800, behavior: "auto" }));
+  });
+
+  it("открывает оверлей бургером и замораживает страницу", async () => {
+    const user = userEvent.setup();
+    render(<Header />);
+    const burger = openMenu();
+
+    expect(burger).toHaveAttribute("aria-expanded", "false");
+    expect(burger).toHaveAttribute("aria-controls", "mobile-menu");
+
+    await user.click(burger);
+
+    expect(screen.getByRole("button", { name: "Закрыть меню" })).toBe(burger);
+    expect(burger).toHaveAttribute("aria-expanded", "true");
+    expect(screen.getByRole("dialog", { name: "Меню" })).toHaveAttribute("id", "mobile-menu");
+    expect(document.body.style.overflow).toBe("hidden");
+  });
+
+  it("закрывает оверлей по Escape, возвращает фокус на бургер и отдаёт скролл", async () => {
+    const user = userEvent.setup();
+    render(<Header />);
+    const burger = openMenu();
+
+    await user.click(burger);
+    await user.keyboard("{Escape}");
+
+    expect(burger).toHaveAttribute("aria-expanded", "false");
+    expect(burger).toHaveFocus();
+    expect(document.body.style.overflow).toBe("");
+  });
+
+  it("по пункту оверлея закрывает меню и уводит к секции", async () => {
+    const user = userEvent.setup();
+    addSection("news", 2000);
+    render(<Header />);
+    const burger = openMenu();
+
+    await user.click(burger);
+    const dialog = screen.getByRole("dialog", { name: "Меню" });
+    await user.click(within(dialog).getByRole("link", { name: "Новости" }));
+
+    expect(burger).toHaveAttribute("aria-expanded", "false");
+    // Первым вызовом снимается заморозка страницы, вторым идёт переход к секции.
+    expect(scrollTo).toHaveBeenLastCalledWith(
+      expect.objectContaining({ top: 1900, behavior: "smooth" }),
+    );
+    expect(document.body.style.overflow).toBe("");
+  });
+});
