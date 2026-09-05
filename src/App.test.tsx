@@ -1,9 +1,39 @@
-import { render } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import App from "./App";
 
+const expectedSectionIds = [
+  "hero",
+  "map",
+  "light-form",
+  "about",
+  "involve",
+  "news",
+  "resources",
+  "quote",
+];
+
 describe("App", () => {
-  it("рендерит основную область main#main", () => {
+  it("рендерит восемь секций с ожидаемыми id", () => {
+    render(<App />);
+    for (const id of expectedSectionIds) {
+      const section = document.getElementById(id);
+      expect(section).not.toBeNull();
+      expect(section?.tagName).toBe("SECTION");
+    }
+  });
+
+  it("рендерит ландмарки: main#main, header и footer", () => {
     render(<App />);
     expect(document.querySelector("main#main")).not.toBeNull();
+    expect(screen.getByRole("banner")).toBeInTheDocument();
+    expect(screen.getByRole("contentinfo")).toBeInTheDocument();
+  });
+
+  it("даёт ссылку «Перейти к содержимому» на #main", () => {
+    render(<App />);
+    expect(screen.getByRole("link", { name: "Перейти к содержимому" })).toHaveAttribute(
+      "href",
+      "#main",
+    );
   });
 });
