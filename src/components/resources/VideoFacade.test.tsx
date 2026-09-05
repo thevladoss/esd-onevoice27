@@ -36,8 +36,12 @@ describe("VideoFacade", () => {
       "https://www.youtube-nocookie.com/embed/qQsgK18gKCU?autoplay=1&rel=0",
     )).toBe(true);
     expect(iframe?.getAttribute("title")).toBe(KAMINSKY);
-    expect(iframe?.getAttribute("allow")).toContain("autoplay");
-    expect(iframe?.getAttribute("allow")).toContain("encrypted-media");
+    expect(iframe?.getAttribute("allow")).toBe("autoplay; encrypted-media; picture-in-picture");
+    expect(iframe?.getAttribute("allow")).not.toContain("clipboard-write");
+    expect(iframe?.getAttribute("allow")).not.toContain("web-share");
+    expect(iframe?.getAttribute("sandbox")).toBe(
+      "allow-scripts allow-same-origin allow-presentation allow-popups allow-popups-to-escape-sandbox",
+    );
     expect(iframe?.hasAttribute("allowfullscreen")).toBe(true);
     expect(screen.queryByRole("button")).toBeNull();
   });
