@@ -31,11 +31,13 @@ describe("MapSection", () => {
     expect(screen.getByText("694")).toBeInTheDocument();
   });
 
-  it("сообщает об ошибке карты, когда контейнер без размеров", () => {
+  it("молчит про ошибку, пока контейнер не измерен", () => {
     renderSection();
-    expect(screen.getByRole("status")).toHaveTextContent(
-      "Карта не загрузилась. Обновите страницу, чтобы попробовать снова.",
-    );
+    expect(screen.queryByRole("status")).not.toBeInTheDocument();
+
+    for (const chip of screen.getAllByRole("button")) {
+      expect(chip).not.toHaveAttribute("aria-disabled");
+    }
   });
 
   it("держит скошенный слой внутри секции", () => {
@@ -152,7 +154,13 @@ describe("MapSection: выбор страны чипами", () => {
 });
 
 describe("MapSection: карта не отрисовалась", () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
   it("гасит чипы вместе с картой", () => {
+    // Бесконечный размер уводит fitExtent в NaN: проекция считается сломанной.
+    stubSize(Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY);
     renderSection();
 
     expect(screen.getByRole("status")).toBeInTheDocument();

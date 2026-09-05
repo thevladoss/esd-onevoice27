@@ -99,11 +99,23 @@ describe("EsdMap", () => {
     expect(count(".light-core")).toBe(0);
   });
 
-  it("показывает ошибку вместо карты при нулевом контейнере", () => {
+  it("молчит про ошибку, пока контейнер не измерен", () => {
     const onError = vi.fn();
     const { container } = render(
       <EsdMap lights={lights} size={{ width: 0, height: 0 }} onError={onError} />,
     );
+
+    expect(screen.queryByRole("status")).not.toBeInTheDocument();
+    expect(container.querySelector("svg")).toBeNull();
+    expect(onError).toHaveBeenCalledWith(false);
+    expect(onError).not.toHaveBeenCalledWith(true);
+  });
+
+  it("показывает ошибку, когда проекция вернула не-число", () => {
+    const onError = vi.fn();
+    // Бесконечный контейнер уводит fitExtent в NaN: это и есть сломанная проекция.
+    const broken = { width: Number.POSITIVE_INFINITY, height: Number.POSITIVE_INFINITY };
+    const { container } = render(<EsdMap lights={lights} size={broken} onError={onError} />);
 
     expect(screen.getByRole("status")).toHaveTextContent(
       "Карта не загрузилась. Обновите страницу, чтобы попробовать снова.",

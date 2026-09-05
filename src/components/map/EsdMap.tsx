@@ -92,8 +92,14 @@ export function EsdMap({
   );
 
   const probe = useMemo(() => projection?.(PROBE) ?? null, [projection]);
+  // Нулевой размер значит «контейнер ещё не разложен» или «контейнер скрыт»: об этом
+  // сообщать нечего, и ResizeObserver сам всё поправит. Ошибка — только не-число
+  // от проекции на измеренном контейнере.
+  const isMeasured = width >= 1 && height >= 1;
   const hasError =
-    resolved !== null && (probe === null || !Number.isFinite(probe[0]) || !Number.isFinite(probe[1]));
+    resolved !== null &&
+    isMeasured &&
+    (probe === null || !Number.isFinite(probe[0]) || !Number.isFinite(probe[1]));
 
   useEffect(() => {
     onError?.(hasError);
