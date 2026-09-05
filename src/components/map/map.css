@@ -306,3 +306,100 @@
     padding: 96px 32px;
   }
 }
+
+/* Чипы стран: ряд пилюль под заголовком секции. */
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 32px;
+}
+
+.chips.is-disabled .chip {
+  opacity: .5;
+  pointer-events: none;
+}
+
+.chip {
+  height: 44px;
+  padding-inline: 16px;
+  border-radius: 999px;
+  border: 1px solid rgb(184 192 230 / .16);
+  background: rgb(18 12 52 / .42);
+  color: rgb(248 247 251 / .86);
+  font-family: "Noto Sans", sans-serif;
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    border-color 240ms cubic-bezier(0.22, 1, 0.36, 1),
+    color 240ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 120ms;
+}
+
+.chip:hover {
+  border-color: rgb(123 194 199 / .46);
+  color: #f8f7fb;
+}
+
+.chip:active {
+  transform: scale(0.98);
+}
+
+.chip:focus-visible {
+  outline: 2px solid #aad9dc;
+  outline-offset: 2px;
+}
+
+.chip[aria-pressed="true"] {
+  background: linear-gradient(125deg, #6c2c68, #3b4da1);
+  border-color: rgb(170 217 220 / .72);
+  color: #f8f7fb;
+}
+
+/* Подсказка о жестах поверх карты. */
+.map-hint {
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+  z-index: 4;
+  margin: 0;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: rgb(7 2 16 / .55);
+  font-size: 12px;
+  line-height: 1.4;
+  color: rgb(248 247 251 / .72);
+  pointer-events: none;
+}
+
+.map-hint__pointer {
+  display: none;
+}
+
+.map-hint__touch {
+  display: inline;
+}
+
+@media (min-width: 768px) {
+  .chip {
+    height: 40px;
+  }
+
+  .map-hint__pointer {
+    display: inline;
+  }
+
+  .map-hint__touch {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chip {
+    transition: none;
+  }
+}
