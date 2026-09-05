@@ -45,9 +45,9 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 01-02-PLAN.md — Примитивы Section/Eyebrow/GradientTitle/Button/GlassCard и восемь секций-заглушек с телом в GlassCard, h1 и CTA в hero (wave 2)
-- [ ] 01-03-PLAN.md — Header-пилюля: стекло, скос, четыре якоря, уплотнение, aria-current, бургер и оверлей с фокус-трапом, scrollToSection (wave 2)
-- [ ] 01-04-PLAN.md — Footer: клин, градиент, дрейф волн и гало, подпись, © строка, внешние ссылки с noopener noreferrer (wave 2)
+- [x] 01-02-PLAN.md — Примитивы Section/Eyebrow/GradientTitle/Button/GlassCard и восемь секций-заглушек с телом в GlassCard, h1 и CTA в hero (wave 2)
+- [x] 01-03-PLAN.md — Header-пилюля: стекло, скос, четыре якоря, уплотнение, aria-current, бургер и оверлей с фокус-трапом, scrollToSection (wave 2)
+- [x] 01-04-PLAN.md — Footer: клин, градиент, дрейф волн и гало, подпись, © строка, внешние ссылки с noopener noreferrer (wave 2)
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
@@ -190,7 +190,7 @@ Phase 3 и Phase 4 обе зависят только от Phase 2 и незав
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Каркас и деплой | 1/5 | In Progress|  |
+| 1. Каркас и деплой | 4/5 | In Progress|  |
 | 2. Hero и карта | 0/5 | Planned | - |
 | 3. Форма, О проекте, Участие | 0/4 | Not started | - |
 | 4. Новости, Ресурсы, Цитата | 0/4 | Planned | - |
