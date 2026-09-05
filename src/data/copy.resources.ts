@@ -19,7 +19,6 @@ export const resourcesCopy: {
   cards: Record<ResourceKey, ResourceCard>;
   panel: { close: string; closeLabel: string };
   music: { emptyTitle: string; emptyBody: string };
-  video: { watchLabel: (title: string) => string };
 } = {
   eyebrow: "Ресурсы",
   title: "Всё, что нужно для старта",
@@ -55,8 +54,5 @@ export const resourcesCopy: {
     emptyTitle: "Песня ещё в работе",
     emptyBody:
       "Официальная песня «Единого голоса 27» скоро появится здесь. Следите за новостями дивизиона.",
-  },
-  video: {
-    watchLabel: (title: string) => `Смотреть видео: ${title}`,
   },
 };

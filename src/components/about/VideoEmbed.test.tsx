@@ -28,6 +28,14 @@ describe("VideoEmbed", () => {
     expect(container.querySelector("iframe")).toBeNull();
   });
 
+  it("отдаёт кнопке всю плитку, а не один круг play", () => {
+    const { container } = renderEmbed();
+
+    const button = screen.getByRole("button", { name: playName });
+    expect(button.querySelector("img")).toBe(container.querySelector("img"));
+    expect(button.querySelector(".ve-play")).not.toBeNull();
+  });
+
   it("по клику заменяет постер на nocookie iframe", () => {
     const { container } = renderEmbed();
 
@@ -45,6 +53,31 @@ describe("VideoEmbed", () => {
     expect(container.querySelector("img")).toBeNull();
   });
 
+  it("держит права плеера в узком списке и запирает его в песочницу", () => {
+    const { container } = renderEmbed();
+
+    fireEvent.click(screen.getByRole("button", { name: playName }));
+
+    const frame = container.querySelector("iframe");
+    expect(frame?.getAttribute("allow")).not.toContain("clipboard-write");
+    expect(frame?.getAttribute("allow")).not.toContain("web-share");
+    expect(frame?.getAttribute("allow")).not.toContain("accelerometer");
+    expect(frame?.getAttribute("sandbox")).toBe(
+      "allow-scripts allow-same-origin allow-presentation allow-popups allow-popups-to-escape-sandbox",
+    );
+    expect(frame?.getAttribute("referrerpolicy")).toBe("strict-origin-when-cross-origin");
+  });
+
+  it("после старта плеера отдаёт фокус iframe, а не роняет его в body", () => {
+    const { container } = renderEmbed();
+
+    const play = screen.getByRole("button", { name: playName });
+    play.focus();
+    fireEvent.click(play);
+
+    expect(document.activeElement).toBe(container.querySelector("iframe"));
+  });
+
   it("при ошибке постера показывает заглушку и оставляет кнопку рабочей", () => {
     const { container } = renderEmbed();
 
@@ -56,6 +89,7 @@ describe("VideoEmbed", () => {
     const fallback = container.querySelector(".ve-fallback");
     expect(fallback).not.toBeNull();
     expect(fallback).toHaveTextContent(title);
+    expect(container.firstElementChild).toHaveAttribute("data-cover", "failed");
 
     fireEvent.click(screen.getByRole("button", { name: playName }));
     expect(container.querySelector("iframe")).toHaveAttribute("src", frameSrc);
@@ -67,8 +101,33 @@ describe("VideoEmbed", () => {
     expect(container.firstElementChild).toHaveClass("ve", "ab-video");
   });
 
+  it("уменьшает фасад по пропу size=compact", () => {
+    const { container } = render(
+      <VideoEmbed videoId={videoId} title={title} size="compact" />,
+    );
+
+    expect(container.firstElementChild).toHaveClass("ve", "ve--compact");
+  });
+
+  it("держит id, начинающийся с дефиса, как строку в адресе постера", () => {
+    const { container } = render(
+      <VideoEmbed videoId="-Eo--61cx90" title="Единый голос-2027: Иван Вельгоша" />,
+    );
+
+    expect(container.querySelector("img")?.getAttribute("src")).toContain("/vi/-Eo--61cx90/");
+  });
+
   it("ничего не рендерит, если id не похож на id ролика YouTube", () => {
-    for (const badId of ["YpLD6p-z00g?list=PL", "../../watch", "short", "YpLD6p z00g", ""]) {
+    const badIds = [
+      "YpLD6p-z00g?list=PL",
+      "abc?list=PL&x=1",
+      "../../watch",
+      "short",
+      "YpLD6p z00g",
+      "",
+    ];
+
+    for (const badId of badIds) {
       const { container, unmount } = render(<VideoEmbed videoId={badId} title={title} />);
 
       expect(container.firstElementChild).toBeNull();
