@@ -1,7 +1,16 @@
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 import { act, fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { HEADER_OFFSET_FALLBACK } from "../../lib/headerOffset";
 import { Header } from "./Header";
+
+/* Стили шапки читаются с диска: vitest настроен с css: false, поэтому импорт
+   CSS-модуля отдал бы пустую строку (тот же приём, что в motionPolicy.test.ts). */
+const HEADER_CSS = readFileSync(
+  resolve(process.cwd(), "src/components/layout/Header.css"),
+  "utf8",
+);
 
 /** `documentTop` — позиция секции в координатах документа: rect.top + scrollY. */
 function addSection(id: string, documentTop: number) {
@@ -176,6 +185,33 @@ describe("Header", () => {
       setScrollY(200);
       fireEvent.scroll(window);
       expect(header).not.toHaveClass("is-header-hidden");
+    } finally {
+      vi.unstubAllGlobals();
+      setScrollY(0);
+    }
+  });
+
+  it("возвращает шапку на экран, когда меню открывают из спрятанного состояния", () => {
+    vi.stubGlobal("requestAnimationFrame", (callback: FrameRequestCallback) => {
+      callback(0);
+      return 1;
+    });
+    vi.stubGlobal("cancelAnimationFrame", vi.fn());
+
+    try {
+      render(<Header />);
+      const header = screen.getByRole("banner");
+
+      setScrollY(400);
+      fireEvent.scroll(window);
+      expect(header).toHaveClass("is-header-hidden");
+
+      fireEvent.click(screen.getByRole("button", { name: "Открыть меню" }));
+
+      // Оверлей фиксирован внутри шапки: пока на ландмарке висит transform, меню
+      // считает координаты от коробки пилюли, а не от вьюпорта.
+      expect(header).not.toHaveClass("is-header-hidden");
+      expect(header).toHaveClass("is-menu-open");
     } finally {
       vi.unstubAllGlobals();
       setScrollY(0);
@@ -587,5 +623,13 @@ describe("Header: переходы и клавиатура через user-event
       expect.objectContaining({ top: 2000 - HEADER_OFFSET_FALLBACK, behavior: "smooth" }),
     );
     expect(document.body.style.overflow).toBe("");
+  });
+});
+
+describe("Header: контракт стилей пилюли", () => {
+  it("гасит переход шапки, пока открыто меню", () => {
+    // Оверлей меню фиксирован внутри ландмарки: анимированный transform на ней
+    // все 420 мс держал бы меню в коробке пилюли.
+    expect(HEADER_CSS).toMatch(/\.site-header\.is-menu-open \{[^}]*transition: none;/);
   });
 });
