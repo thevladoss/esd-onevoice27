@@ -44,7 +44,8 @@ export function zoomEventFilter(event: ZoomSourceEvent): boolean {
     return (event.touches?.length ?? 0) >= 2;
   }
 
-  return !event.button;
+  // Ctrl+click на macOS открывает контекстное меню: панорама под ним увела бы карту.
+  return !event.ctrlKey && !event.button;
 }
 
 function lerp(from: number, to: number, t: number): number {

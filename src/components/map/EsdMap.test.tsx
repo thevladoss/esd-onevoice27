@@ -256,5 +256,7 @@ describe("зум карты", () => {
     expect(zoomEventFilter(fakeEvent({ type: "touchmove", touches: { length: 2 } }))).toBe(true);
     expect(zoomEventFilter(fakeEvent({ type: "mousedown", button: 0 }))).toBe(true);
     expect(zoomEventFilter(fakeEvent({ type: "mousedown", button: 2 }))).toBe(false);
+    // На macOS ctrl+click приходит как mousedown с button 0 и открывает контекстное меню.
+    expect(zoomEventFilter(fakeEvent({ type: "mousedown", button: 0, ctrlKey: true }))).toBe(false);
   });
 });
