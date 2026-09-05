@@ -167,6 +167,10 @@
   inset: 0;
   z-index: 1;
   padding: calc(88px + 16px) clamp(24px, 7vw, 56px) clamp(24px, 7vw, 56px);
+  /* Длинный список пунктов в альбомной ориентации прокручивается внутри
+     оверлея, а не тянет за собой страницу под ним. */
+  overflow-y: auto;
+  overscroll-behavior: contain;
   background:
     radial-gradient(circle at 14% 18%, rgb(158 67 154 / .22), transparent 38%),
     radial-gradient(circle at 88% 78%, rgb(84 164 172 / .18), transparent 42%),

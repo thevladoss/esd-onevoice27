@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef } from "react";
 import type { MouseEvent, RefObject } from "react";
 import { copy } from "../../data/copy";
 import type { NavItem } from "../../data/copy";
+import { lockScroll, unlockScroll } from "../../lib/scrollLock";
 
 const DESKTOP_QUERY = "(min-width: 768px)";
 
@@ -47,11 +48,8 @@ export function MobileMenu({ open, onClose, onNavigate, items, burgerRef }: Mobi
       return;
     }
 
-    const previous = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = previous;
-    };
+    lockScroll();
+    return unlockScroll;
   }, [open]);
 
   useEffect(() => {
@@ -149,6 +147,9 @@ export function MobileMenu({ open, onClose, onNavigate, items, burgerRef }: Mobi
                 href={item.href}
                 onClick={(event) => {
                   event.preventDefault();
+                  // Позиция страницы возвращается до перехода: иначе очистка
+                  // эффекта отмотала бы страницу обратно уже после прокрутки.
+                  unlockScroll();
                   onNavigate(item.href);
                 }}
               >

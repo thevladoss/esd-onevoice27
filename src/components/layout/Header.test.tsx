@@ -217,8 +217,8 @@ describe("Header: мобильный оверлей", () => {
     fireEvent.click(within(screen.getByRole("dialog", { name: "Меню" })).getByText("Участвовать"));
 
     expect(burger).toHaveAttribute("aria-expanded", "false");
-    expect(scrollTo).toHaveBeenCalledTimes(1);
-    expect(scrollTo).toHaveBeenCalledWith({ top: 800, behavior: "smooth" });
+    // Первый вызов возвращает страницу с зафиксированной позиции, второй ведёт к секции.
+    expect(scrollTo).toHaveBeenLastCalledWith({ top: 800, behavior: "smooth" });
   });
 
   it("замыкает фокус по кругу между ссылками оверлея и бургером", () => {
