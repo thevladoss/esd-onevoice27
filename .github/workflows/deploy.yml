@@ -5,10 +5,10 @@ on:
     branches: [main]
   workflow_dispatch:
 
+# Джобе build хватает чтения репозитория: права на публикацию Pages выданы
+# только джобе deploy, чтобы install-скрипты зависимостей не получали OIDC-токен.
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
 concurrency:
   group: pages
@@ -17,6 +17,11 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      # configure-pages читает настройки Pages через GET /repos/{owner}/{repo}/pages;
+      # публиковать эта джоба не может.
+      pages: read
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -34,6 +39,9 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
