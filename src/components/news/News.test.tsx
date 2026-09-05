@@ -1,4 +1,5 @@
-import { fireEvent, render, screen, within } from "@testing-library/react";
+import { act, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
+import { enterViewport } from "../../test/intersection";
 import { News } from "./News";
 import { formatNewsDate } from "./NewsCard";
 import { news } from "../../data/news";
@@ -224,6 +225,48 @@ describe("News", () => {
     expect(screen.getAllByRole("article")).toHaveLength(3);
     expect(screen.queryByText("На этой странице новостей нет")).toBeNull();
     expect(screen.getByRole("status")).toHaveTextContent("Страница 1 из 1");
+  });
+});
+
+describe("News: появление карточек при скролле", () => {
+  /** Появление идёт 700 мс реального времени, поэтому ожиданию нужен запас. */
+  const REVEAL_TIMEOUT = 3000;
+
+  function cardCells() {
+    return screen.getAllByRole("article").map((article) => article.closest("li") as HTMLElement);
+  }
+
+  it("показывает карточки второй страницы, а не оставляет пустую сетку", async () => {
+    render(<News />);
+
+    act(() => enterViewport());
+    await waitFor(
+      () => {
+        for (const cell of cardCells()) {
+          expect(cell.style.opacity).toBe("1");
+        }
+      },
+      { timeout: REVEAL_TIMEOUT },
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "Страница 2" }));
+    // Браузер сообщает о пересечении и той группе, за которой начал наблюдать после клика.
+    act(() => enterViewport());
+
+    await waitFor(
+      () => {
+        const cells = cardCells();
+        expect(cells).toHaveLength(3);
+        for (const cell of cells) {
+          expect(cell.style.opacity).toBe("1");
+        }
+      },
+      { timeout: REVEAL_TIMEOUT },
+    );
+
+    for (const cell of cardCells()) {
+      expect(cell.style.transform ?? "").not.toContain("24px");
+    }
   });
 });
 

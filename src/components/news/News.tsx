@@ -58,9 +58,15 @@ export function News({ items = news }: { items?: NewsItem[] } = {}) {
             ) : null}
           </div>
         ) : (
-          // Группа монтируется один раз на секцию: whileInView с `once` уже отработал,
-          // и карточки следующей страницы встают в готовое состояние без ожидания.
-          <RevealGroup as="ul" className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3 lg:gap-8">
+          // Ключ по номеру страницы пересобирает группу на каждом переходе. Без этого
+          // карточки следующей страницы остаются с opacity 0 навсегда: motion раздаёт
+          // вариант «visible» детям один раз, в момент пересечения группы с областью
+          // просмотра, а ребёнок, смонтированный позже, наследует только initial="hidden".
+          <RevealGroup
+            key={result.page}
+            as="ul"
+            className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3 lg:gap-8"
+          >
             {result.items.map((item) => (
               <RevealItem as="li" key={item.id} className="min-w-0">
                 <NewsCard item={item} />
