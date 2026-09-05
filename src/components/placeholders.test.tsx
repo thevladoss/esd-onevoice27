@@ -3,7 +3,6 @@ import type { ReactElement } from "react";
 import { copy } from "../data/copy";
 import { Hero } from "./hero/Hero";
 import { MapSection } from "./map/MapSection";
-import { LightForm } from "./form/LightForm";
 import { About } from "./about/About";
 import { Involve } from "./involve/Involve";
 import { News } from "./news/News";
@@ -21,13 +20,6 @@ type Placeholder = {
 const placeholders: Placeholder[] = [
   { name: "Hero", Component: Hero, id: "hero", headingLevel: 1, text: copy.sections.hero },
   { name: "MapSection", Component: MapSection, id: "map", headingLevel: 2, text: copy.sections.map },
-  {
-    name: "LightForm",
-    Component: LightForm,
-    id: "light-form",
-    headingLevel: 2,
-    text: copy.sections.lightForm,
-  },
   { name: "About", Component: About, id: "about", headingLevel: 2, text: copy.sections.about },
   {
     name: "Involve",
