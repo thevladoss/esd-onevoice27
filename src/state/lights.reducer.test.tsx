@@ -72,12 +72,17 @@ describe("lightsReducer", () => {
   });
 
   it("не зажигает свет в стране вне дивизиона и не роняет страницу", () => {
+    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
     const state = { lights: [] };
     const next = lightsReducer(state, { type: "add", input: { type: "person", countryId: 840 } });
 
     // Состояние возвращается тем же объектом: исключение в фазе рендера снесло бы корень React.
     expect(next).toBe(state);
     expect(next.lights).toHaveLength(0);
+    // Отказ виден разработчику: молчаливая потеря данных стоила бы ложного подтверждения.
+    expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining("840"));
+
+    warnSpy.mockRestore();
   });
 });
 
@@ -93,6 +98,29 @@ describe("LightsProvider", () => {
 
     expect(result.current.counts.people).toBe(1);
     expect(result.current.lights).toHaveLength(1);
+  });
+
+  it("отвечает true на зажжённый огонёк и false на страну вне дивизиона", () => {
+    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const { result } = renderHook(() => useLights(), { wrapper });
+
+    let lit: boolean | undefined;
+    act(() => {
+      lit = result.current.addLight({ type: "person", countryId: RUSSIA });
+    });
+    expect(lit).toBe(true);
+    expect(result.current.lights).toHaveLength(1);
+
+    let rejected: boolean | undefined;
+    act(() => {
+      rejected = result.current.addLight({ type: "person", countryId: 840 });
+    });
+    expect(rejected).toBe(false);
+    expect(result.current.lights).toHaveLength(1);
+    expect(result.current.counts).toEqual({ people: 1, groups: 0 });
+    expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining("840"));
+
+    warnSpy.mockRestore();
   });
 
   it("падает с понятной ошибкой вне провайдера", () => {

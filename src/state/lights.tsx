@@ -27,7 +27,8 @@ export interface LightCounts {
 export interface LightsValue {
   lights: Light[];
   counts: LightCounts;
-  addLight: (input: AddLightInput) => void;
+  /** true — огонёк зажёгся, false — страна вне дивизиона и состояние не изменилось. */
+  addLight: (input: AddLightInput) => boolean;
 }
 
 export function countLights(lights: readonly Light[]): LightCounts {
@@ -48,6 +49,13 @@ export function countLights(lights: readonly Light[]): LightCounts {
 /** Золотой угол: соседние огоньки одной страны расходятся по спирали, а не ложатся друг на друга. */
 const GOLDEN_ANGLE = 2.39996;
 
+/** Отказ виден разработчику и не слышен посетителю: в проде ветка вырезается сборкой. */
+function warnRejected(countryId: number): void {
+  if (import.meta.env.DEV) {
+    console.warn(`Страна вне дивизиона, огонёк не зажжён: ${countryId}`);
+  }
+}
+
 /**
  * Огонёк посетителя или null, если страна не входит в дивизион. Координата
  * считается от центра страны, а не приходит из формы: снаружи доходят только
@@ -57,6 +65,7 @@ const GOLDEN_ANGLE = 2.39996;
 export function tryCreateLight(lights: readonly Light[], input: AddLightInput): Light | null {
   const country = countryById(input.countryId);
   if (!country) {
+    warnRejected(input.countryId);
     return null;
   }
 
@@ -104,8 +113,17 @@ export function LightsProvider({
   }));
 
   const counts = useMemo(() => countLights(state.lights), [state.lights]);
-  const addLight = useCallback((input: AddLightInput) => {
+  /** Допуск считается до диспатча: dispatch ничего не возвращает, а форме нужен ответ
+   *  «огонёк зажёгся» до показа подтверждения. Правило то же, что у `tryCreateLight`:
+   *  страна должна быть в справочнике дивизиона. */
+  const addLight = useCallback((input: AddLightInput): boolean => {
+    if (!countryById(input.countryId)) {
+      warnRejected(input.countryId);
+      return false;
+    }
+
     dispatch({ type: "add", input });
+    return true;
   }, []);
 
   const value = useMemo<LightsValue>(

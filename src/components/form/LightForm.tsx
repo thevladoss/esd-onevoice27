@@ -43,6 +43,8 @@ export function LightForm() {
   const [attempted, setAttempted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [toastOpen, setToastOpen] = useState(false);
+  // Отказ формы: страна не дошла до карты, подтверждать нечего.
+  const [failed, setFailed] = useState(false);
   // Каждый успех монтирует тост заново: таймер автозакрытия отсчитывается от последнего огонька.
   const [toastKey, setToastKey] = useState(0);
   const submitTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -79,6 +81,7 @@ export function LightForm() {
   function updateField(field: LightFormField, value: string | boolean) {
     const next = { ...values, [field]: value } as LightFormValues;
     setValues(next);
+    setFailed(false);
 
     if (!attempted) {
       return;
@@ -117,16 +120,26 @@ export function LightForm() {
     }
 
     setSubmitting(true);
+    setFailed(false);
     submitTimer.current = setTimeout(() => {
       submitTimer.current = null;
-      addLight({ type: toLightType(values.type), countryId: Number(values.countryId) });
+      const lit = addLight({ type: toLightType(values.type), countryId: Number(values.countryId) });
+      setSubmitting(false);
+      returnFocus.current = true;
+
+      // Огонёк не зажёгся: форма не чистится, чтобы посетителю было что поправить,
+      // и подтверждения тоже нет — тост объявил бы несуществующий успех.
+      if (!lit) {
+        setFailed(true);
+        setErrors({ countryId: formCopy.errors.countryId });
+        return;
+      }
+
       setValues((prev) => ({ ...initialLightFormValues, type: prev.type }));
       setErrors({});
       setAttempted(false);
-      setSubmitting(false);
       setToastOpen(true);
       setToastKey((prev) => prev + 1);
-      returnFocus.current = true;
     }, SUBMIT_DELAY);
   }
 
@@ -259,6 +272,12 @@ export function LightForm() {
                 onBlur={() => revalidateField("consent")}
               />
             </fieldset>
+
+            {failed ? (
+              <p className="lf-error lf-submit-error" role="alert">
+                {formCopy.failure}
+              </p>
+            ) : null}
 
             <Button
               as="button"
