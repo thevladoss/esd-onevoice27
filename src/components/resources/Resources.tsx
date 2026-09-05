@@ -7,17 +7,37 @@ import { ResourceCard } from "./ResourceCard";
 import { ResourcePanel } from "./ResourcePanel";
 import "./resources.css";
 
+/** Переход из триптиха «Скачать материалы →» приходит с готовым хэшем. Строка сверяется целиком
+ *  и никуда не подставляется, поэтому адресная строка не управляет разметкой. */
+const MATERIALS_HASH = "#resources-materials";
+
+function hashOpensMaterials() {
+  return window.location.hash === MATERIALS_HASH;
+}
+
 export function Resources() {
-  const [active, setActive] = useState<ResourceKey | null>(null);
+  const [active, setActive] = useState<ResourceKey | null>(() =>
+    hashOpensMaterials() ? "materials" : null,
+  );
   const cardRefs = useRef<Record<ResourceKey, HTMLButtonElement | null>>({
     music: null,
     materials: null,
     video: null,
   });
   const panelRef = useRef<HTMLDivElement>(null);
+  const sectionRef = useRef<HTMLElement>(null);
 
   function toggle(kind: ResourceKey) {
     setActive((prev) => (prev === kind ? null : kind));
+  }
+
+  /** Закрывает панель и возвращает фокус на карточку, которая её открыла. */
+  function close() {
+    const trigger = active;
+    setActive(null);
+    if (trigger) {
+      cardRefs.current[trigger]?.focus();
+    }
   }
 
   useEffect(() => {
@@ -26,8 +46,18 @@ export function Resources() {
     }
   }, [active]);
 
+  useEffect(() => {
+    if (!hashOpensMaterials()) return;
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    sectionRef.current?.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "start" });
+  }, []);
+
   return (
-    <section id="resources" className="resources relative isolate overflow-hidden bg-midnight-950">
+    <section
+      id="resources"
+      ref={sectionRef}
+      className="resources relative isolate overflow-hidden bg-midnight-950"
+    >
       <div aria-hidden="true" data-particles className="pointer-events-none absolute -inset-6 -z-10">
         <span aria-hidden="true" className="resources-particles resources-particles--1" />
         <span aria-hidden="true" className="resources-particles resources-particles--2" />
@@ -86,8 +116,14 @@ export function Resources() {
               <ResourcePanel
                 key={active}
                 kind={active}
-                onClose={() => toggle(active)}
+                onClose={close}
                 ref={panelRef}
+                onKeyDown={(event) => {
+                  if (event.key === "Escape") {
+                    event.stopPropagation();
+                    close();
+                  }
+                }}
               />
             ) : null}
           </div>
