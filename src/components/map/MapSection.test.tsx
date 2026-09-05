@@ -28,7 +28,7 @@ describe("MapSection", () => {
     renderSection();
     expect(screen.getByText("ЧЕЛОВЕК")).toBeInTheDocument();
     expect(screen.getByText("ГРУПП")).toBeInTheDocument();
-    expect(screen.getByText("694")).toBeInTheDocument();
+    expect(screen.getByText("Людей: 694")).toBeInTheDocument();
   });
 
   it("молчит про ошибку, пока контейнер не измерен", () => {
