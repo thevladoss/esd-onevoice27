@@ -28,12 +28,13 @@ describe("generateLights", () => {
     expect(lights.filter((l) => l.type === "group")).toHaveLength(DEFAULT_GROUPS);
   });
 
-  it("детерминирован по seed", () => {
+  // Четыре прогона генератора с geoContains по 942 точкам: под нагрузкой параллельных процессов не укладываются в 5 с по умолчанию.
+  it("детерминирован по seed", { timeout: 30_000 }, () => {
     expect(generateLights(27)).toEqual(generateLights(27));
     expect(generateLights(28)).not.toEqual(generateLights(27));
   });
 
-  it("даёт уникальные id и точки внутри своей страны", () => {
+  it("даёт уникальные id и точки внутри своей страны", { timeout: 30_000 }, () => {
     const lights = generateLights();
 
     expect(new Set(lights.map((l) => l.id)).size).toBe(lights.length);
