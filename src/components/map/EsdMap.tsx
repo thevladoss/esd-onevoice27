@@ -154,8 +154,20 @@ export function EsdMap({
     onUserZoom: handleUserZoom,
   });
 
+  // Что уже отыграл полёт: по этой записи видно, сменился выбор или только размер контейнера.
+  const lastFlightRef = useRef<{ id: number | null; width: number; height: number } | null>(null);
+
   useEffect(() => {
     if (!projection) return;
+
+    const prev = lastFlightRef.current;
+    const sizeChanged = prev !== null && (prev.width !== width || prev.height !== height);
+    const selectionChanged = prev === null || prev.id !== selectedCountryId;
+    lastFlightRef.current = { id: selectedCountryId, width, height };
+
+    // Поворот телефона и схлопывание адресной строки меняют размер прямо во время просмотра.
+    // Страну при этом не переключали, поэтому камеру посетителя оставляем как есть.
+    if (sizeChanged && !selectionChanged && selectedCountryId === null) return;
 
     const feature = selectedCountryId === null ? undefined : featureById(selectedCountryId);
     let target = zoomIdentity;
@@ -173,7 +185,8 @@ export function EsdMap({
     }
 
     kAtSelectionRef.current = target.k;
-    zoomTo(target, !reduced);
+    // Перекадрирование по новому размеру идёт мгновенно: анимация на каждый шаг ресайза дёргается.
+    zoomTo(target, !reduced && selectionChanged);
   }, [projection, selectedCountryId, width, height, reduced, zoomTo]);
 
   // Радиусы огоньков делятся на масштаб вьюпорта: на любом зуме точка одного экранного размера.

@@ -1,5 +1,5 @@
 import { select } from "d3-selection";
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { ESD_IDS } from "../../data/countries";
@@ -194,6 +194,18 @@ describe("зум карты", () => {
     const { container } = render(<EsdMap lights={lights} size={SIZE} />);
     const svg = container.querySelector("svg");
     expect(svg?.style.getPropertyValue("touch-action")).toBe("pan-y");
+  });
+
+  it("держит камеру посетителя, когда меняется размер контейнера", () => {
+    const { container, rerender } = render(<EsdMap lights={lights} size={SIZE} />);
+    const svg = container.querySelector("svg") as SVGSVGElement;
+
+    fireEvent.wheel(svg, { deltaY: -240, ctrlKey: true, clientX: 600, clientY: 350 });
+    const byHand = readTransform(container);
+    expect(byHand).not.toBe("translate(0,0) scale(1)");
+
+    rerender(<EsdMap lights={lights} size={{ width: 900, height: 520 }} />);
+    expect(readTransform(container)).toBe(byHand);
   });
 
   it("не сбрасывает выбор во время программного полёта", () => {
