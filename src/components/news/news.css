@@ -1,0 +1,27 @@
+/* Секция новостей: подложка и три ореола лежат на самой секции, поэтому идут во
+   всю ширину окна. Скоса у новостей в оригинале нет — он есть только у involve
+   и футера, поэтому секция стоит ровно и соседей не подрезает. */
+
+.news-section {
+  position: relative;
+  isolation: isolate;
+  background-color: rgb(18 12 52);
+}
+
+.news-section::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 88% 18%, rgb(25 47 54 / .28), transparent 38%),
+    radial-gradient(circle at 8% 72%, rgb(22 29 61 / .34), transparent 42%),
+    radial-gradient(circle at 62% 106%, rgb(25 47 54 / .18), transparent 36%);
+}
+
+/* Контентная колонка поверх ореолов: слой позиционирован и иначе лёг бы на текст. */
+.news-section__inner {
+  position: relative;
+  z-index: 1;
+}

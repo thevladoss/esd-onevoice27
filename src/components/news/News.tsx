@@ -9,6 +9,7 @@ import { GradientTitle } from "../layout/GradientTitle";
 import { Reveal, RevealGroup, RevealItem } from "../layout/Reveal";
 import { NewsCard } from "./NewsCard";
 import { NewsPagination } from "./NewsPagination";
+import "./news.css";
 
 const PER_PAGE = 6;
 
@@ -22,16 +23,8 @@ export function News({ items = news }: { items?: NewsItem[] } = {}) {
   const isEmpty = outOfRange || result.items.length === 0;
 
   return (
-    <section
-      id="news"
-      aria-labelledby="news-title"
-      className="relative -mt-6 bg-midnight-900 [clip-path:polygon(0_24px,100%_0,100%_100%,0_100%)] md:-mt-12 md:[clip-path:polygon(0_48px,100%_0,100%_100%,0_100%)]"
-    >
-      <span
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_88%_18%,rgb(84_164_172/.14),transparent_38%),radial-gradient(circle_at_8%_72%,rgb(48_63_131/.22),transparent_42%)]"
-      />
-      <div className="relative mx-auto max-w-[72rem] px-4 pt-[calc(4rem+24px)] pb-16 md:px-8 md:pt-[calc(6rem+48px)] md:pb-24">
+    <section id="news" aria-labelledby="news-title" className="news-section">
+      <div className="news-section__inner mx-auto max-w-[72rem] px-4 py-16 md:px-8 md:py-24">
         <Reveal className="max-w-[34rem]">
           <Eyebrow>{newsCopy.eyebrow}</Eyebrow>
           <GradientTitle as="h2" variant="section" className="mt-2">
