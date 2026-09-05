@@ -72,18 +72,29 @@ function LiveToast({
     }, CLOSE_DURATION);
   }, [onClose]);
 
+  // Свежий requestClose лежит в ref, поэтому автотаймеру не нужна его идентичность.
+  const requestCloseRef = useRef(requestClose);
   useEffect(() => {
-    const autoTimer = setTimeout(requestClose, duration);
+    requestCloseRef.current = requestClose;
+  });
 
-    return () => {
-      clearTimeout(autoTimer);
+  // Автозакрытие отсчитывается один раз: новая ссылка onClose у родителя его не перезапускает.
+  useEffect(() => {
+    const autoTimer = setTimeout(() => requestCloseRef.current(), duration);
 
+    return () => clearTimeout(autoTimer);
+  }, [duration]);
+
+  // Таймер фазы ухода живёт до размонтирования: иначе тост завис бы прозрачным и ловил клики.
+  useEffect(
+    () => () => {
       if (closeTimer.current !== null) {
         clearTimeout(closeTimer.current);
         closeTimer.current = null;
       }
-    };
-  }, [duration, requestClose]);
+    },
+    [],
+  );
 
   return createPortal(
     <div
