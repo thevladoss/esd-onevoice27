@@ -318,6 +318,33 @@ describe("Header: мобильный оверлей", () => {
     expect(overlay()).toHaveAttribute("id", "mobile-menu");
   });
 
+  it("переключает состояние классами: is-open у оверлея, is-menu-open у шапки", () => {
+    render(<Header />);
+    const header = screen.getByRole("banner");
+
+    expect(header).not.toHaveClass("is-menu-open");
+    expect(overlay()).not.toHaveClass("is-open");
+
+    const burger = openMenu();
+    // Крест бургера и видимость оверлея CSS ловит именно по этим классам.
+    expect(header).toHaveClass("is-menu-open");
+    expect(overlay()).toHaveClass("is-open");
+
+    fireEvent.click(burger);
+    expect(header).not.toHaveClass("is-menu-open");
+    expect(overlay()).not.toHaveClass("is-open");
+  });
+
+  it("рисует бургер тремя линиями иконки 64×28, скрытой от скринридера", () => {
+    render(<Header />);
+    const icon = screen.getByRole("button", { name: "Открыть меню" }).querySelector("svg");
+
+    expect(icon).toHaveAttribute("viewBox", "0 0 64 28");
+    expect(icon).toHaveAttribute("aria-hidden", "true");
+    expect(icon).toHaveAttribute("focusable", "false");
+    expect(icon?.querySelectorAll("rect")).toHaveLength(3);
+  });
+
   it("не объявляет оверлей модальным: кнопка закрытия лежит снаружи диалога", () => {
     render(<Header />);
     openMenu();

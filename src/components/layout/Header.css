@@ -275,115 +275,169 @@
 }
 
 .burger {
-  display: inline-flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
+  display: grid;
   width: 48px;
   height: 48px;
   padding: 0;
-  color: var(--color-paper);
-  background: rgb(7 2 16 / .28);
-  border: 1.5px solid rgb(248 247 251 / .2);
-  border-radius: 12px;
+  place-items: center;
+  border: 0;
+  border-radius: 0;
+  color: rgb(248 247 251);
+  background: transparent;
+  -webkit-tap-highlight-color: transparent;
   cursor: pointer;
   transition:
     color var(--dur-ui) var(--ease-ui),
-    border-color var(--dur-ui) var(--ease-ui),
-    background-color var(--dur-ui) var(--ease-ui);
+    opacity var(--dur-ui) ease;
 }
 
 .burger:hover {
-  color: var(--color-horizon-200);
-  border-color: rgb(170 217 220 / .58);
-  background: rgb(48 63 131 / .34);
+  color: rgb(170 217 220);
 }
 
-.burger__line {
+.burger__icon {
+  display: block;
   width: 28px;
-  height: 1.5px;
-  background: currentColor;
-  border-radius: 999px;
+  height: auto;
+  overflow: visible;
+}
+
+/* transform-box: fill-box переносит начало координат в габарит самой линии:
+   иначе поворот считался бы от угла всего холста 64×28. */
+.burger__icon rect {
+  fill: currentColor;
+  transform-box: fill-box;
+  transform-origin: center center;
   transition:
     transform var(--dur-ui) var(--ease-ui),
-    opacity var(--dur-ui) var(--ease-ui);
+    opacity 168ms ease;
 }
 
-.burger[aria-expanded="true"] .burger__line:nth-child(1) {
-  transform: translateY(5.5px) rotate(45deg);
-}
-
-.burger[aria-expanded="true"] .burger__line:nth-child(2) {
+.is-menu-open .burger__icon rect:nth-child(1) {
   opacity: 0;
+  transform: translateY(-8px) scaleX(.72);
 }
 
-.burger[aria-expanded="true"] .burger__line:nth-child(3) {
-  transform: translateY(-5.5px) rotate(-45deg);
+.is-menu-open .burger__icon rect:nth-child(2) {
+  transform: scaleX(1.2308) rotate(45deg);
+}
+
+.is-menu-open .burger__icon rect:nth-child(3) {
+  transform: translateY(-12px) rotate(-45deg);
 }
 
 /* Оверлей лежит внутри ландмарки header и делит с пилюлей её стековый контекст:
-   z-index 40 у header поднимает оба слоя над контентом страницы, оставляя
-   ссылку пропуска (60) выше всего. */
+   z-index 40 у header поднимает оба слоя над контентом страницы, бургер (42)
+   остаётся кликабельным поверх оверлея, а ссылка пропуска (60) — выше всего.
+   Закрытый оверлей не размонтируется: переход visibility нужен обеим сторонам. */
 .mobile-menu {
   position: fixed;
+  z-index: 40;
   inset: 0;
-  z-index: 1;
-  padding: calc(88px + 16px) clamp(24px, 7vw, 56px) clamp(24px, 7vw, 56px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100svh;
+  min-height: 0;
+  padding: calc(72px + 1rem) clamp(24px, 7vw, 56px);
   /* Длинный список пунктов в альбомной ориентации прокручивается внутри
      оверлея, а не тянет за собой страницу под ним. */
   overflow-y: auto;
   overscroll-behavior: contain;
+  color: rgb(248 247 251 / .9);
   background:
     radial-gradient(circle at 14% 18%, rgb(158 67 154 / .22), transparent 38%),
-    radial-gradient(circle at 88% 78%, rgb(84 164 172 / .18), transparent 42%),
-    linear-gradient(145deg, rgb(7 2 16 / .98), rgb(20 24 51 / .97));
+    radial-gradient(circle at 88% 78%, rgb(67 139 150 / .18), transparent 42%),
+    linear-gradient(145deg, rgb(7 2 16 / .98), rgb(22 29 61 / .97));
   -webkit-backdrop-filter: blur(24px) saturate(125%);
   backdrop-filter: blur(24px) saturate(125%);
-  opacity: 0;
-  transform: translateY(-8px);
   visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-12px);
   transition:
-    opacity var(--dur-ui) var(--ease-ui),
+    opacity var(--dur-ui) ease,
     transform var(--dur-ui) var(--ease-ui),
     visibility 0s linear var(--dur-ui);
 }
 
-.mobile-menu[data-open="true"] {
-  opacity: 1;
-  transform: none;
+.mobile-menu.is-open {
   visibility: visible;
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
   transition-delay: 0s;
 }
 
+.mobile-menu__nav {
+  width: 100%;
+}
+
 .mobile-menu__list {
-  margin: 0;
+  display: flex;
+  flex-direction: column;
+  width: min(100%, 36rem);
+  margin: 0 auto;
   padding: 0;
+  gap: 0;
   list-style: none;
 }
 
-.mobile-menu__item + .mobile-menu__item {
-  border-top: 1px solid rgb(248 247 251 / .12);
+.mobile-menu__list > li {
+  border-bottom: 1px solid rgb(184 192 230 / .18);
+}
+
+.mobile-menu__list > li:first-child {
+  border-top: 1px solid rgb(184 192 230 / .18);
 }
 
 .mobile-menu__link {
+  position: relative;
   display: flex;
   align-items: center;
-  min-height: 48px;
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: clamp(1.25rem, 6vw, 1.75rem);
-  text-transform: uppercase;
-  letter-spacing: 0.02em;
-  line-height: 1.2;
+  min-height: 4.75rem;
+  padding-inline: .25rem 2.5rem;
   color: rgb(248 247 251 / .9);
+  font-family: var(--font-display);
+  font-size: clamp(1.65rem, 8vw, 2.6rem);
+  font-weight: 750;
+  line-height: 1.08;
+  letter-spacing: -.035em;
   text-decoration: none;
-  transition: color var(--dur-ui) var(--ease-ui);
+  transition:
+    color var(--dur-ui) ease,
+    padding var(--dur-ui) var(--ease-ui);
+}
+
+/* Короткая линия справа вытягивается на всю ширину под курсором. */
+.mobile-menu__link::after {
+  content: "";
+  position: absolute;
+  right: .25rem;
+  width: 1.5rem;
+  height: 1px;
+  background: linear-gradient(90deg, rgb(210 142 190 / .82), rgb(84 164 172 / .76));
+  transform: scaleX(.42);
+  transform-origin: right center;
+  transition: transform var(--dur-ui) var(--ease-ui);
 }
 
 .mobile-menu__link:hover,
 .mobile-menu__link:focus-visible {
-  color: var(--color-horizon-200);
+  color: rgb(231 245 245);
+  padding-left: .75rem;
+}
+
+.mobile-menu__link:hover::after,
+.mobile-menu__link:focus-visible::after {
+  transform: scaleX(1);
+}
+
+@media (width >= theme(--breakpoint-desktop)) {
+  .mobile-menu {
+    padding-block: calc(88px + 1rem);
+  }
 }
 
 @media (width >= theme(--breakpoint-nav)) {

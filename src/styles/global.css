@@ -324,6 +324,18 @@ main:focus-visible {
     transform: none !important;
   }
 
+  /* Шапка и мобильное меню перечислены отдельно от страховки выше: у них
+     переходов больше всего (скрытие при прокрутке, крест бургера, выезд
+     оверлея), и в оригинале этот блок выглядит так же. */
+  .site-header,
+  .site-header *,
+  .site-header ::before,
+  .site-header ::after,
+  .mobile-menu,
+  .mobile-menu * {
+    transition-duration: .01ms !important;
+  }
+
   html {
     scroll-behavior: auto;
   }
