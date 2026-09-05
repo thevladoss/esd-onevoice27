@@ -169,6 +169,30 @@ describe("панель: клавиатура и deep link", () => {
     ).toBe("true");
   });
 
+  it("открывает панель материалов по смене хэша внутри уже открытой страницы", () => {
+    render(<Resources />);
+    expect(screen.queryByRole("region")).toBeNull();
+
+    window.location.hash = "#resources-materials";
+    fireEvent(window, new Event("hashchange"));
+
+    const region = screen.getByRole("region");
+    expect(within(region).getAllByRole("link")).toHaveLength(5);
+    expect(
+      screen.getByRole("button", { name: CARD_MATERIALS }).getAttribute("aria-expanded"),
+    ).toBe("true");
+  });
+
+  it("снимает слушателя хэша при размонтировании", () => {
+    const { unmount } = render(<Resources />);
+    unmount();
+
+    window.location.hash = "#resources-materials";
+    fireEvent(window, new Event("hashchange"));
+
+    expect(screen.queryByRole("region")).toBeNull();
+  });
+
   it("держит три слоя частиц в декоративном фоне секции", () => {
     render(<Resources />);
 
