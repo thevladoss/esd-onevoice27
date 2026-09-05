@@ -30,18 +30,38 @@ const MOTION_TAGS = {
 /** Семантика обёртки. Список закрыт: обёртка появляется только вокруг блоков и карточек. */
 export type RevealTag = keyof typeof MOTION_TAGS;
 
-/** Общие пропы трёх обёрток. Aria-атрибуты и ref проходят насквозь: секции держат на этих же
- *  узлах живые регионы и измеряют их через IntersectionObserver.
- *  На месте передачи ref приводится к `never`: объединение тегов пересекает типы ref
- *  (`HTMLDivElement & HTMLLIElement & …`), и общего надтипа у них нет. */
-type RevealBaseProps = AriaAttributes & {
-  as?: RevealTag;
-  className?: string;
-  children: ReactNode;
-  ref?: Ref<HTMLElement>;
+/** Узел каждого разрешённого тега. Связка нужна, чтобы `as` и `ref` проверялись вместе:
+ *  раньше ref приводился к `never`, и `<Reveal as="li" ref={divRef}>` собирался молча,
+ *  а в рантайме в `useRef<HTMLDivElement>` ложился `HTMLLIElement`. */
+type TagElement = {
+  div: HTMLDivElement;
+  section: HTMLElement;
+  article: HTMLElement;
+  figure: HTMLElement;
+  ul: HTMLUListElement;
+  li: HTMLLIElement;
+  p: HTMLParagraphElement;
 };
 
-type RevealProps = RevealBaseProps & { delay?: number };
+/** Общие пропы трёх обёрток. Aria-атрибуты и ref проходят насквозь: секции держат на этих же
+ *  узлах живые регионы и измеряют их через IntersectionObserver. */
+type RevealBaseProps<T extends RevealTag = "div"> = AriaAttributes & {
+  as?: T;
+  className?: string;
+  children: ReactNode;
+  ref?: Ref<TagElement[T]>;
+};
+
+type RevealProps<T extends RevealTag = "div"> = RevealBaseProps<T> & { delay?: number };
+
+/**
+ * Внутреннее сужение до одного тега: типы семи готовых motion-компонентов различаются только
+ * элементом ref, а снаружи пара `as`+`ref` уже проверена типом `RevealBaseProps`.
+ * Ref сужается рядом, отдельной строкой: правило react-hooks/refs не пускает ref в функцию.
+ */
+function narrowTag<T extends RevealTag>(as: T) {
+  return { Tag: as as "div", MotionTag: MOTION_TAGS[as] as typeof motion.div };
+}
 
 /** Ширину читаем один раз при монтировании: reveal играет один раз, ресайз его не перезапускает. */
 function useRevealSetup() {
@@ -70,15 +90,22 @@ function useRevealSetup() {
  * у стеклянных карточек, поэтому в обёртке их нет.
  * При `prefers-reduced-motion: reduce` рендерится обычный элемент без inline-стилей.
  */
-export function Reveal({ as = "div", className, delay = 0, children, ref, ...aria }: RevealProps) {
+export function Reveal<T extends RevealTag = "div">({
+  as,
+  className,
+  delay = 0,
+  children,
+  ref,
+  ...aria
+}: RevealProps<T>) {
   const reduce = usePrefersReducedMotion();
   const { shift, viewport } = useRevealSetup();
-  const Tag = as;
-  const MotionTag = MOTION_TAGS[as];
+  const { Tag, MotionTag } = narrowTag(as ?? ("div" as T));
+  const nodeRef = ref as Ref<HTMLDivElement> | undefined;
 
   if (reduce) {
     return (
-      <Tag className={className} ref={ref as never} {...aria}>
+      <Tag className={className} ref={nodeRef} {...aria}>
         {children}
       </Tag>
     );
@@ -87,7 +114,7 @@ export function Reveal({ as = "div", className, delay = 0, children, ref, ...ari
   return (
     <MotionTag
       className={className}
-      ref={ref as never}
+      ref={nodeRef}
       {...aria}
       initial={{ opacity: 0, y: shift }}
       whileInView={{ opacity: 1, y: 0 }}
@@ -111,15 +138,21 @@ const groupVariants = {
  * Больше шести `RevealItem` в одной группе не кладём: последняя карточка стартует на 0.4s,
  * и волна перестаёт читаться как одно движение.
  */
-export function RevealGroup({ as = "div", className, children, ref, ...aria }: RevealBaseProps) {
+export function RevealGroup<T extends RevealTag = "div">({
+  as,
+  className,
+  children,
+  ref,
+  ...aria
+}: RevealBaseProps<T>) {
   const reduce = usePrefersReducedMotion();
   const { viewport } = useRevealSetup();
-  const Tag = as;
-  const MotionTag = MOTION_TAGS[as];
+  const { Tag, MotionTag } = narrowTag(as ?? ("div" as T));
+  const nodeRef = ref as Ref<HTMLDivElement> | undefined;
 
   if (reduce) {
     return (
-      <Tag className={className} ref={ref as never} {...aria}>
+      <Tag className={className} ref={nodeRef} {...aria}>
         {children}
       </Tag>
     );
@@ -128,7 +161,7 @@ export function RevealGroup({ as = "div", className, children, ref, ...aria }: R
   return (
     <MotionTag
       className={className}
-      ref={ref as never}
+      ref={nodeRef}
       {...aria}
       variants={groupVariants}
       initial="hidden"
@@ -141,11 +174,17 @@ export function RevealGroup({ as = "div", className, children, ref, ...aria }: R
 }
 
 /** Карточка внутри `RevealGroup`: состояние приходит от группы, своего `whileInView` нет. */
-export function RevealItem({ as = "div", className, children, ref, ...aria }: RevealBaseProps) {
+export function RevealItem<T extends RevealTag = "div">({
+  as,
+  className,
+  children,
+  ref,
+  ...aria
+}: RevealBaseProps<T>) {
   const reduce = usePrefersReducedMotion();
   const { shift } = useRevealSetup();
-  const Tag = as;
-  const MotionTag = MOTION_TAGS[as];
+  const { Tag, MotionTag } = narrowTag(as ?? ("div" as T));
+  const nodeRef = ref as Ref<HTMLDivElement> | undefined;
 
   const itemVariants = useMemo(
     () => ({
@@ -161,14 +200,14 @@ export function RevealItem({ as = "div", className, children, ref, ...aria }: Re
 
   if (reduce) {
     return (
-      <Tag className={className} ref={ref as never} {...aria}>
+      <Tag className={className} ref={nodeRef} {...aria}>
         {children}
       </Tag>
     );
   }
 
   return (
-    <MotionTag className={className} ref={ref as never} {...aria} variants={itemVariants}>
+    <MotionTag className={className} ref={nodeRef} {...aria} variants={itemVariants}>
       {children}
     </MotionTag>
   );
