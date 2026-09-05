@@ -37,8 +37,6 @@ export const PULSE_EVERY = 24;
 /** Опорная точка проверки проекции: Москва. */
 const PROBE: [number, number] = [37.6, 55.7];
 
-/** Доля вьюбокса, которую занимает страна после полёта: остальное поля вокруг неё. */
-const COUNTRY_FIT = 0.8;
 /** Насколько посетитель должен изменить масштаб, чтобы выбор страны сбросился. */
 const ZOOM_AWAY_RATIO = 0.15;
 
@@ -163,8 +161,10 @@ export function EsdMap({
     let target = zoomIdentity;
 
     if (feature) {
-      const [[x0, y0], [x1, y1]] = geoPath(projection).bounds(feature);
-      const fit = COUNTRY_FIT / Math.max((x1 - x0) / width, (y1 - y0) / height);
+      const path = geoPath(projection);
+      const [[x0, y0], [x1, y1]] = path.bounds(feature);
+      // Страна занимает 0.8 вьюбокса, остальное уходит на поля вокруг неё.
+      const fit = 0.8 / Math.max((x1 - x0) / width, (y1 - y0) / height);
       const k = Math.min(ZOOM_MAX, Math.max(ZOOM_MIN, fit));
       target = zoomIdentity
         .translate(width / 2, height / 2)

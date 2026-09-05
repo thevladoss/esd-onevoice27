@@ -28,21 +28,23 @@ export interface MapZoomApi {
   zoomTo: (target: ZoomTransform, animate: boolean) => void;
 }
 
+/** Событие указателя, колеса или касания в том виде, в каком его отдаёт d3-zoom. */
+export type ZoomSourceEvent = Partial<WheelEvent & TouchEvent & MouseEvent> & { type: string };
+
 /**
  * Колесо масштабирует только с Ctrl или ⌘, палец на экране — только вдвоём.
  * Иначе карта съедает обычный скролл страницы.
  */
-export function zoomEventFilter(event: Event): boolean {
+export function zoomEventFilter(event: ZoomSourceEvent): boolean {
   if (event.type === "wheel") {
-    const wheel = event as WheelEvent;
-    return wheel.ctrlKey || wheel.metaKey;
+    return Boolean(event.ctrlKey || event.metaKey);
   }
 
   if (event.type.startsWith("touch")) {
-    return ((event as TouchEvent).touches?.length ?? 0) >= 2;
+    return (event.touches?.length ?? 0) >= 2;
   }
 
-  return !(event as MouseEvent).button;
+  return !event.button;
 }
 
 function lerp(from: number, to: number, t: number): number {
