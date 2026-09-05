@@ -190,9 +190,3 @@
     color: CanvasText;
   }
 }
-
-@media (prefers-reduced-motion: reduce) {
-  .starfield__layer {
-    animation: none;
-  }
-}

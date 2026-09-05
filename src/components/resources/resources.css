@@ -115,19 +115,3 @@
     linear-gradient(145deg, rgb(255 255 255 / .045), transparent 30%),
     var(--glass-surface);
 }
-
-@media (prefers-reduced-motion: reduce) {
-  .resources-particles {
-    animation: none;
-    opacity: .28;
-  }
-
-  .resources-panel-wrap {
-    transition: none;
-  }
-
-  .resource-card,
-  .resource-card__trigger::after {
-    transition: none;
-  }
-}

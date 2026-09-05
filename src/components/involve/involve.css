@@ -218,11 +218,3 @@
     transform: translateX(3px);
   }
 }
-
-@media (prefers-reduced-motion: reduce) {
-  .inv-art,
-  .inv-arrow,
-  .inv-action::before {
-    transition: none;
-  }
-}

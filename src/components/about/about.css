@@ -125,11 +125,3 @@
     width: 100%;
   }
 }
-
-@media (prefers-reduced-motion: reduce) {
-  .ab-step,
-  .ab-step::after,
-  .ab-step-rule {
-    transition: none;
-  }
-}
