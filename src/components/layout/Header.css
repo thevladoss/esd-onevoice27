@@ -1,3 +1,6 @@
+/* @reference даёт доступ к @theme из tokens.css: сам по себе CSS не эмитит. */
+@reference "../../styles/global.css";
+
 /* Плавающая пилюля навигации: стекло, световая полоса, скос 20° на широких экранах. */
 
 .site-header {
@@ -231,7 +234,7 @@
   box-shadow: var(--shadow-header);
 }
 
-@media (min-width: 768px) {
+@media (width >= theme(--breakpoint-desktop)) {
   .site-header {
     top: 16px;
     inset-inline: 16px;

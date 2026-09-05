@@ -2,9 +2,8 @@ import { useCallback, useEffect, useRef } from "react";
 import type { MouseEvent, RefObject } from "react";
 import { copy } from "../../data/copy";
 import type { NavItem } from "../../data/copy";
+import { desktopQuery } from "../../lib/breakpoints";
 import { lockScroll, unlockScroll } from "../../lib/scrollLock";
-
-const DESKTOP_QUERY = "(min-width: 768px)";
 
 type MobileMenuProps = {
   open: boolean;
@@ -105,7 +104,7 @@ export function MobileMenu({ open, onClose, onNavigate, items, burgerRef }: Mobi
       return;
     }
 
-    const list = window.matchMedia?.(DESKTOP_QUERY);
+    const list = window.matchMedia?.(desktopQuery());
     if (!list) {
       return;
     }

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import type { MouseEvent } from "react";
 import { copy, sectionIds } from "../../data/copy";
+import { desktopQuery } from "../../lib/breakpoints";
 import { scrollToSection } from "../../lib/scrollToSection";
 import { useActiveSection } from "../../lib/useActiveSection";
 import { BurgerButton } from "./BurgerButton";
@@ -8,7 +9,6 @@ import { MobileMenu } from "./MobileMenu";
 import { Wordmark } from "./Wordmark";
 import "./Header.css";
 
-const DESKTOP_QUERY = "(min-width: 768px)";
 const COMPACT_AFTER = 24;
 const MENU_ID = "mobile-menu";
 
@@ -35,7 +35,7 @@ export function Header() {
   const burgerRef = useRef<HTMLButtonElement>(null);
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const isDesktop = useMediaQuery(DESKTOP_QUERY);
+  const isDesktop = useMediaQuery(desktopQuery());
   const activeSection = useActiveSection(sectionIds, isDesktop);
 
   useEffect(() => {

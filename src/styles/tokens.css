@@ -47,4 +47,9 @@
   /* Движение */
   --ease-ui: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-header: cubic-bezier(0.32, 0.72, 0, 1);
+
+  /* Граница десктопной раскладки: с неё меню разворачивается в строку, а бургер
+     с оверлеем исчезают. Единственный источник значения — его читают @media в
+     Header.css и Footer.css и src/lib/breakpoints.ts. */
+  --breakpoint-desktop: 768px;
 }

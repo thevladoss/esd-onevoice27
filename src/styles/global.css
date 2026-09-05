@@ -24,8 +24,8 @@ html {
   scroll-padding-top: var(--header-offset);
 }
 
-/* От 768px header отступает от края не на 12px, а на 16px. */
-@media (min-width: 768px) {
+/* На десктопе header отступает от края не на 12px, а на 16px. */
+@media (width >= theme(--breakpoint-desktop)) {
   :root {
     --header-offset: 104px;
   }
