@@ -1,30 +1,38 @@
-/* Секция ресурсов: звёздный фон, дрейфующие частицы, поверхность карточек и раскрытие панели.
-   Файл живёт вне слоёв Tailwind, поэтому его правила перекрывают утилиту .glass. */
+/* Секция ресурсов: подложка, атмосфера, дрейфующие частицы, поверхность карточек
+   и раскрытие панели. Файл живёт вне слоёв Tailwind, поэтому его правила
+   перекрывают утилиту .glass. */
 
-/* Звёздный фон: статичный слой мелких точек под содержимым секции. */
-.resources::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  opacity: .28;
-  background:
-    radial-gradient(circle at 13px 29px, rgb(170 217 220 / .88) 0 .7px, transparent 1.35px) 0 0 / 97px 113px repeat,
-    radial-gradient(circle at 79px 41px, rgb(143 157 214 / .78) 0 .9px, transparent 1.55px) 17px 31px / 139px 157px repeat;
+/* Подложка во всю ширину окна. На раскрытой панели она уходит в цвет её карточки. */
+.resources {
+  background-color: rgb(18 12 52);
+  transition: background-color .42s cubic-bezier(.22, 1, .36, 1);
 }
 
-/* Атмосфера секции: три радиальных пятна под содержимым. На раскрытой панели слой
-   медленно наезжает и красится акцентом открытой карточки — тот же приём, что
-   ov-resources-zoom-* в оригинале. Наезд гасит единый блок reduce по data-anim. */
+.resources.is-music-active {
+  background-color: rgb(22 29 61);
+}
+
+.resources.is-materials-active {
+  background-color: rgb(25 47 54);
+}
+
+.resources.is-video-active {
+  background-color: rgb(50 16 47);
+}
+
+/* Атмосфера секции: три радиальных пятна и диагональ под содержимым, с запасом
+   наружу. На раскрытой панели слой медленно наезжает и красится акцентом
+   открытой карточки — тот же приём, что ov-resources-zoom-* в оригинале.
+   Наезд гасит единый блок reduce по data-anim. */
 .resources-atmosphere {
-  inset: -6%;
+  inset: -8%;
   transform: scale(1);
   transform-origin: center;
   background:
-    radial-gradient(circle at 16% 18%, rgb(158 67 154 / .18), transparent 32%),
-    radial-gradient(circle at 82% 28%, rgb(84 164 172 / .16), transparent 38%),
-    radial-gradient(circle at 52% 84%, rgb(48 63 131 / .22), transparent 42%);
+    radial-gradient(circle at 16% 18%, rgb(108 44 104 / .18), transparent 32%),
+    radial-gradient(circle at 82% 28%, rgb(51 94 104 / .16), transparent 38%),
+    radial-gradient(circle at 52% 84%, rgb(48 63 131 / .22), transparent 42%),
+    linear-gradient(145deg, rgb(33 26 62 / .38), transparent 58%);
   transition: background 620ms var(--ease-header);
 }
 
@@ -62,47 +70,40 @@
   }
 }
 
-/* Три слоя частиц дрейфуют с разной скоростью, отсюда разброс --dur.
-   will-change здесь не ставим: три слоя на всю секцию держали бы постоянный
-   композитный слой ради петли, которая гаснет при reduce (аудит MOTION-02). */
+/* Звёздное поле одним слоем из пяти градиентов: радиусы точек 0.7 / 0.9 / 1.1 /
+   1.45 / 1.8px, шаги повтора 97×113, 139×157, 179×193, 257×233 и 337×311.
+   Шаги — соседние простые числа, поэтому узор не выдаёт себя решёткой.
+   Слой один, а не три: три слоя на всю секцию держали бы постоянный композитный
+   слой ради петли, которая гаснет при reduce (аудит MOTION-02). will-change по
+   той же причине не ставим. */
 .resources-particles {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  animation: resources-particles var(--dur) ease-in-out infinite alternate;
-}
-
-.resources-particles--1 {
-  --dur: 18s;
+  opacity: .16;
   background:
-    radial-gradient(circle at 13px 29px, rgb(170 217 220 / .74) 0 .7px, transparent 1.35px) 0 0 / 97px 113px repeat,
-    radial-gradient(circle at 47px 127px, rgb(210 142 190 / .68) 0 1.1px, transparent 1.85px) 53px 11px / 179px 193px repeat;
-}
-
-.resources-particles--2 {
-  --dur: 22s;
-  background:
-    radial-gradient(circle at 79px 41px, rgb(143 157 214 / .62) 0 .9px, transparent 1.55px) 17px 31px / 139px 157px repeat;
-}
-
-.resources-particles--3 {
-  --dur: 26s;
-  background:
-    radial-gradient(circle at 193px 67px, rgb(170 217 220 / .74) 0 1.45px, transparent 2.35px) 23px 79px / 257px 233px repeat;
+    radial-gradient(circle at 13px 29px, rgb(231 245 245 / .88) 0, rgb(231 245 245 / .88) .7px, transparent 1.35px),
+    radial-gradient(circle at 79px 41px, rgb(217 222 244 / .78) 0, rgb(217 222 244 / .78) .9px, transparent 1.55px),
+    radial-gradient(circle at 47px 127px, rgb(240 211 231 / .68) 0, rgb(240 211 231 / .68) 1.1px, transparent 1.85px),
+    radial-gradient(circle at 193px 67px, rgb(207 234 235 / .74) 0, rgb(207 234 235 / .74) 1.45px, transparent 2.35px),
+    radial-gradient(circle at 271px 181px, rgb(235 238 250 / .62) 0, rgb(235 238 250 / .62) 1.8px, transparent 2.9px);
+  background-size: 97px 113px, 139px 157px, 179px 193px, 257px 233px, 337px 311px;
+  background-position: 0 0, 17px 31px, 53px 11px, 23px 79px, 101px 47px;
+  animation: resources-particles 26s ease-in-out infinite alternate;
 }
 
 @keyframes resources-particles {
   0% {
-    opacity: .2;
+    opacity: .16;
     transform: translate3d(0, 0, 0);
   }
   48% {
-    opacity: .6;
-    transform: translate3d(-18px, -24px, 0);
+    opacity: .3;
+    transform: translate3d(7px, -10px, 0);
   }
   100% {
     opacity: .22;
-    transform: translate3d(12px, -46px, 0);
+    transform: translate3d(-4px, -18px, 0);
   }
 }
 

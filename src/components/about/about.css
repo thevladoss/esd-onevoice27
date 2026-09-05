@@ -1,4 +1,6 @@
-/* Секция «Что такое Единый голос 27?» */
+/* Секция «Что такое Единый голос 27?»: фон снят с оригинала и живёт на самой
+   секции, поэтому идёт во всю ширину окна. Три ореола имеют центры за левым
+   краем, диагональ 162deg кладёт по нему мягкую тень. */
 .ab-section {
   --focus-ring: #aad9dc;
   --ui-transition: 420ms cubic-bezier(0.32, 0.72, 0, 1);
@@ -6,10 +8,29 @@
   position: relative;
   isolation: isolate;
   overflow-x: clip;
-  background:
-    radial-gradient(circle at 8% -10%, rgb(158 67 154 / .3), transparent 42%),
-    radial-gradient(circle at 104% 30%, rgb(48 63 131 / .9), transparent 46%),
-    var(--color-midnight-900);
+  background-color: rgb(22 29 61);
+  background-image:
+    radial-gradient(circle at 19% -3%, rgb(50 16 47 / .3) 60%, transparent 66.05%),
+    radial-gradient(circle at -34% -41%, rgb(25 47 54 / .9) 42%, transparent 54.05%),
+    radial-gradient(circle at -89% 47%, rgb(77 33 76 / .9) 47%, transparent 52.05%),
+    linear-gradient(162deg, rgb(33 26 62 / .9) 46%, transparent 50.05%);
+}
+
+/* Переход от подложки формы: полоса сверху гасит стык двух поверхностей. */
+.ab-section::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: 0;
+  height: clamp(120px, 18vw, 260px);
+  pointer-events: none;
+  background: linear-gradient(rgb(18 12 52), transparent);
+}
+
+/* Контентная колонка секции: без своего слоя переходная полоса легла бы на текст. */
+.ab-section > div {
+  position: relative;
+  z-index: 1;
 }
 
 /* Ширину текстовой колонки держит заголовочный блок, лид её наследует */

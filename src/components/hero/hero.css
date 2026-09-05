@@ -95,46 +95,26 @@
   pointer-events: none;
 }
 
-/* Затемняющие слои */
-.hero__scrim,
-.hero__vignette {
+/*
+ * Единый слой контраста поверх канваса, шесть градиентов оригинала в одном
+ * стеке. Плотная полоса у нижней кромки держит текст, три ореола с центрами за
+ * границей секции заводят внутрь мягкий свет от углов, диагональ 140deg кладёт
+ * тень слева. Раздельные скрим и виньетка сняты: нижние два слоя закрывают ту
+ * же работу и не съедают глобус до 10/255 яркости, как скрим с .92 к низу.
+ */
+.hero::after {
+  content: "";
   position: absolute;
   inset: 0;
-  pointer-events: none;
-}
-
-.hero__scrim {
   z-index: 3;
-  background: linear-gradient(180deg, rgb(7 2 16 / .2), rgb(7 2 16 / .92));
-}
-
-/*
- * Скрим держит контраст текста, но к низу он доходит до .92 непрозрачности и
- * съедает глобус целиком: замер после фазы 2 дал 10/255 средней яркости на его
- * области. С 768px текстовая колонка занимает левую половину, глобус — правую,
- * поэтому справа затемнение гасится маской до трети силы. Левее 60% ширины,
- * где лежат заголовок, подзаголовок и кнопка, скрим остаётся полным.
- */
-@media (min-width: 768px) {
-  .hero__scrim {
-    -webkit-mask-image: linear-gradient(
-      90deg,
-      #000 0 58%,
-      rgb(0 0 0 / .38) 74%,
-      rgb(0 0 0 / .26) 100%
-    );
-    mask-image: linear-gradient(
-      90deg,
-      #000 0 58%,
-      rgb(0 0 0 / .38) 74%,
-      rgb(0 0 0 / .26) 100%
-    );
-  }
-}
-
-.hero__vignette {
-  z-index: 4;
-  background: radial-gradient(ellipse at 50% 50%, transparent 42%, rgb(4 3 18 / .48) 100%);
+  pointer-events: none;
+  background:
+    linear-gradient(to top, rgb(8 3 19) 5.88%, transparent 28.15%),
+    radial-gradient(circle at 99% -64%, rgb(22 29 61 / .18) 57%, transparent 72.05%),
+    radial-gradient(circle at 27% 84%, rgb(48 63 131 / .15) 41%, transparent 60.05%),
+    radial-gradient(circle at -67% 95%, rgb(77 33 76 / .25) 46%, transparent 57.05%),
+    linear-gradient(140deg, rgb(7 2 16 / .14) 32%, transparent 40.05%),
+    linear-gradient(transparent 55%, rgb(7 2 16 / .34) 100%);
 }
 
 /* Текстовая колонка */

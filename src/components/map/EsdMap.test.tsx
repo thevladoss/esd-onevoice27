@@ -26,6 +26,21 @@ function count(selector: string): number {
   return document.querySelectorAll(selector).length;
 }
 
+/** Экранные координаты огоньков: по ним видно, как проекция легла в контейнер. */
+function lightXs(container: HTMLElement): number[] {
+  return Array.from(container.querySelectorAll<SVGCircleElement>(".light-core")).map((core) =>
+    Number(core.getAttribute("cx")),
+  );
+}
+
+function span(xs: number[]): number {
+  return Math.max(...xs) - Math.min(...xs);
+}
+
+function center(xs: number[]): number {
+  return (Math.max(...xs) + Math.min(...xs)) / 2;
+}
+
 function AddLightHarness() {
   const { lights: current, addLight } = useLights();
   return (
@@ -148,6 +163,22 @@ describe("EsdMap", () => {
     expect(onError).toHaveBeenCalledWith(true);
   });
 
+  it("считает проекцию по фактической ширине контейнера", () => {
+    // Контейнер карты идёт во всю ширину окна и шире колонки 72rem: вьюбокс
+    // повторяет его размер, а дивизион остаётся по центру.
+    const narrow = render(<EsdMap lights={lights} size={{ width: 1200, height: 700 }} />);
+    const wide = render(<EsdMap lights={lights} size={{ width: 1920, height: 700 }} />);
+
+    expect(wide.container.querySelector("svg")?.getAttribute("viewBox")).toBe("0 0 1920 700");
+
+    const narrowXs = lightXs(narrow.container);
+    const wideXs = lightXs(wide.container);
+    // Масштаб упирается в высоту контейнера, поэтому дивизион не растягивается
+    // по ширине, а вся картинка сдвигается к новому центру.
+    expect(span(wideXs)).toBeCloseTo(span(narrowXs), 6);
+    expect(center(wideXs) - center(narrowXs)).toBeCloseTo(360, 6);
+  });
+
   it("подсвечивает выбранную страну", () => {
     render(<EsdMap lights={lights} size={SIZE} selectedCountryId={643} />);
     const selected = Array.from(document.querySelectorAll<SVGPathElement>('path[data-selected="true"]'));
@@ -264,6 +295,10 @@ describe("зум карты", () => {
     fireEvent.wheel(svg, { deltaY: -240, ctrlKey: true, clientX: 600, clientY: 350 });
     const byHand = readTransform(container);
     expect(byHand).not.toBe("translate(0,0) scale(1)");
+
+    // Карта идёт во всю ширину окна, поэтому ресайз меняет ширину заметно.
+    rerender(<EsdMap lights={lights} size={{ width: 1920, height: 520 }} />);
+    expect(readTransform(container)).toBe(byHand);
 
     rerender(<EsdMap lights={lights} size={{ width: 900, height: 520 }} />);
     expect(readTransform(container)).toBe(byHand);

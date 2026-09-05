@@ -227,14 +227,28 @@ describe("панель: клавиатура и deep link", () => {
     expect(document.getElementById("resources-panel")).toBeNull();
   });
 
-  it("держит три слоя частиц в декоративном фоне секции", () => {
+  it("держит слой частиц в декоративном фоне секции", () => {
     render(<Resources />);
 
     const section = document.querySelector("section#resources") as HTMLElement;
     expect(section).not.toBeNull();
+    // Звёздное поле собрано в один узел: пять градиентов точек живут в его фоне.
     expect(
       section.querySelectorAll("[data-particles] > span[aria-hidden='true']"),
-    ).toHaveLength(3);
+    ).toHaveLength(1);
+  });
+
+  it("красит секцию под акцент открытой карточки", () => {
+    render(<Resources />);
+
+    const section = document.querySelector("section#resources") as HTMLElement;
+    expect(section.className).not.toContain("-active");
+
+    fireEvent.click(screen.getByRole("button", { name: CARD_VIDEO }));
+    expect(section.className).toContain("is-video-active");
+
+    fireEvent.click(screen.getByRole("button", { name: CARD_VIDEO }));
+    expect(section.className).not.toContain("-active");
   });
 
   it("помечает частицы и атмосферу атрибутами политики движения", () => {
@@ -243,7 +257,7 @@ describe("панель: клавиатура и deep link", () => {
     const section = document.querySelector("section#resources") as HTMLElement;
 
     const particles = Array.from(section.querySelectorAll('[data-anim="particles"]'));
-    expect(particles).toHaveLength(3);
+    expect(particles).toHaveLength(1);
     for (const layer of particles) {
       expect(layer).toHaveAttribute("aria-hidden", "true");
     }
