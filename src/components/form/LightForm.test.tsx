@@ -221,6 +221,42 @@ describe("LightForm: успешная отправка", () => {
     expect(submitButton()).not.toHaveAttribute("aria-busy");
     expect(document.activeElement).toBe(submitButton());
   });
+
+  it("блокирует поля на время отправки и снова открывает их после успеха", () => {
+    renderForm();
+    fillValidForm();
+    clickSubmit();
+
+    expect(control("firstName")).toBeDisabled();
+    expect(control("consent")).toBeDisabled();
+    expect(document.getElementById("light-form-countryId")).toBeDisabled();
+    expect(screen.getByRole("radio", { name: /Групповой маяк/ })).toBeDisabled();
+
+    act(() => {
+      vi.advanceTimersByTime(1200);
+    });
+
+    expect(control("firstName")).toBeEnabled();
+    expect(control("consent")).toBeEnabled();
+    expect(screen.getByRole("radio", { name: /Групповой маяк/ })).toBeEnabled();
+  });
+
+  it("не отбирает фокус, если пользователь ушёл в другое место страницы", () => {
+    renderForm();
+    fillValidForm();
+    clickSubmit();
+
+    const outside = document.createElement("button");
+    document.body.append(outside);
+    outside.focus();
+
+    act(() => {
+      vi.advanceTimersByTime(1200);
+    });
+
+    expect(document.activeElement).toBe(outside);
+    outside.remove();
+  });
 });
 
 describe("LightForm: объявление успеха", () => {

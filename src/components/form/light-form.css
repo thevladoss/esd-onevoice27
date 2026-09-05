@@ -75,6 +75,15 @@
   gap: 32px;
 }
 
+/* Группа полей блокируется на время отправки; display: contents оставляет раскладку форме */
+.lf-fields {
+  display: contents;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-inline-size: 0;
+}
+
 /* Тип света */
 .lf-types {
   display: grid;
