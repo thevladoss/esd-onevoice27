@@ -8,7 +8,14 @@ import { LightsProvider, useLights } from "../../state/lights";
 import { EsdMap, LIGHT_CORE_RADIUS, LIGHT_HALO_RADIUS } from "./EsdMap";
 import { ZoomTransform } from "d3-zoom";
 
-import { ZOOM_MAX, ZOOM_MIN, movedAway, zoomEventFilter } from "./useMapZoom";
+import {
+  ZOOM_MAX,
+  ZOOM_MIN,
+  ZOOM_PAD,
+  constrainTransform,
+  movedAway,
+  zoomEventFilter,
+} from "./useMapZoom";
 
 const SIZE = { width: 1200, height: 700 };
 
@@ -258,6 +265,28 @@ describe("зум карты", () => {
     first.unmount();
     expect(select(svg).on("wheel.zoom")).toBeUndefined();
     expect(() => render(<EsdMap lights={lights} size={SIZE} />)).not.toThrow();
+  });
+
+  it("держит программный полёт в разрешённой области", () => {
+    const extent: [[number, number], [number, number]] = [
+      [0, 0],
+      [SIZE.width, SIZE.height],
+    ];
+    const translateExtent: [[number, number], [number, number]] = [
+      [-ZOOM_PAD, -ZOOM_PAD],
+      [SIZE.width + ZOOM_PAD, SIZE.height + ZOOM_PAD],
+    ];
+
+    // Внутри границ трансформ остаётся как есть.
+    const inside = new ZoomTransform(2, -100, -80);
+    const kept = constrainTransform(inside, extent, translateExtent);
+    expect([kept.k, kept.x, kept.y]).toEqual([inside.k, inside.x, inside.y]);
+
+    // Камера за левым краем возвращается ровно на границу запаса.
+    const outside = new ZoomTransform(1, 500, 0);
+    const pulled = constrainTransform(outside, extent, translateExtent);
+    expect(pulled.k).toBe(1);
+    expect(pulled.invertX(0)).toBe(-ZOOM_PAD);
   });
 
   it("считает уходом камеры и масштаб, и сдвиг", () => {

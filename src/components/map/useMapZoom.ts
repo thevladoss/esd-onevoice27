@@ -77,6 +77,41 @@ function lerp(from: number, to: number, t: number): number {
   return from + (to - from) * t;
 }
 
+/** Границы вьюбокса и разрешённой области для заданного размера карты. */
+function zoomExtents(width: number, height: number) {
+  return {
+    extent: [
+      [0, 0],
+      [width, height],
+    ] as [[number, number], [number, number]],
+    translateExtent: [
+      [-ZOOM_PAD, -ZOOM_PAD],
+      [width + ZOOM_PAD, height + ZOOM_PAD],
+    ] as [[number, number], [number, number]],
+  };
+}
+
+/**
+ * Ограничение из d3-zoom (defaultConstrain), повторённое здесь: behavior.transform
+ * пишет трансформ напрямую и через constrain не проходит, поэтому программный полёт
+ * вставал за краем разрешённой области, а первый же жест рывком возвращал карту внутрь.
+ */
+export function constrainTransform(
+  transform: ZoomTransform,
+  extent: [[number, number], [number, number]],
+  translateExtent: [[number, number], [number, number]],
+): ZoomTransform {
+  const dx0 = transform.invertX(extent[0][0]) - translateExtent[0][0];
+  const dx1 = transform.invertX(extent[1][0]) - translateExtent[1][0];
+  const dy0 = transform.invertY(extent[0][1]) - translateExtent[0][1];
+  const dy1 = transform.invertY(extent[1][1]) - translateExtent[1][1];
+
+  return transform.translate(
+    dx1 > dx0 ? (dx0 + dx1) / 2 : Math.min(0, dx0) || Math.max(0, dx1),
+    dy1 > dy0 ? (dy0 + dy1) / 2 : Math.min(0, dy0) || Math.max(0, dy1),
+  );
+}
+
 export function useMapZoom(
   svgRef: RefObject<SVGSVGElement | null>,
   { width, height, enabled, onUserZoom }: UseMapZoomOptions,
@@ -103,17 +138,12 @@ export function useMapZoom(
     if (!enabled || !node || width < 1 || height < 1) return;
 
     const svg = select<SVGSVGElement, unknown>(node);
+    const { extent, translateExtent } = zoomExtents(width, height);
     const behavior = zoom<SVGSVGElement, unknown>()
       .scaleExtent([ZOOM_MIN, ZOOM_MAX])
       // extent задан явно: без layout измерение через getBoundingClientRect даёт нули.
-      .extent([
-        [0, 0],
-        [width, height],
-      ])
-      .translateExtent([
-        [-ZOOM_PAD, -ZOOM_PAD],
-        [width + ZOOM_PAD, height + ZOOM_PAD],
-      ])
+      .extent(extent)
+      .translateExtent(translateExtent)
       .filter(zoomEventFilter)
       .on("start", (event: D3ZoomEvent<SVGSVGElement, unknown>) => {
         if (event.sourceEvent?.type === "mousedown") setDragging(true);
@@ -146,30 +176,33 @@ export function useMapZoom(
 
       cancelFlight();
       const svg = select<SVGSVGElement, unknown>(node);
+      const { extent, translateExtent } = zoomExtents(width, height);
+      // Полёт держится в тех же границах, что и жесты: иначе первый жест дёрнет карту внутрь.
+      const bounded = constrainTransform(target, extent, translateExtent);
 
       if (!animate) {
-        behavior.transform(svg, target);
+        behavior.transform(svg, bounded);
         return;
       }
 
       const from = zoomTransform(node);
-      if (from.k === target.k && from.x === target.x && from.y === target.y) return;
+      if (from.k === bounded.k && from.x === bounded.x && from.y === bounded.y) return;
 
       const startedAt = performance.now();
       const step = (now: number) => {
         const t = Math.min(1, (now - startedAt) / FLIGHT_MS);
         const eased = easeOutQuint(t);
         const current = zoomIdentity
-          .translate(lerp(from.x, target.x, eased), lerp(from.y, target.y, eased))
-          .scale(lerp(from.k, target.k, eased));
+          .translate(lerp(from.x, bounded.x, eased), lerp(from.y, bounded.y, eased))
+          .scale(lerp(from.k, bounded.k, eased));
 
-        behavior.transform(svg, current);
+        behavior.transform(svg, constrainTransform(current, extent, translateExtent));
         flightRef.current = t < 1 ? requestAnimationFrame(step) : null;
       };
 
       flightRef.current = requestAnimationFrame(step);
     },
-    [svgRef, cancelFlight],
+    [svgRef, cancelFlight, width, height],
   );
 
   return useMemo(() => ({ transform, dragging, zoomTo }), [transform, dragging, zoomTo]);
