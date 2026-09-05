@@ -251,3 +251,58 @@
     min-height: 112px;
   }
 }
+
+/* Секция карты */
+.map-section {
+  position: relative;
+  background: #070210;
+  color: #f8f7fb;
+  overflow: hidden;
+  background-image:
+    radial-gradient(circle at 50% -42%, rgb(48 63 131 / .24), transparent 46%),
+    radial-gradient(circle at 88% -22%, rgb(84 164 172 / .2), transparent 40%);
+}
+
+/* Скос режет только внутренний слой: фон родителя тот же, поэтому по краям не появляются дырки. */
+.map-section__skew {
+  clip-path: polygon(0 46px, 100% 0, 100% calc(100% - 46px), 0 100%);
+  background: #070210;
+}
+
+.map-section__inner {
+  max-width: 72rem;
+  margin-inline: auto;
+  padding: 64px 16px;
+}
+
+.map-section__header {
+  text-align: center;
+  max-width: 42rem;
+  margin-inline: auto;
+  display: grid;
+  gap: 24px;
+}
+
+.map-stage {
+  position: relative;
+  margin-top: 32px;
+}
+
+.map-container {
+  position: relative;
+  height: clamp(520px, 70vh, 880px);
+  touch-action: pan-y;
+  cursor: grab;
+  overflow: hidden;
+  border-radius: 16px;
+}
+
+.map-container.is-dragging {
+  cursor: grabbing;
+}
+
+@media (min-width: 768px) {
+  .map-section__inner {
+    padding: 96px 32px;
+  }
+}
