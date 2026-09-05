@@ -6,6 +6,7 @@ import { useCountUp } from "../../lib/useCountUp";
 import { useInViewOnce } from "../../lib/useInViewOnce";
 import { usePrefersReducedMotion } from "../../lib/useReducedMotion";
 import { useLights } from "../../state/lights";
+import { RevealGroup, RevealItem } from "../layout/Reveal";
 import "./map.css";
 
 /** Счёт стартует, когда видно 40% блока со счётчиками. */
@@ -22,8 +23,10 @@ export function Counters() {
   return (
     // Живой регион один на обе карточки: два polite-региона ставили два объявления
     // в очередь на одно действие. Анимация счёта скрыта от него через aria-hidden.
-    <div className="counters" ref={rootRef} aria-live="polite">
-      <article className="counter counter--people">
+    // Каскад появления держит сам контейнер: на нём же лежит позиционирование поверх карты,
+    // и лишняя обёртка вокруг него схлопнулась бы в нулевую высоту.
+    <RevealGroup className="counters" ref={rootRef} aria-live="polite">
+      <RevealItem as="article" className="counter counter--people">
         <p className="counter__label">
           <span className="counter__dot" aria-hidden="true" />
           {mapCopy.counters.people}
@@ -32,8 +35,8 @@ export function Counters() {
           <span aria-hidden="true">{formatCount(people)}</span>
           <span className="sr-only">{mapCopy.counters.peopleLive(formatCount(counts.people))}</span>
         </p>
-      </article>
-      <article className="counter counter--groups">
+      </RevealItem>
+      <RevealItem as="article" className="counter counter--groups">
         <p className="counter__label">
           <span className="counter__dot" aria-hidden="true" />
           {mapCopy.counters.groups}
@@ -42,7 +45,7 @@ export function Counters() {
           <span aria-hidden="true">{formatCount(groups)}</span>
           <span className="sr-only">{mapCopy.counters.groupsLive(formatCount(counts.groups))}</span>
         </p>
-      </article>
-    </div>
+      </RevealItem>
+    </RevealGroup>
   );
 }

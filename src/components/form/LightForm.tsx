@@ -16,6 +16,7 @@ import { Button } from "../layout/Button";
 import { Eyebrow } from "../layout/Eyebrow";
 import { GlassCard } from "../layout/GlassCard";
 import { GradientTitle } from "../layout/GradientTitle";
+import { Reveal } from "../layout/Reveal";
 import { Section } from "../layout/Section";
 import { ConsentCheckbox } from "./ConsentCheckbox";
 import { FormField } from "./FormField";
@@ -133,144 +134,146 @@ export function LightForm() {
 
   return (
     <Section id="light-form" className="lf-section">
-      <div className="lf-head">
+      <Reveal className="lf-head">
         <Eyebrow>{formCopy.eyebrow}</Eyebrow>
         <GradientTitle as="h2" variant="section">
           {formCopy.title}
         </GradientTitle>
         <p className="lf-lead">{formCopy.lead}</p>
-      </div>
+      </Reveal>
 
-      <GlassCard className="lf-card">
-        <form className="lf-form" ref={formRef} noValidate onSubmit={handleSubmit}>
-          {/* Пока идёт отправка, поля заблокированы: иначе набор за эти 1200 мс стёрся бы сбросом. */}
-          <fieldset className="lf-fields" disabled={submitting}>
-            <LightTypeChoice
-              value={values.type}
-              onChange={(type) => setValues((prev) => ({ ...prev, type }))}
-            />
+      <Reveal delay={0.1}>
+        <GlassCard className="lf-card">
+          <form className="lf-form" ref={formRef} noValidate onSubmit={handleSubmit}>
+            {/* Пока идёт отправка, поля заблокированы: иначе набор за эти 1200 мс стёрся бы сбросом. */}
+            <fieldset className="lf-fields" disabled={submitting}>
+              <LightTypeChoice
+                value={values.type}
+                onChange={(type) => setValues((prev) => ({ ...prev, type }))}
+              />
 
-            <div className="lf-grid">
-              <FormField
-                id={fieldId("firstName")}
-                label={formCopy.fields.firstName.label}
-                error={errors.firstName}
-              >
-                {(control) => (
-                  <input
-                    {...control}
-                    type="text"
-                    name="firstName"
-                    autoComplete="given-name"
-                    placeholder={formCopy.fields.firstName.placeholder}
-                    value={values.firstName}
-                    onChange={(event) => updateField("firstName", event.target.value)}
-                    onBlur={() => revalidateField("firstName")}
-                  />
-                )}
-              </FormField>
+              <div className="lf-grid">
+                <FormField
+                  id={fieldId("firstName")}
+                  label={formCopy.fields.firstName.label}
+                  error={errors.firstName}
+                >
+                  {(control) => (
+                    <input
+                      {...control}
+                      type="text"
+                      name="firstName"
+                      autoComplete="given-name"
+                      placeholder={formCopy.fields.firstName.placeholder}
+                      value={values.firstName}
+                      onChange={(event) => updateField("firstName", event.target.value)}
+                      onBlur={() => revalidateField("firstName")}
+                    />
+                  )}
+                </FormField>
 
-              <FormField
-                id={fieldId("lastName")}
-                label={formCopy.fields.lastName.label}
-                error={errors.lastName}
-              >
-                {(control) => (
-                  <input
-                    {...control}
-                    type="text"
-                    name="lastName"
-                    autoComplete="family-name"
-                    placeholder={formCopy.fields.lastName.placeholder}
-                    value={values.lastName}
-                    onChange={(event) => updateField("lastName", event.target.value)}
-                    onBlur={() => revalidateField("lastName")}
-                  />
-                )}
-              </FormField>
+                <FormField
+                  id={fieldId("lastName")}
+                  label={formCopy.fields.lastName.label}
+                  error={errors.lastName}
+                >
+                  {(control) => (
+                    <input
+                      {...control}
+                      type="text"
+                      name="lastName"
+                      autoComplete="family-name"
+                      placeholder={formCopy.fields.lastName.placeholder}
+                      value={values.lastName}
+                      onChange={(event) => updateField("lastName", event.target.value)}
+                      onBlur={() => revalidateField("lastName")}
+                    />
+                  )}
+                </FormField>
 
-              <FormField
-                id={fieldId("countryId")}
-                label={formCopy.fields.country.label}
-                error={errors.countryId}
-              >
-                {(control) => (
-                  <select
-                    {...control}
-                    name="countryId"
-                    autoComplete="country-name"
-                    value={values.countryId}
-                    onChange={(event) => updateField("countryId", event.target.value)}
-                    onBlur={() => revalidateField("countryId")}
-                  >
-                    <option value="">{formCopy.fields.country.placeholder}</option>
-                    {ESD_COUNTRIES.map((country) => (
-                      <option key={country.id} value={String(country.id)}>
-                        {country.name}
-                      </option>
-                    ))}
-                  </select>
-                )}
-              </FormField>
+                <FormField
+                  id={fieldId("countryId")}
+                  label={formCopy.fields.country.label}
+                  error={errors.countryId}
+                >
+                  {(control) => (
+                    <select
+                      {...control}
+                      name="countryId"
+                      autoComplete="country-name"
+                      value={values.countryId}
+                      onChange={(event) => updateField("countryId", event.target.value)}
+                      onBlur={() => revalidateField("countryId")}
+                    >
+                      <option value="">{formCopy.fields.country.placeholder}</option>
+                      {ESD_COUNTRIES.map((country) => (
+                        <option key={country.id} value={String(country.id)}>
+                          {country.name}
+                        </option>
+                      ))}
+                    </select>
+                  )}
+                </FormField>
 
-              <FormField id={fieldId("city")} label={formCopy.fields.city.label} error={errors.city}>
-                {(control) => (
-                  <input
-                    {...control}
-                    type="text"
-                    name="city"
-                    autoComplete="address-level2"
-                    placeholder={formCopy.fields.city.placeholder}
-                    value={values.city}
-                    onChange={(event) => updateField("city", event.target.value)}
-                    onBlur={() => revalidateField("city")}
-                  />
-                )}
-              </FormField>
+                <FormField id={fieldId("city")} label={formCopy.fields.city.label} error={errors.city}>
+                  {(control) => (
+                    <input
+                      {...control}
+                      type="text"
+                      name="city"
+                      autoComplete="address-level2"
+                      placeholder={formCopy.fields.city.placeholder}
+                      value={values.city}
+                      onChange={(event) => updateField("city", event.target.value)}
+                      onBlur={() => revalidateField("city")}
+                    />
+                  )}
+                </FormField>
 
-              <FormField
-                id={fieldId("email")}
-                label={formCopy.fields.email.label}
-                error={errors.email}
-                className="lf-span"
-              >
-                {(control) => (
-                  <input
-                    {...control}
-                    type="email"
-                    name="email"
-                    autoComplete="email"
-                    placeholder={formCopy.fields.email.placeholder}
-                    value={values.email}
-                    onChange={(event) => updateField("email", event.target.value)}
-                    onBlur={() => revalidateField("email")}
-                  />
-                )}
-              </FormField>
-            </div>
+                <FormField
+                  id={fieldId("email")}
+                  label={formCopy.fields.email.label}
+                  error={errors.email}
+                  className="lf-span"
+                >
+                  {(control) => (
+                    <input
+                      {...control}
+                      type="email"
+                      name="email"
+                      autoComplete="email"
+                      placeholder={formCopy.fields.email.placeholder}
+                      value={values.email}
+                      onChange={(event) => updateField("email", event.target.value)}
+                      onBlur={() => revalidateField("email")}
+                    />
+                  )}
+                </FormField>
+              </div>
 
-            <ConsentCheckbox
-              id={fieldId("consent")}
-              checked={values.consent}
-              error={errors.consent}
-              onChange={(next) => updateField("consent", next)}
-              onBlur={() => revalidateField("consent")}
-            />
-          </fieldset>
+              <ConsentCheckbox
+                id={fieldId("consent")}
+                checked={values.consent}
+                error={errors.consent}
+                onChange={(next) => updateField("consent", next)}
+                onBlur={() => revalidateField("consent")}
+              />
+            </fieldset>
 
-          <Button
-            as="button"
-            type="submit"
-            variant="primary"
-            id={submitId}
-            className="lf-submit"
-            disabled={submitting}
-            aria-busy={submitting || undefined}
-          >
-            {submitting ? formCopy.submitting : formCopy.submit}
-          </Button>
-        </form>
-      </GlassCard>
+            <Button
+              as="button"
+              type="submit"
+              variant="primary"
+              id={submitId}
+              className="lf-submit"
+              disabled={submitting}
+              aria-busy={submitting || undefined}
+            >
+              {submitting ? formCopy.submitting : formCopy.submit}
+            </Button>
+          </form>
+        </GlassCard>
+      </Reveal>
 
       {/*
         Живой регион смонтирован всегда и пустой до успеха: скринридер объявляет отправку

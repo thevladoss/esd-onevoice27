@@ -6,6 +6,7 @@ import { paginate } from "../../lib/paginate";
 import { Button } from "../layout/Button";
 import { Eyebrow } from "../layout/Eyebrow";
 import { GradientTitle } from "../layout/GradientTitle";
+import { Reveal, RevealGroup, RevealItem } from "../layout/Reveal";
 import { NewsCard } from "./NewsCard";
 import { NewsPagination } from "./NewsPagination";
 
@@ -30,13 +31,13 @@ export function News({ items = news }: { items?: NewsItem[] } = {}) {
         className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_88%_18%,rgb(84_164_172/.14),transparent_38%),radial-gradient(circle_at_8%_72%,rgb(48_63_131/.22),transparent_42%)]"
       />
       <div className="relative mx-auto max-w-[72rem] px-4 pt-[calc(4rem+24px)] pb-16 md:px-8 md:pt-[calc(6rem+48px)] md:pb-24">
-        <div className="max-w-[34rem]">
+        <Reveal className="max-w-[34rem]">
           <Eyebrow>{newsCopy.eyebrow}</Eyebrow>
           <GradientTitle as="h2" variant="section" className="mt-2">
             {newsCopy.title}
           </GradientTitle>
           <p className="mt-4 font-body text-base leading-[1.5] text-paper/80">{newsCopy.body}</p>
-        </div>
+        </Reveal>
 
         {isEmpty ? (
           <div className="mt-12 rounded-card border border-[var(--glass-border)] p-8 text-center">
@@ -54,22 +55,24 @@ export function News({ items = news }: { items?: NewsItem[] } = {}) {
             ) : null}
           </div>
         ) : (
-          <ul className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3 lg:gap-8">
+          // Группа монтируется один раз на секцию: whileInView с `once` уже отработал,
+          // и карточки следующей страницы встают в готовое состояние без ожидания.
+          <RevealGroup as="ul" className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3 lg:gap-8">
             {result.items.map((item) => (
-              <li key={item.id}>
+              <RevealItem as="li" key={item.id}>
                 <NewsCard item={item} />
-              </li>
+              </RevealItem>
             ))}
-          </ul>
+          </RevealGroup>
         )}
 
         <p role="status" className="sr-only">
           {newsCopy.pageStatus(result.page, result.totalPages)}
         </p>
 
-        <div className="mt-12">
+        <Reveal delay={0.1} className="mt-12">
           <NewsPagination page={result.page} totalPages={result.totalPages} onChange={setPage} />
-        </div>
+        </Reveal>
       </div>
     </section>
   );
