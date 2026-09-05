@@ -131,7 +131,10 @@ export function Resources() {
           </div>
         </div>
 
-        <div id="resources-panel" data-open={active !== null} className="resources-panel-wrap mt-8">
+        {/* Обёртка держит только анимацию высоты: `id="resources-panel"` живёт на самой
+            панели с `role="region"`, иначе `aria-controls` карточек указывал бы на
+            безролевой div (04-UI-SPEC.md:244). */}
+        <div data-open={active !== null} className="resources-panel-wrap mt-8">
           <div className="min-h-0 overflow-hidden">
             {active ? (
               <ResourcePanel

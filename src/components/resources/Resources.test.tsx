@@ -8,9 +8,7 @@ const CARD_VIDEO = /Смотрите и делитесь/;
 const FACADE = /^Смотреть видео: /;
 
 function cardButtons() {
-  return Array.from(
-    document.querySelectorAll<HTMLButtonElement>('button[aria-controls="resources-panel"]'),
-  );
+  return Array.from(document.querySelectorAll<HTMLButtonElement>("button[data-kind]"));
 }
 
 afterEach(() => {
@@ -117,6 +115,25 @@ describe("Resources: карточки и панели", () => {
     expect(cards).toHaveLength(3);
     for (const card of cards) {
       expect(card.querySelector("a, button")).toBeNull();
+    }
+  });
+
+  it("держит id панели на элементе с role=region, а aria-controls — на раскрытой карточке", () => {
+    render(<Resources />);
+
+    const materialsBtn = screen.getByRole("button", { name: CARD_MATERIALS });
+    expect(materialsBtn.getAttribute("aria-controls")).toBeNull();
+
+    fireEvent.click(materialsBtn);
+
+    const region = screen.getByRole("region");
+    expect(region.getAttribute("id")).toBe("resources-panel");
+    expect(document.getElementById("resources-panel")).toBe(region);
+    expect(materialsBtn.getAttribute("aria-controls")).toBe("resources-panel");
+
+    for (const card of cardButtons().filter((card) => card !== materialsBtn)) {
+      expect(card.getAttribute("aria-controls")).toBeNull();
+      expect(card.getAttribute("aria-expanded")).toBe("false");
     }
   });
 

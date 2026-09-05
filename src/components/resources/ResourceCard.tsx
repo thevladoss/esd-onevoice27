@@ -26,7 +26,10 @@ export function ResourceCard({
       ref={ref}
       data-kind={kind}
       aria-expanded={isOpen}
-      aria-controls="resources-panel"
+      /* Панель одна на три карточки и живёт в DOM только раскрытой. Ссылку на неё держит
+         лишь открытая карточка: у закрытых `aria-controls` указывал бы на несуществующий
+         id, а при чужой раскрытой панели ещё и спорил бы с её состоянием. */
+      aria-controls={isOpen ? "resources-panel" : undefined}
       onClick={onToggle}
       style={{ "--accent": card.accent } as CSSProperties}
       className="resource-card glass flex min-h-64 w-full flex-col justify-between p-6 text-left transition-[transform,border-color] duration-[420ms] ease-header hover:border-[color:var(--accent)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[color:var(--accent)] motion-safe:hover:-translate-y-1 aria-expanded:border-[color:var(--accent)]"
