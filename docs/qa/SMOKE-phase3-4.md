@@ -27,3 +27,14 @@
 | Ошибки консоли / запросы ≥ 400 | 0 / 0 |
 
 Скриншоты: `phase3-live-form.jpeg`, `phase3-live-form-toast.jpeg`, `phase3-live-about.jpeg`, `phase3-live-involve.jpeg`, `phase4-live-news.jpeg`, `phase4-live-resources.jpeg`, `phase4-live-resources-materials.jpeg`, `phase4-live-resources-video.jpeg`, `phase4-live-quote.jpeg`.
+
+## Проверка после фиксов code review фаз 1–4 (коммит 030bf74, бандл index-BDFJFSwF.js)
+
+| Проверка | Результат |
+|---|---|
+| Клик «Участвовать» в header | hash `#involve`, верх секции на 115px (под пилюлей), `aria-current` на пункте, фокус на секции |
+| Чип «Армения» | масштаб 8 (зажат сверху), полёт без сброса |
+| `.counters` над картой | `pointer-events: none` — жесты доходят до карты |
+| Форма (индивидуальный свет, Беларусь) | огоньков +1, live-region «Ваш свет зажжён! Огонёк уже на карте.», счётчик «Человек» 695 |
+| Мобильное меню 390 | открывается (main получает `inert`, скролл заблокирован), Esc закрывает (aria-expanded false, фокус на бургере, inert снят); диалог остаётся в DOM скрытым (opacity 0, visibility hidden, aria-hidden) — по дизайну |
+| Ошибки консоли / запросы ≥ 400 | 0 / 0 |
