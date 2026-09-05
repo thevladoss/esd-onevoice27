@@ -84,7 +84,7 @@ Plans:
 **Wave 3** *(blocked on Wave 2 completion)*
 
 - [ ] 02-04-PLAN.md — Зум и панорамирование d3-zoom, чипы стран с полётом камеры, подсказка о жестах (MAP-05, MAP-06)
-- [ ] 02-05-PLAN.md — Count-up счётчиков с IntersectionObserver и reduced motion (MAP-04)
+- [x] 02-05-PLAN.md — Count-up счётчиков с IntersectionObserver и reduced motion (MAP-04)
 
 **UI hint**: yes
 
@@ -191,7 +191,7 @@ Phase 3 и Phase 4 обе зависят только от Phase 2 и незав
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Каркас и деплой | 5/5 | Complete   | 2026-09-05 |
-| 2. Hero и карта | 3/5 | In Progress|  |
+| 2. Hero и карта | 4/5 | In Progress|  |
 | 3. Форма, О проекте, Участие | 4/4 | Complete   | 2026-09-05 |
 | 4. Новости, Ресурсы, Цитата | 3/4 | In Progress|  |
 | 5. Полировка и финальный прогон | 0/7 | Planned | - |
