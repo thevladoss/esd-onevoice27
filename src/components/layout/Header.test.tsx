@@ -1,5 +1,6 @@
 import { act, fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { HEADER_OFFSET_FALLBACK } from "../../lib/headerOffset";
 import { Header } from "./Header";
 
 /** `documentTop` — позиция секции в координатах документа: rect.top + scrollY. */
@@ -73,7 +74,10 @@ describe("Header", () => {
     await user.click(screen.getByRole("link", { name: "Что это?" }));
 
     expect(scrollTo).toHaveBeenCalledTimes(1);
-    expect(scrollTo).toHaveBeenCalledWith({ top: 1100, behavior: "smooth" });
+    expect(scrollTo).toHaveBeenCalledWith({
+      top: 1200 - HEADER_OFFSET_FALLBACK,
+      behavior: "smooth",
+    });
   });
 
   it("пишет якорь в адрес и переносит фокус в секцию", async () => {
@@ -118,19 +122,36 @@ describe("Header", () => {
     expect(scrollTo).toHaveBeenCalledWith({ top: 0, behavior: "smooth" });
   });
 
-  it("уплотняет пилюлю после скролла больше 24px", () => {
+  it("собирает пилюлю из контейнера, вордмарка и обёртки бургера", () => {
     render(<Header />);
     const header = screen.getByRole("banner");
+    const content = header.querySelector(".site-header__content");
 
-    expect(header).toHaveAttribute("data-scrolled", "false");
+    expect(header).toHaveClass("site-header");
+    expect(content).not.toBeNull();
+    expect(content?.querySelector(".site-header__brand")).not.toBeNull();
+    // Бургер прячет CSS с 1024px, поэтому в jsdom проверяется обёртка-колонка.
+    expect(content?.querySelector(".site-header__toggler .burger")).not.toBeNull();
+  });
 
-    setScrollY(80);
-    fireEvent.scroll(window);
-    expect(header).toHaveAttribute("data-scrolled", "true");
+  it("заворачивает подпись пункта в span: по нему едет градиент", () => {
+    render(<Header />);
+    const nav = screen.getByRole("navigation", { name: "Основная навигация" });
+    const links = within(nav).getAllByRole("link");
 
-    setScrollY(10);
-    fireEvent.scroll(window);
-    expect(header).toHaveAttribute("data-scrolled", "false");
+    expect(nav).toHaveClass("site-nav");
+    for (const link of links) {
+      expect(link).toHaveClass("site-nav__link");
+      expect(link.firstElementChild?.tagName).toBe("SPAN");
+      expect(link.firstElementChild?.textContent).toBe(link.textContent);
+    }
+  });
+
+  it("красит вордмарк шапки однотонным, без градиента футера", () => {
+    render(<Header />);
+    const brand = screen.getByRole("link", { name: "Единый голос 27, на главную" });
+
+    expect(within(brand).getByText("Единый голос 27")).not.toHaveClass("text-gradient-brand");
   });
 
   it("даёт бургеру подпись и связь с оверлеем", () => {
@@ -189,7 +210,7 @@ describe("Header: десктопная навигация", () => {
 
   beforeEach(() => {
     notify = null;
-    mockMatchMedia("min-width: 768px");
+    mockMatchMedia("min-width: 1024px");
 
     class ObserverSpy {
       constructor(callback: IntersectionObserverCallback) {
@@ -340,7 +361,10 @@ describe("Header: мобильный оверлей", () => {
 
     expect(burger).toHaveAttribute("aria-expanded", "false");
     // Первый вызов возвращает страницу с зафиксированной позиции, второй ведёт к секции.
-    expect(scrollTo).toHaveBeenLastCalledWith({ top: 800, behavior: "smooth" });
+    expect(scrollTo).toHaveBeenLastCalledWith({
+      top: 900 - HEADER_OFFSET_FALLBACK,
+      behavior: "smooth",
+    });
   });
 
   it("замыкает фокус по кругу между ссылками оверлея и бургером", () => {
@@ -360,11 +384,11 @@ describe("Header: мобильный оверлей", () => {
   it("закрывает меню, когда экран становится десктопным", () => {
     const defaultMatchMedia = window.matchMedia;
     const listeners = new Set<(event: MediaQueryListEvent) => void>();
-    let desktop = false;
+    let wide = false;
 
     window.matchMedia = ((query: string) => ({
       get matches() {
-        return query.includes("min-width: 768px") ? desktop : false;
+        return query.includes("min-width: 1024px") ? wide : false;
       },
       media: query,
       onchange: null,
@@ -383,9 +407,9 @@ describe("Header: мобильный оверлей", () => {
       expect(burger).toHaveAttribute("aria-expanded", "true");
 
       act(() => {
-        desktop = true;
+        wide = true;
         listeners.forEach((listener) =>
-          listener({ matches: true, media: "(min-width: 768px)" } as MediaQueryListEvent),
+          listener({ matches: true, media: "(min-width: 1024px)" } as MediaQueryListEvent),
         );
       });
 
@@ -458,7 +482,9 @@ describe("Header: переходы и клавиатура через user-event
 
     await user.click(screen.getByRole("link", { name: "Участвовать" }));
 
-    expect(scrollTo).toHaveBeenCalledWith(expect.objectContaining({ top: 800, behavior: "auto" }));
+    expect(scrollTo).toHaveBeenCalledWith(
+      expect.objectContaining({ top: 900 - HEADER_OFFSET_FALLBACK, behavior: "auto" }),
+    );
   });
 
   it("открывает оверлей бургером и замораживает страницу", async () => {
@@ -503,7 +529,7 @@ describe("Header: переходы и клавиатура через user-event
     expect(burger).toHaveAttribute("aria-expanded", "false");
     // Первым вызовом снимается заморозка страницы, вторым идёт переход к секции.
     expect(scrollTo).toHaveBeenLastCalledWith(
-      expect.objectContaining({ top: 1900, behavior: "smooth" }),
+      expect.objectContaining({ top: 2000 - HEADER_OFFSET_FALLBACK, behavior: "smooth" }),
     );
     expect(document.body.style.overflow).toBe("");
   });

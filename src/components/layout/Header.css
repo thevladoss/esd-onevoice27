@@ -1,117 +1,277 @@
 /* @reference даёт доступ к @theme из tokens.css: сам по себе CSS не эмитит. */
 @reference "../../styles/global.css";
 
-/* Плавающая пилюля навигации: стекло, световая полоса, скос 20° на широких экранах. */
+/*
+ * Пилюля шапки собрана по CSS оригинала onevoice27.org. Рамка и стекло живут на
+ * псевдоэлементах: backdrop-filter и transform на самой ландмарке отрезали бы
+ * оверлей меню от вьюпорта. С 1280px оба слоя скошены — в оригинале это
+ * skewX(-20deg), у нас угол вынесен в --header-skew, потому что от него же
+ * считается компенсация горизонтального padding.
+ */
 
 .site-header {
   position: fixed;
-  top: 12px;
-  inset-inline: 12px;
-  margin-inline: auto;
-  max-width: 72rem;
-  z-index: 50;
+  inset-inline: 0;
+  top: 0;
+  width: 100%;
+  z-index: 40;
+  transform: none;
+  opacity: 1;
+  transition:
+    transform var(--dur-header) var(--ease-header),
+    opacity 302ms ease;
 }
 
-/* Пилюля несёт стекло и скос, поэтому слои живут на её псевдоэлементах:
-   backdrop-filter и transform на самой ландмарке отрезали бы оверлей меню
-   от вьюпорта. */
-.site-header__pill {
+.site-header.is-header-hidden {
+  transform: translateY(calc(-100% - 2rem));
+  opacity: 0;
+}
+
+/* Открытое меню держит шапку на экране в любом случае: кнопка закрытия —
+   бургер — лежит в пилюле. */
+.site-header.is-menu-open {
+  transform: none;
+  opacity: 1;
+}
+
+.site-header__content {
   position: relative;
   isolation: isolate;
-  z-index: 2;
-  display: flex;
+  display: grid;
+  width: 100%;
+  max-width: 72rem;
+  margin-inline: auto;
+  grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
-  justify-content: space-between;
-  gap: 24px;
-  min-height: 48px;
-  padding: 20px;
-  border-radius: var(--radius-header-compact);
-  transition: padding var(--dur-header) var(--ease-header);
-}
-
-.site-header__pill::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  border-radius: inherit;
-  background:
-    linear-gradient(180deg, rgb(255 255 255 / .07), transparent 42%),
-    rgb(7 2 16 / .77);
-  border: 1.5px solid var(--glass-border);
+  min-height: 72px;
+  padding-inline: 20px;
+  border-radius: 0;
   box-shadow: var(--shadow-header-mobile);
-  -webkit-backdrop-filter: blur(18px) saturate(135%);
-  backdrop-filter: blur(18px) saturate(135%);
-  transition: box-shadow var(--dur-header) var(--ease-header);
 }
 
-.site-header__pill::after {
+.site-header__content::before,
+.site-header__content::after {
   content: "";
   position: absolute;
-  top: 1.5px;
-  inset-inline: 1.5px;
-  height: 1.5px;
-  border-radius: inherit;
-  background: linear-gradient(
-    90deg,
-    rgb(187 108 174 / .82),
-    rgb(59 77 161 / .42) 43%,
-    rgb(84 164 172 / .76)
-  );
   pointer-events: none;
 }
 
-.site-header__brand {
-  display: inline-flex;
-  color: inherit;
-  text-decoration: none;
-}
-
-.site-header__list {
-  display: none;
-  align-items: center;
-  gap: 24px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.site-header__link {
-  position: relative;
-  display: inline-block;
-  padding: 8px 0;
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: var(--text-base);
-  text-transform: uppercase;
-  letter-spacing: 0.02em;
-  color: rgb(248 247 251 / .9);
-  text-decoration: none;
-  transition: color var(--dur-ui) var(--ease-ui);
-}
-
-.site-header__link:hover,
-.site-header__link:focus-visible {
-  color: var(--color-horizon-200);
-}
-
-.site-header__link::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
+/* На узком экране от рамки остаётся световая линия по нижнему краю. */
+.site-header__content::before {
+  z-index: 0;
+  inset: auto 0 0;
   height: 1.5px;
-  background: linear-gradient(90deg, var(--color-signal-400), var(--color-horizon-400));
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform var(--dur-underline) var(--ease-ui);
+  background: linear-gradient(
+    90deg,
+    rgb(210 142 190 / .82),
+    rgb(105 120 195 / .42) 43%,
+    rgb(255 255 255 / .12) 68%,
+    rgb(84 164 172 / .76)
+  );
 }
 
-.site-header__link:hover::after,
-.site-header__link:focus-visible::after,
-.site-header__link[aria-current="true"]::after {
-  transform: scaleX(1);
+.site-header__content::after {
+  z-index: -1;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgb(255 255 255 / .07), transparent 42%),
+    rgb(7 2 16 / .77);
+  -webkit-backdrop-filter: blur(18px) saturate(135%);
+  backdrop-filter: blur(18px) saturate(135%);
+}
+
+.site-header__brand {
+  position: relative;
+  z-index: 2;
+  grid-column: 1;
+  display: block;
+  width: min(146px, 100%);
+  min-width: 0;
+  color: rgb(255 255 255);
+  text-decoration: none;
+}
+
+/* Логотип оригинала — картинка фиксированной ширины. Наш вордмарк набран
+   текстом, поэтому в шапке он занимает тот же слот и свой кегль: иначе название
+   переносится на вторую строку и распирает пилюлю. */
+.site-header .wordmark {
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.site-header .wordmark__title {
+  font-size: 1.0625rem;
+}
+
+.site-header .wordmark__tagline {
+  font-size: .5625rem;
+  letter-spacing: .16em;
+}
+
+/* Бургер поднят над оверлеем: он же его и закрывает. */
+.site-header__toggler {
+  position: relative;
+  z-index: 42;
+  grid-column: 2;
+  justify-self: end;
+}
+
+.site-nav {
+  display: none;
+}
+
+@media (width >= theme(--breakpoint-desktop)) {
+  .site-header {
+    width: calc(100% - 32px);
+    margin: 16px;
+  }
+
+  .site-header__content {
+    min-height: 88px;
+    padding-inline: 28px;
+    border-radius: var(--radius-header-compact);
+    box-shadow: var(--shadow-header);
+  }
+
+  /* Рамка уходит под стекло целиком, наружу выходит только её кромка 1.5px. */
+  .site-header__content::before {
+    z-index: -2;
+    inset: 0;
+    height: auto;
+    border-radius: inherit;
+    background: linear-gradient(
+      112deg,
+      rgb(210 142 190 / .82),
+      rgb(105 120 195 / .42) 43%,
+      rgb(255 255 255 / .12) 68%,
+      rgb(84 164 172 / .76)
+    );
+  }
+
+  .site-header__content::after {
+    inset: 1.5px;
+    border-radius: calc(var(--radius-header-compact) - 1.5px);
+  }
+
+  .site-header__brand {
+    width: 169px;
+  }
+
+  .site-header .wordmark__title {
+    font-size: 1.1875rem;
+  }
+
+  .site-header .wordmark__tagline {
+    font-size: .625rem;
+  }
+}
+
+@media (width >= theme(--breakpoint-nav)) {
+  .site-header__content {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .site-header__brand {
+    width: 159px;
+  }
+
+  .site-header .wordmark__title {
+    font-size: 1.125rem;
+  }
+
+  .site-nav {
+    display: block;
+    grid-column: 2;
+    min-width: 0;
+  }
+
+  .site-nav__list {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: clamp(1.25rem, 2.6vw, 2.75rem);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .site-nav__link {
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-height: 2.75rem;
+    padding: .5rem 0;
+    color: rgb(248 247 251 / .9);
+    font-family: var(--font-display);
+    font-size: 1rem;
+    font-weight: 650;
+    letter-spacing: -0.015em;
+    text-transform: uppercase;
+    text-decoration: none;
+  }
+
+  /* Градиент вдвое шире текста и стоит светлым краем внутрь: на hover он
+     проезжает справа налево, и по буквам проходит цветная волна. */
+  .site-nav__link > span {
+    background-image: linear-gradient(
+      90deg,
+      rgb(210 142 190 / .82) 0%,
+      rgb(105 120 195 / .42) 18%,
+      rgb(84 164 172 / .76) 36%,
+      rgb(248 247 251 / .9) 48%,
+      rgb(248 247 251 / .9) 100%
+    );
+    background-size: 230% 100%;
+    background-position: 100% 50%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    transition: background-position var(--dur-menu-hover) var(--ease-ui);
+  }
+
+  .site-nav__link:hover > span,
+  .site-nav__link:focus-visible > span,
+  .site-nav__link[aria-current] > span {
+    background-position: 0 50%;
+  }
+}
+
+@media (width >= theme(--breakpoint-wide)) {
+  .site-header {
+    --header-skew: 20deg;
+    --header-skew-comp: 22px;
+  }
+
+  /* Точная компенсация скоса — половина высоты пилюли на тангенс угла. */
+  @supports (width: calc(1px * tan(1deg))) {
+    .site-header {
+      --header-skew-comp: calc(80px * tan(20deg) / 2);
+    }
+  }
+
+  .site-header__content {
+    min-height: 80px;
+    padding-inline: calc(32px + var(--header-skew-comp));
+    border-radius: var(--radius-header);
+    box-shadow: none;
+  }
+
+  /* Тень скошенного слоя рисует filter: box-shadow повторил бы прямоугольник. */
+  .site-header__content::before {
+    inset-inline: var(--header-skew-comp);
+    transform: skewX(calc(-1 * var(--header-skew)));
+    filter:
+      drop-shadow(0 3px 7px rgb(5 3 20 / .28))
+      drop-shadow(0 18px 30px rgb(5 3 20 / .24))
+      drop-shadow(0 8px 24px rgb(79 93 175 / .10));
+  }
+
+  .site-header__content::after {
+    inset-block: 1.5px;
+    inset-inline: calc(var(--header-skew-comp) + 1.5px);
+    border-radius: calc(var(--radius-header) - 1.5px);
+    transform: skewX(calc(-1 * var(--header-skew)));
+  }
 }
 
 .burger {
@@ -163,7 +323,7 @@
 }
 
 /* Оверлей лежит внутри ландмарки header и делит с пилюлей её стековый контекст:
-   z-index 50 у header поднимает оба слоя над контентом страницы, оставляя
+   z-index 40 у header поднимает оба слоя над контентом страницы, оставляя
    ссылку пропуска (60) выше всего. */
 .mobile-menu {
   position: fixed;
@@ -226,55 +386,12 @@
   color: var(--color-horizon-200);
 }
 
-.site-header[data-scrolled="true"] .site-header__pill {
-  padding-block: 12px;
-}
-
-.site-header[data-scrolled="true"] .site-header__pill::before {
-  box-shadow: var(--shadow-header);
-}
-
-@media (width >= theme(--breakpoint-desktop)) {
-  .site-header {
-    top: 16px;
-    inset-inline: 16px;
-  }
-
-  .site-header__pill {
-    border-radius: var(--radius-header);
-  }
-
-  .site-header__pill::before {
-    box-shadow: var(--shadow-header);
-  }
-
-  .site-header__list {
-    display: flex;
-  }
-
-  .burger {
+@media (width >= theme(--breakpoint-nav)) {
+  .site-header__toggler {
     display: none;
   }
 
   .mobile-menu {
     display: none;
-  }
-}
-
-/* Скос повторяет оригинал: параллелограмм рисуют псевдоэлементы, контент
-   остаётся прямым, а горизонтальный padding компенсирует срезанные углы. */
-@media (min-width: 1024px) {
-  .site-header__pill {
-    padding-inline: calc(32px + var(--header-skew-inset));
-  }
-
-  .site-header__pill::before {
-    inset-inline: var(--header-skew-inset);
-    transform: skewX(calc(-1 * var(--header-skew-angle)));
-  }
-
-  .site-header__pill::after {
-    inset-inline: calc(var(--header-skew-inset) + 1.5px);
-    transform: skewX(calc(-1 * var(--header-skew-angle)));
   }
 }

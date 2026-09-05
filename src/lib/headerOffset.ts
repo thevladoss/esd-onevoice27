@@ -3,7 +3,7 @@
  * `getComputedStyle` отдаёт пустую строку. Совпадает с мобильным значением
  * `--header-offset` в `src/styles/global.css`.
  */
-export const HEADER_OFFSET_FALLBACK = 100;
+export const HEADER_OFFSET_FALLBACK = 88;
 
 /**
  * Читает `--header-offset` — сколько плавающий header отъедает сверху вместе с

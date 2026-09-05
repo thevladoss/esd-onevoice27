@@ -1,19 +1,19 @@
-import { DESKTOP_MIN_PX_FALLBACK, desktopMinPx, desktopQuery } from "./breakpoints";
+import { NAV_MIN_PX_FALLBACK, navMinPx, navQuery } from "./breakpoints";
 
 describe("breakpoints", () => {
   afterEach(() => {
-    document.documentElement.style.removeProperty("--breakpoint-desktop");
+    document.documentElement.style.removeProperty("--breakpoint-nav");
   });
 
-  it("берёт границу из CSS-переменной --breakpoint-desktop", () => {
-    document.documentElement.style.setProperty("--breakpoint-desktop", "900px");
+  it("берёт границу из CSS-переменной --breakpoint-nav", () => {
+    document.documentElement.style.setProperty("--breakpoint-nav", "900px");
 
-    expect(desktopMinPx()).toBe(900);
-    expect(desktopQuery()).toBe("(min-width: 900px)");
+    expect(navMinPx()).toBe(900);
+    expect(navQuery()).toBe("(min-width: 900px)");
   });
 
-  it("отдаёт запасные 768px, когда стили не подключены", () => {
-    expect(desktopMinPx()).toBe(DESKTOP_MIN_PX_FALLBACK);
-    expect(desktopQuery()).toBe("(min-width: 768px)");
+  it("отдаёт запасные 1024px, когда стили не подключены", () => {
+    expect(navMinPx()).toBe(NAV_MIN_PX_FALLBACK);
+    expect(navQuery()).toBe("(min-width: 1024px)");
   });
 });
