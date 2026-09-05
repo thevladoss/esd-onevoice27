@@ -94,7 +94,7 @@ Fallback при недоступности Google Fonts: `sans-serif` систе
   --text-xs: 0.75rem;                                 /* 12px */
   --text-sm: 0.875rem;                                /* 14px */
   --text-base: 1rem;                                  /* 16px */
-  --text-section: clamp(1.75rem, 4vw, 2.5rem);        /* 28 → 40px */
+  --text-section: clamp(1.875rem, 4vw, 3rem);         /* 30 → 48px, как H2 оригинала (48px) */
   --text-wordmark: clamp(1.125rem, 2.2vw, 1.375rem);  /* 18 → 22px, только вордмарк */
   --text-tagline: 0.625rem;                           /* 10px, только «МИССИЯ ДЛЯ ВСЕХ» */
 
@@ -176,7 +176,7 @@ Namespace `--color-*`, `--font-*`, `--text-*`, `--radius-*`, `--shadow-*`, `--ea
 |------|-------|------|--------|--------|-------------|----------------|
 | Body | `--text-base` | 16px | Noto Sans | 400 | 1.6 | 0 |
 | Label | `--text-sm` | 14px | Noto Sans | 700 | 1.2 | 0.08em, uppercase |
-| Heading | `--text-section` | clamp 28 → 40px | Onest | 700 | 1.1 | -0.03em |
+| Heading | `--text-section` | clamp 30 → 48px | Onest | 900 | 1.05 | -0.035em |
 | Display | `--text-wordmark` | clamp 18 → 22px | Onest | 900 | 1.05 | -0.02em |
 
 **Микротекст** (`--text-xs`, 12px, Noto Sans 700, line-height 1.4, letter-spacing 0.1em, uppercase) обслуживает `Eyebrow` и юридическую строку footer (у неё letter-spacing 0, line-height 1.7, насыщенность 400).
@@ -185,8 +185,11 @@ Namespace `--color-*`, `--font-*`, `--text-*`, `--radius-*`, `--shadow-*`, `--ea
 1. Вордмарк «Единый голос 27» в header.
 2. Вордмарк «Единый голос 27» в footer.
 3. (фаза 2) H1 hero «Вместе, единым голосом».
+4. H2 секций через `GradientTitle variant="section"` (`--text-section`) — как в оригинале onevoice27.org (замерено: h2 font-weight 900, 48px).
+5. (фаза 2) Числа счётчиков «Человек» / «Групп» (в оригинале 900, 72px).
+6. (фаза 3) Номера карточек 1/2/3 в «О проекте».
 
-**Насыщенность 900 запрещена** в заголовках секций, кнопках, пунктах меню, карточках.
+**Насыщенность 900 запрещена** в кнопках, пунктах меню, заголовках карточек, тексте. Решение принято оркестратором 2026-09-05 при сведении контрактов фаз 1–3 (ранее было 700 для H2).
 
 ### Раскладка по элементам фазы 1
 
@@ -197,7 +200,7 @@ Namespace `--color-*`, `--font-*`, `--text-*`, `--radius-*`, `--shadow-*`, `--ea
 | Пункт меню | `--text-base` | Onest 700 | uppercase, letter-spacing 0.02em, цвет `rgb(248 247 251 / .9)` |
 | Пункт меню в оверлее | `clamp(1.25rem, 6vw, 1.75rem)` | Onest 700 | uppercase, letter-spacing 0.02em, line-height 1.2 |
 | `Eyebrow` | `--text-xs` | Noto Sans 700 | uppercase, letter-spacing 0.1em, цвет `horizon-200` |
-| `GradientTitle` (h2) | `--text-section` | Onest 700 | `var(--gradient-title)` через `background-clip: text`, `text-wrap: balance` |
+| `GradientTitle` (h2) | `--text-section` | Onest 900 | `var(--gradient-title)` через `background-clip: text`, `text-wrap: balance`, letter-spacing -0.035em, line-height 1.05, `padding-bottom: .12em` |
 | Текст заглушки секции | `--text-base` | Noto Sans 400 | line-height 1.6, `max-width: 54ch`, цвет `rgb(248 247 251 / .72)` |
 | `Button` (обе вариации) | `--text-sm` | Noto Sans 700 | uppercase, letter-spacing 0.08em, line-height 1.2 |
 | Подпись footer | `--text-sm` | Noto Sans 400 | line-height 1.6, цвет `rgb(248 247 251 / .82)` |
@@ -413,7 +416,7 @@ Props: `id`, `eyebrow?`, `title?`, `children`, `className?`.
 ### `GradientTitle` (`src/components/layout/GradientTitle.tsx`)
 
 Props: `as: "h1" | "h2"`, `variant: "hero" | "section"`, `children`.
-`section`: `--gradient-title`, `--text-section`, Onest 700, letter-spacing -0.03em, line-height 1.1.
+`section`: `--gradient-title`, `--text-section`, Onest 900, letter-spacing -0.035em, line-height 1.05, `padding-bottom: .12em` (защита выносных при `background-clip: text`).
 `hero`: градиент оригинала (`--ov-hero-title-gradient`, строки 617–632), Onest 900, `clamp(2.75rem, 8vw, 4.5rem)`, letter-spacing -0.055em, line-height 0.94. В фазе 1 объявлен, но не используется — фаза 2 берёт готовым.
 Обе вариации: `background-clip: text`, `-webkit-text-fill-color: transparent`, `box-decoration-break: clone`, `text-wrap: balance`, `padding: 0.08em 0 0.12em` и компенсирующие отрицательные `margin`, чтобы выносные элементы кириллицы не срезались.
 
