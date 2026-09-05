@@ -34,7 +34,9 @@ export function GlobeCanvas() {
     let height = 0;
     let layout: GlobeLayout = globeLayout(0, 0);
 
-    function resize() {
+    // Стрелки вместо объявлений функций: так TypeScript сохраняет сужение
+    // `canvas` и `ctx` до ненулевых типов внутри замыканий.
+    const resize = () => {
       const rect = canvas.getBoundingClientRect();
       width = rect.width;
       height = rect.height;
@@ -45,20 +47,20 @@ export function GlobeCanvas() {
       canvas.height = Math.round(height * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       layout = globeLayout(width, height);
-    }
+    };
 
-    function renderFrame() {
+    const renderFrame = () => {
       if (width <= 0 || height <= 0) return;
       drawGlobe(ctx, points, angle, layout, width, height);
-    }
+    };
 
-    function tick() {
+    const tick = () => {
       angle += GLOBE_SPEED;
       renderFrame();
       frameId = window.requestAnimationFrame(tick);
-    }
+    };
 
-    function sync() {
+    const sync = () => {
       if (shouldAnimate({ inView, hidden, reducedMotion: reduced })) {
         if (frameId === null) frameId = window.requestAnimationFrame(tick);
         return;
@@ -68,23 +70,23 @@ export function GlobeCanvas() {
         frameId = null;
       }
       if (reduced) renderFrame();
-    }
+    };
 
-    function handleResize() {
+    const handleResize = () => {
       resize();
       renderFrame();
       sync();
-    }
+    };
 
-    function handleVisibility() {
+    const handleVisibility = () => {
       hidden = document.hidden;
       sync();
-    }
+    };
 
-    function handleMotionChange(event: MediaQueryListEvent) {
+    const handleMotionChange = (event: MediaQueryListEvent) => {
       reduced = event.matches;
       sync();
-    }
+    };
 
     let resizeObserver: ResizeObserver | null = null;
     if (typeof ResizeObserver !== "undefined") {
