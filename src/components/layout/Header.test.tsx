@@ -664,4 +664,18 @@ describe("Header: контракт стилей пилюли", () => {
       /\.site-header\.is-header-hidden:focus-within \{[^}]*transform: none;[^}]*opacity: 1;/,
     );
   });
+
+  it("не заводит на пилюле backdrop root: стекло и оверлей видят страницу под собой", () => {
+    expect(HEADER_CSS).not.toMatch(/\.site-header__content \{[^}]*isolation:/);
+    expect(HEADER_CSS).toMatch(/backdrop-filter: blur\(18px\) saturate\(135%\);/);
+  });
+
+  it("держит бургер над оверлеем внутри стекового контекста ландмарки", () => {
+    expect(HEADER_CSS).toMatch(/\.site-header \{[^}]*z-index: 40;/);
+    expect(HEADER_CSS).toMatch(/\.site-header__toggler \{[^}]*z-index: 42;/);
+    expect(HEADER_CSS).toMatch(/\.mobile-menu \{[^}]*z-index: 40;/);
+    // Рамка и стекло пилюли остаются под контентом: у обоих псевдоэлементов
+    // отрицательный z-index.
+    expect(HEADER_CSS).toMatch(/\.site-header__content::after \{\s*z-index: -1;/);
+  });
 });

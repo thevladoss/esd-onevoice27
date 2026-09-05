@@ -52,9 +52,14 @@
   transition: none;
 }
 
+/* Стекового контекста пилюли хватает того, что даёт сама ландмарка (fixed,
+   z-index 40): внутри него бургер (42) остаётся над оверлеем (40), а рамка и
+   стекло на псевдоэлементах уходят под контент по отрицательному z-index.
+   isolation: isolate здесь стоять не должен — он образует Backdrop Root, и оба
+   слоя с backdrop-filter (стекло пилюли и оверлей меню) фильтруют пустоту
+   вместо страницы под собой. */
 .site-header__content {
   position: relative;
-  isolation: isolate;
   display: grid;
   width: 100%;
   max-width: 72rem;
