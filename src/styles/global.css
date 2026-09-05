@@ -45,6 +45,12 @@ body {
   outline-offset: 4px;
 }
 
+/* Программный фокус на цели ссылки пропуска не должен рисовать рамку вокруг
+   всей страницы; клавиатурный :focus-visible продолжает работать. */
+main:focus {
+  outline: none;
+}
+
 @utility glass {
   background:
     linear-gradient(145deg, rgb(255 255 255 / .045), transparent 30%),

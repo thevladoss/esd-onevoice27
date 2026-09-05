@@ -15,7 +15,9 @@ function App() {
     <>
       <SkipLink />
       <Header />
-      <main id="main">
+      {/* tabIndex={-1}: без него Safari и Firefox не переводят фокус на цель
+          ссылки пропуска, и следующий Tab уходит обратно в шапку. */}
+      <main id="main" tabIndex={-1}>
         <Hero />
         <MapSection />
         <LightForm />

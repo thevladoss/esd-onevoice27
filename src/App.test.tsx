@@ -48,6 +48,16 @@ describe("App", () => {
     );
   });
 
+  it("делает main фокусируемым, чтобы ссылка пропуска доводила фокус до контента", () => {
+    renderApp();
+    const main = document.querySelector("main#main");
+
+    expect(main).toHaveAttribute("tabindex", "-1");
+
+    (main as HTMLElement).focus();
+    expect(document.activeElement).toBe(main);
+  });
+
   it("все восемь секций содержат реальную вёрстку, а не заглушки", () => {
     renderApp();
     for (const id of expectedSectionIds) {
