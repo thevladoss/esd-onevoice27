@@ -6,11 +6,9 @@ import { scrollToSection } from "../../lib/scrollToSection";
 import { useActiveSection } from "../../lib/useActiveSection";
 import { useHeaderHide } from "../../lib/useHeaderHide";
 import { BurgerButton } from "./BurgerButton";
-import { MobileMenu } from "./MobileMenu";
+import { MENU_ID, MobileMenu } from "./MobileMenu";
 import { Wordmark } from "./Wordmark";
 import "./Header.css";
-
-const MENU_ID = "mobile-menu";
 
 function useMediaQuery(query: string): boolean {
   const subscribe = useCallback(

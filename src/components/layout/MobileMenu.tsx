@@ -5,6 +5,11 @@ import type { NavItem } from "../../data/copy";
 import { navQuery } from "../../lib/breakpoints";
 import { lockScroll, unlockScroll } from "../../lib/scrollLock";
 
+/** Идентификатор оверлея: id самого диалога и aria-controls бургера. Литерал живёт в
+ *  одном модуле — с двумя копиями правка одной строки молча рвала бы связь кнопки с
+ *  диалогом: атрибут остаётся, ссылка становится битой. */
+export const MENU_ID = "mobile-menu";
+
 type MobileMenuProps = {
   open: boolean;
   onClose: () => void;
@@ -128,7 +133,7 @@ export function MobileMenu({ open, onClose, onNavigate, items, burgerRef }: Mobi
   return (
     <div
       ref={menuRef}
-      id="mobile-menu"
+      id={MENU_ID}
       className={open ? "mobile-menu is-open" : "mobile-menu"}
       role="dialog"
       aria-label={copy.shell.menuDialogLabel}

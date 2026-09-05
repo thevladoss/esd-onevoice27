@@ -4,6 +4,7 @@ import { act, fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { HEADER_OFFSET_FALLBACK } from "../../lib/headerOffset";
 import { Header } from "./Header";
+import { MENU_ID } from "./MobileMenu";
 
 /* Стили шапки читаются с диска: vitest настроен с css: false, поэтому импорт
    CSS-модуля отдал бы пустую строку (тот же приём, что в motionPolicy.test.ts). */
@@ -378,6 +379,21 @@ describe("Header: мобильный оверлей", () => {
     render(<Header />);
 
     expect(overlay()).toHaveAttribute("id", "mobile-menu");
+  });
+
+  it("связывает бургер с оверлеем одним идентификатором из одного модуля", () => {
+    render(<Header />);
+    const dialog = overlay();
+
+    // Значение сверяется с константой, а не со второй копией литерала: копий в
+    // исходниках больше нет.
+    expect(MENU_ID).toBe("mobile-menu");
+    expect(dialog.id).toBe(MENU_ID);
+    expect(screen.getByRole("button", { name: "Открыть меню" })).toHaveAttribute(
+      "aria-controls",
+      dialog.id,
+    );
+    expect(document.getElementById(MENU_ID)).toBe(dialog);
   });
 
   it("переключает состояние классами: is-open у оверлея, is-menu-open у шапки", () => {
