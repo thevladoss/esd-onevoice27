@@ -244,6 +244,7 @@ export function LightForm() {
             </div>
 
             <ConsentCheckbox
+              id={fieldId("consent")}
               checked={values.consent}
               error={errors.consent}
               onChange={(next) => updateField("consent", next)}

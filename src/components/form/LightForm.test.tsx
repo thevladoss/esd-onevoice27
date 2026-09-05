@@ -162,6 +162,18 @@ describe("LightForm: валидация", () => {
     expect(screen.getByTestId("probe-groups")).toHaveTextContent("248");
   });
 
+  it("уводит фокус на согласие, когда всё остальное заполнено", () => {
+    renderForm();
+    fillValidForm();
+    fireEvent.click(control("consent"));
+    clickSubmit();
+
+    expect(errorNodes().map((node) => node.textContent)).toEqual([
+      "Нужно согласие на обработку данных",
+    ]);
+    expect(document.activeElement).toBe(control("consent"));
+  });
+
   it("перепроверяет поле на blur только после первой попытки", () => {
     renderForm();
 
