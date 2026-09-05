@@ -233,18 +233,11 @@
 
 @media (min-width: 1024px) {
   .counters {
-    position: absolute;
-    top: 88px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 3;
     display: flex;
     flex-direction: row;
+    justify-content: center;
     gap: 16px;
     margin: 0;
-    /* Карточки лежат поверх карты и только показывают числа:
-       перетаскивание и ⌘/Ctrl + колесо уходят в карту под ними. */
-    pointer-events: none;
   }
 
   .counters .counter {
@@ -254,27 +247,100 @@
   }
 }
 
-/* Секция карты */
+/* Секция карты: подложка, скос и переходы сняты с onevoice27.org */
 .map-section {
+  --map-wedge: clamp(32px, 3.2vw, 52px);
+  /* Полоса ореолов у верхней кромки и глубина затемнения над картой */
+  --map-atmosphere: clamp(260px, 38vw, 560px);
+  --map-transition: clamp(150px, 34vw, 340px);
+
   position: relative;
-  background: #070210;
+  isolation: isolate;
   color: #f8f7fb;
-  overflow: hidden;
-  background-image:
-    radial-gradient(circle at 50% -42%, rgb(48 63 131 / .24), transparent 46%),
-    radial-gradient(circle at 88% -22%, rgb(84 164 172 / .2), transparent 40%);
+  /* Секция заходит под hero на глубину скоса: в вырезе остаётся его фон */
+  margin-top: calc(0px - var(--map-wedge) - 1px);
 }
 
-/* Скос режет только внутренний слой: фон родителя тот же, поэтому по краям не появляются дырки. */
+/* Подложка секции: скос режет только её, поэтому в вырезе видно hero, а не дырку. */
 .map-section__skew {
-  clip-path: polygon(0 46px, 100% 0, 100% calc(100% - 46px), 0 100%);
-  background: #070210;
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: rgb(18 12 52);
+  clip-path: polygon(0 var(--map-wedge), 100% 0, 100% 100%, 0 100%);
+  pointer-events: none;
+}
+
+/* Три ореола у верхней кромки: центры вынесены за границу, внутрь заходят края пятен. */
+.map-section::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: 0;
+  height: var(--map-atmosphere);
+  pointer-events: none;
+  clip-path: polygon(0 var(--map-wedge), 100% 0, 100% 100%, 0 100%);
+  background:
+    radial-gradient(circle at 12% -18%, rgb(132 53 127 / .22) 0, transparent 42%),
+    radial-gradient(circle at 50% -42%, rgb(59 77 161 / .24) 0, transparent 46%),
+    radial-gradient(circle at 88% -22%, rgb(57 114 126 / .2) 0, transparent 40%);
+}
+
+/* Ореолы границ выезжают далеко за свои якоря и светят в hero и в форму. */
+.map-orb {
+  position: absolute;
+  z-index: -1;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.map-orb--top {
+  top: 0;
+  left: 0;
+  width: clamp(220px, 45svh, 520px);
+  background: radial-gradient(circle,
+    rgb(22 29 61 / .7) 0,
+    rgb(22 29 61 / .34) 34%,
+    transparent 68%);
+  transform: translate(-38%, -72%);
+}
+
+.map-orb--bottom {
+  bottom: 0;
+  right: 0;
+  width: clamp(520px, 72vw, 1100px);
+  background: radial-gradient(circle,
+    rgb(132 53 127 / .15) 0,
+    rgb(39 52 102 / .22) 30%,
+    rgb(22 29 61 / .34) 48%,
+    transparent 70%);
+  transform: translate(38%, 50%);
+}
+
+/* На узком экране круг превращается в полосу во всю ширину: центр градиента
+   уезжает за правый край, и вьюпорт не расширяется. */
+@media (max-width: 767px) {
+  .map-orb--bottom {
+    width: 100%;
+    height: min(clamp(520px, 72vw, 1100px), 135vw);
+    aspect-ratio: auto;
+    border-radius: 0;
+    background: radial-gradient(circle at 112% 50%,
+      rgb(132 53 127 / .15) 0,
+      rgb(39 52 102 / .22) 30%,
+      rgb(22 29 61 / .34) 48%,
+      transparent 70%);
+    transform: translateY(50%);
+  }
 }
 
 .map-section__inner {
+  position: relative;
+  z-index: 1;
   max-width: 72rem;
   margin-inline: auto;
-  padding: 64px 16px;
+  padding: calc(64px + var(--map-wedge)) 16px 0;
 }
 
 .map-section__header {
@@ -285,9 +351,49 @@
   gap: 24px;
 }
 
+/* Сцена карты идёт во всю ширину окна, счётчики и подсказка остаются в колонке 72rem. */
 .map-stage {
   position: relative;
   margin-top: 32px;
+}
+
+.map-stage__panel {
+  position: relative;
+  z-index: 3;
+  width: 100%;
+  max-width: 72rem;
+  margin-inline: auto;
+  padding-inline: 16px;
+}
+
+/* Карта во всю ширину: скос режет её саму сверху и снизу. */
+.map-shell {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  clip-path: polygon(
+    0 var(--map-wedge),
+    100% 0,
+    100% calc(100% - var(--map-wedge)),
+    0 100%
+  );
+}
+
+/* Переход от фона hero к карте: верхняя кромка карты уходит в темноту. */
+.map-shell::before {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  top: -3px;
+  z-index: 5;
+  height: calc(var(--map-transition) + 4px);
+  pointer-events: none;
+  background:
+    linear-gradient(rgb(7 2 16) 0, rgb(18 12 52 / .94) 18%, transparent 62%),
+    radial-gradient(circle at 10% -16%, rgb(158 67 154 / .25) 0, transparent 18%),
+    radial-gradient(circle at 48% -38%, rgb(79 93 175 / .3) 0, transparent 44%),
+    radial-gradient(circle at 90% -18%, rgb(67 139 150 / .22) 0, transparent 18%),
+    linear-gradient(rgb(7 2 16) 0%, rgb(18 12 52 / .72) 32%, transparent 100%);
 }
 
 .map-container {
@@ -296,7 +402,6 @@
   touch-action: pan-y;
   cursor: grab;
   overflow: hidden;
-  border-radius: 16px;
 }
 
 .esd-map.is-dragging {
@@ -305,7 +410,22 @@
 
 @media (min-width: 768px) {
   .map-section__inner {
-    padding: 96px 32px;
+    padding: calc(96px + var(--map-wedge)) 32px 0;
+  }
+
+  .map-stage__panel {
+    padding-inline: 32px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .map-stage__panel {
+    position: absolute;
+    inset-inline: 0;
+    top: 88px;
+    /* Карточки лежат поверх карты и только показывают числа:
+       перетаскивание и ⌘/Ctrl + колесо уходят в карту под ними. */
+    pointer-events: none;
   }
 }
 
@@ -363,11 +483,12 @@
   color: #f8f7fb;
 }
 
-/* Подсказка о жестах поверх карты. */
+/* Подсказка о жестах поверх карты: карта во всю ширину, а подсказка держится
+   правого края колонки 72rem и не залезает на нижний скос. */
 .map-hint {
   position: absolute;
-  right: 16px;
-  bottom: 16px;
+  right: max(16px, calc((100% - 72rem) / 2 + 16px));
+  bottom: calc(16px + var(--map-wedge));
   z-index: 4;
   margin: 0;
   padding: 8px 12px;

@@ -34,36 +34,43 @@ export function MapSection() {
 
   return (
     <section id="map" className="map-section" aria-labelledby="map-title">
-      <div className="map-section__skew">
-        <div className="map-section__inner">
-          {/* div, а не header: внутри секции он читался бы вторым баннером страницы */}
-          <Reveal className="map-section__header">
-            <Eyebrow>{mapCopy.eyebrow}</Eyebrow>
-            <GradientTitle as="h2" variant="section" id="map-title">
-              {mapCopy.title}
-            </GradientTitle>
-          </Reveal>
-          <CountryChips selectedId={selection.id} onSelect={handleSelect} disabled={mapError} />
-          <div className="map-stage">
-            {/* Каскад пары счётчиков живёт в самом `Counters`: контейнер `.counters`
-                позиционируется поверх карты, и лишняя обёртка вокруг него схлопнулась бы
-                в нулевую высоту, до порога IntersectionObserver дело бы не дошло. */}
-            <Counters />
-            {/* Обёртка снаружи контейнера карты: размеры контейнера читает ResizeObserver. */}
-            <Reveal delay={0.1}>
-              <div className="map-container">
-                <EsdMap
-                  lights={lights}
-                  selectedCountryId={selection.id}
-                  flightKey={selection.key}
-                  onUserZoomAway={handleZoomAway}
-                  onError={setMapError}
-                />
-              </div>
-            </Reveal>
-            <ZoomHint />
-          </div>
+      {/* Скос режет подложку, а не содержимое: в вырезе остаётся фон hero. */}
+      <div className="map-section__skew" aria-hidden="true" />
+      <span className="map-orb map-orb--top" aria-hidden="true" />
+      <span className="map-orb map-orb--bottom" aria-hidden="true" />
+      <div className="map-section__inner">
+        {/* div, а не header: внутри секции он читался бы вторым баннером страницы */}
+        <Reveal className="map-section__header">
+          <Eyebrow>{mapCopy.eyebrow}</Eyebrow>
+          <GradientTitle as="h2" variant="section" id="map-title">
+            {mapCopy.title}
+          </GradientTitle>
+        </Reveal>
+        <CountryChips selectedId={selection.id} onSelect={handleSelect} disabled={mapError} />
+      </div>
+      <div className="map-stage">
+        {/* Панель держит счётчики в колонке 72rem: карта под ними идёт во всю ширину окна.
+            Каскад пары счётчиков живёт в самом `Counters`: контейнер `.counters` несёт
+            раскладку, и лишняя обёртка вокруг него схлопнулась бы в нулевую высоту,
+            до порога IntersectionObserver дело бы не дошло. */}
+        <div className="map-stage__panel">
+          <Counters />
         </div>
+        <div className="map-shell">
+          {/* Обёртка снаружи контейнера карты: размеры контейнера читает ResizeObserver. */}
+          <Reveal delay={0.1}>
+            <div className="map-container">
+              <EsdMap
+                lights={lights}
+                selectedCountryId={selection.id}
+                flightKey={selection.key}
+                onUserZoomAway={handleZoomAway}
+                onError={setMapError}
+              />
+            </div>
+          </Reveal>
+        </div>
+        <ZoomHint />
       </div>
     </section>
   );

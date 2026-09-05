@@ -48,9 +48,38 @@ describe("MapSection", () => {
     }
   });
 
-  it("держит скошенный слой внутри секции", () => {
+  it("держит скошенную подложку внутри секции", () => {
     renderSection();
-    expect(document.querySelectorAll("#map .map-section__skew")).toHaveLength(1);
+    const skew = document.querySelectorAll("#map .map-section__skew");
+    expect(skew).toHaveLength(1);
+    // Подложка декоративная: содержимое секции лежит рядом с ней, а не внутри.
+    expect(skew[0].children).toHaveLength(0);
+    expect(skew[0]).toHaveAttribute("aria-hidden", "true");
+  });
+
+  it("выносит карту из колонки 72rem, а чипы и счётчики оставляет в ней", () => {
+    renderSection();
+    const section = document.getElementById("map") as HTMLElement;
+    const inner = section.querySelector(".map-section__inner") as HTMLElement;
+    const shell = section.querySelector(".map-shell") as HTMLElement;
+
+    expect(shell).not.toBeNull();
+    // Карта идёт во всю ширину окна, поэтому она вне колонки заголовка и чипов.
+    expect(inner.contains(shell)).toBe(false);
+    expect(shell.querySelector(".map-container")).not.toBeNull();
+    expect(inner.querySelector(".chips")).not.toBeNull();
+    expect(section.querySelectorAll(".map-stage__panel .counters")).toHaveLength(1);
+  });
+
+  it("держит оба ореола границ декоративными узлами секции", () => {
+    renderSection();
+    const orbs = Array.from(document.querySelectorAll("#map > .map-orb"));
+
+    expect(orbs).toHaveLength(2);
+    for (const orb of orbs) {
+      expect(orb).toHaveAttribute("aria-hidden", "true");
+      expect(orb.children).toHaveLength(0);
+    }
   });
 });
 
