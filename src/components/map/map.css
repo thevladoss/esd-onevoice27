@@ -1,9 +1,3 @@
-/* Семантические алиасы цветов огоньков: живут рядом с картой, палитра проекта их не знает. */
-.map-section {
-  --light-person: #d28ebe;
-  --light-group: #7bc2c7;
-}
-
 .esd-map {
   position: relative;
   width: 100%;
@@ -114,10 +108,6 @@
   pointer-events: none;
 }
 
-.map-empty a {
-  pointer-events: auto;
-}
-
 .map-empty__title {
   margin: 0;
   font-family: "Onest", "Noto Sans", sans-serif;
@@ -134,7 +124,10 @@
   color: rgb(248 247 251 / .82);
 }
 
+/* Сама заглушка кликов не ловит (pointer-events: none выше), ссылке внутри их
+   возвращаем. */
 .map-empty a {
+  pointer-events: auto;
   color: #f8f7fb;
   text-decoration: underline;
   text-underline-offset: 2px;
@@ -253,12 +246,19 @@
   /* Полоса ореолов у верхней кромки и глубина затемнения над картой */
   --map-atmosphere: clamp(260px, 38vw, 560px);
   --map-transition: clamp(150px, 34vw, 340px);
+  /* Семантические алиасы цветов огоньков: палитра проекта их не знает. */
+  --light-person: #d28ebe;
+  --light-group: #7bc2c7;
 
   position: relative;
   isolation: isolate;
   color: #f8f7fb;
   /* Секция заходит под hero на глубину скоса: в вырезе остаётся его фон */
   margin-top: calc(0px - var(--map-wedge) - 1px);
+  /* Ореолы границ выезжают далеко за свои якоря и светят в hero и в форму.
+     Горизонталь секция клипует (иначе нижний орб со сдвигом 38% раздвигает
+     scrollWidth документа на ≥768px), вертикаль остаётся открытой. */
+  overflow-x: clip;
 }
 
 /* Подложка секции: скос режет только её, поэтому в вырезе видно hero, а не дырку. */
@@ -284,13 +284,6 @@
     radial-gradient(circle at 12% -18%, rgb(132 53 127 / .22) 0, transparent 42%),
     radial-gradient(circle at 50% -42%, rgb(59 77 161 / .24) 0, transparent 46%),
     radial-gradient(circle at 88% -22%, rgb(57 114 126 / .2) 0, transparent 40%);
-}
-
-/* Ореолы границ выезжают далеко за свои якоря и светят в hero и в форму.
-   Горизонталь секция клипует (иначе нижний орб со сдвигом 38% раздвигает
-   scrollWidth документа на ≥768px), вертикаль остаётся открытой. */
-.map-section {
-  overflow-x: clip;
 }
 
 .map-orb {
