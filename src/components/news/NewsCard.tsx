@@ -16,13 +16,20 @@ const dateFormatter = new Intl.DateTimeFormat("ru-RU", {
  * «2026-09-05» превращает в «5 сентября 2026».
  * `timeZone: "UTC"` обязателен: строка без времени разбирается как UTC-полночь,
  * и в западных зонах локальная дата уехала бы на сутки назад.
+ * На непарсимой строке `Intl` бросает `RangeError`, поэтому битая дата отдаёт пустую
+ * строку: карточка тогда рисуется без даты и не уносит с собой весь лендинг.
  */
 export function formatNewsDate(iso: string): string {
-  return dateFormatter.format(new Date(iso)).replace(/\s?г\.$/u, "");
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) {
+    return "";
+  }
+  return dateFormatter.format(date).replace(/\s?г\.$/u, "");
 }
 
 export function NewsCard({ item }: { item: NewsItem }) {
   const [coverFailed, setCoverFailed] = useState(false);
+  const date = formatNewsDate(item.date);
 
   return (
     <article className="h-full">
@@ -61,12 +68,14 @@ export function NewsCard({ item }: { item: NewsItem }) {
           className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,transparent_38%,rgb(7_2_16/.82)_100%)]"
         />
         <div className="absolute inset-x-4 bottom-4 flex flex-col gap-2">
-          <time
-            dateTime={item.date}
-            className="font-body text-xs font-bold uppercase leading-[1.4] tracking-[0.08em] text-horizon-200"
-          >
-            {formatNewsDate(item.date)}
-          </time>
+          {date ? (
+            <time
+              dateTime={item.date}
+              className="font-body text-xs font-bold uppercase leading-[1.4] tracking-[0.08em] text-horizon-200"
+            >
+              {date}
+            </time>
+          ) : null}
           <h3 className="line-clamp-4 font-display text-[22px] font-extrabold leading-[1.15] tracking-[-0.03em] text-paper [text-wrap:balance]">
             {item.title}
           </h3>

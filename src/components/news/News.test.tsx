@@ -135,6 +135,29 @@ describe("News", () => {
     expect(screen.getAllByRole("article")).toHaveLength(6);
   });
 
+  it("рисует карточку с битой датой без <time> и не роняет секцию", () => {
+    render(
+      <News
+        items={[
+          {
+            id: "broken-date",
+            title: "Новость с испорченной датой",
+            date: "2026-13-45",
+            cover: "https://img.youtube.com/vi/YpLD6p-z00g/hqdefault.jpg",
+            href: "https://esd.onevoice27.org/",
+            source: "esd.onevoice27.org",
+          },
+        ]}
+      />,
+    );
+
+    const [article] = screen.getAllByRole("article");
+    expect(article.querySelector("time")).toBeNull();
+    expect(
+      within(article).getByRole("heading", { level: 3, name: "Новость с испорченной датой" }),
+    ).toBeInTheDocument();
+  });
+
   it("объясняет пустой список и возвращает на первую страницу", () => {
     render(<News items={[]} />);
 
@@ -158,5 +181,11 @@ describe("formatNewsDate", () => {
   it("превращает ISO-дату в русскую запись без сокращения «г.»", () => {
     expect(formatNewsDate("2026-09-05")).toBe("5 сентября 2026");
     expect(formatNewsDate("2026-06-26")).toBe("26 июня 2026");
+  });
+
+  it("на непарсимой дате отдаёт пустую строку вместо RangeError", () => {
+    expect(formatNewsDate("2026-13-45")).toBe("");
+    expect(formatNewsDate("")).toBe("");
+    expect(formatNewsDate("вчера")).toBe("");
   });
 });
