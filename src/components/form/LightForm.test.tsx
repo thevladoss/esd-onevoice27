@@ -2,6 +2,7 @@ import { act, fireEvent, render, screen } from "@testing-library/react";
 
 import { formCopy } from "../../data/copy.form";
 import { LightsProvider, useLights } from "../../state/lights";
+import { Counters } from "../map/Counters";
 import { LightForm } from "./LightForm";
 
 /** Счётчики и последний огонёк читаются прямо из контекста: карта в этом тесте не нужна. */
@@ -449,5 +450,59 @@ describe("LightForm: тост", () => {
       vi.advanceTimersByTime(4000);
     });
     expect(toastCard()).toBeNull();
+  });
+});
+
+describe("LightForm: подсказка ошибки и счётчики карты", () => {
+  /** Счётчики карты рядом с формой: огонёк посетителя должен долететь до них через контекст. */
+  function renderWithCounters() {
+    return render(
+      <LightsProvider>
+        <Counters />
+        <LightForm />
+      </LightsProvider>,
+    );
+  }
+
+  /** Индивидуальный свет: тип по умолчанию, поэтому радио не трогаем. */
+  function fillIndividual() {
+    fireEvent.change(control("firstName"), { target: { value: "Анна" } });
+    fireEvent.change(control("lastName"), { target: { value: "Петрова" } });
+    fireEvent.change(countrySelect(), { target: { value: "398" } });
+    fireEvent.change(control("city"), { target: { value: "Алматы" } });
+    fireEvent.change(control("email"), { target: { value: "anna@example.org" } });
+    fireEvent.click(control("consent"));
+  }
+
+  it("ведёт от невалидного поля к тексту ошибки и держит на нём фокус", () => {
+    renderForm();
+    clickSubmit();
+
+    const firstName = control("firstName");
+    expect(firstName).toHaveAttribute("aria-invalid", "true");
+    expect(firstName).toHaveFocus();
+
+    const hint = errorFor("firstName");
+    expect(hint).toHaveTextContent("Введите имя");
+    expect(firstName.getAttribute("aria-describedby")).toBe(hint?.id);
+  });
+
+  it("растит счётчик «Человек» на один и объявляет успех", () => {
+    renderWithCounters();
+
+    // Число под аудио-подписью — настоящее состояние: видимый span считает от нуля
+    // на requestAnimationFrame и в jsdom без пересечений остаётся на старте.
+    expect(screen.getByText("Людей: 694")).toBeInTheDocument();
+    expect(screen.getByText("Групп: 248")).toBeInTheDocument();
+
+    fillIndividual();
+    clickSubmit();
+    act(() => {
+      vi.advanceTimersByTime(1200);
+    });
+
+    expect(screen.getByText("Людей: 695")).toBeInTheDocument();
+    expect(screen.getByText("Групп: 248")).toBeInTheDocument();
+    expect(liveRegion().textContent).toMatch(/^Ваш свет зажжён/);
   });
 });

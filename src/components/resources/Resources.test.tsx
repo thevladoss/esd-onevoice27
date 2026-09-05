@@ -71,7 +71,8 @@ describe("Resources: карточки и панели", () => {
       expect(link.getAttribute("rel")).toBe("noopener noreferrer");
     }
 
-    expect(document.activeElement).toBe(region);
+    expect(region).toHaveAttribute("tabindex", "-1");
+    expect(region).toHaveFocus();
   });
 
   it("повторный клик по активной карточке закрывает панель", () => {
@@ -173,7 +174,7 @@ describe("панель: клавиатура и deep link", () => {
 
     expect(queryPanelRegion()).toBeNull();
     expect(materialsBtn.getAttribute("aria-expanded")).toBe("false");
-    expect(document.activeElement).toBe(materialsBtn);
+    expect(materialsBtn).toHaveFocus();
   });
 
   it("кнопка «Свернуть панель» закрывает панель и возвращает фокус на карточку-триггер", () => {
@@ -186,7 +187,7 @@ describe("панель: клавиатура и deep link", () => {
 
     expect(queryPanelRegion()).toBeNull();
     expect(videoBtn.getAttribute("aria-expanded")).toBe("false");
-    expect(document.activeElement).toBe(videoBtn);
+    expect(videoBtn).toHaveFocus();
   });
 
   it("адрес с #resources-materials открывает панель материалов сразу при монтировании", () => {

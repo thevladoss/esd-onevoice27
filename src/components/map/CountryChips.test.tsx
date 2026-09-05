@@ -98,6 +98,36 @@ describe("CountryChips", () => {
     await userEvent.click(screen.getByRole("button", { name: "Россия" }));
     expect(onSelect).not.toHaveBeenCalled();
   });
+
+  it("переносит отметку на Казахстан и отдаёт его код наверх", async () => {
+    const onSelect = vi.fn();
+    const { rerender } = render(<CountryChips selectedId={null} onSelect={onSelect} />);
+
+    const kazakhstan = screen.getByRole("button", { name: "Казахстан" });
+    await userEvent.click(kazakhstan);
+    expect(onSelect).toHaveBeenCalledWith(398);
+
+    rerender(<CountryChips selectedId={398} onSelect={onSelect} />);
+    expect(screen.getByRole("button", { name: "Казахстан" })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
+    expect(chips().filter((button) => button.getAttribute("aria-pressed") === "true")).toHaveLength(
+      1,
+    );
+  });
+
+  it("срабатывает по Enter на сфокусированном чипе Казахстана", async () => {
+    const onSelect = vi.fn();
+    render(<CountryChips selectedId={null} onSelect={onSelect} />);
+
+    const kazakhstan = screen.getByRole("button", { name: "Казахстан" });
+    kazakhstan.focus();
+    expect(kazakhstan).toHaveFocus();
+
+    await userEvent.keyboard("{Enter}");
+    expect(onSelect).toHaveBeenCalledWith(398);
+  });
 });
 
 describe("ZoomHint", () => {
