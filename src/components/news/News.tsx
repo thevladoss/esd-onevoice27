@@ -24,6 +24,7 @@ export function News({ items = news }: { items?: NewsItem[] } = {}) {
   return (
     <section
       id="news"
+      aria-labelledby="news-title"
       className="relative -mt-6 bg-midnight-900 [clip-path:polygon(0_24px,100%_0,100%_100%,0_100%)] md:-mt-12 md:[clip-path:polygon(0_48px,100%_0,100%_100%,0_100%)]"
     >
       <span
@@ -34,14 +35,16 @@ export function News({ items = news }: { items?: NewsItem[] } = {}) {
         <Reveal className="max-w-[34rem]">
           <Eyebrow>{newsCopy.eyebrow}</Eyebrow>
           <GradientTitle as="h2" variant="section" className="mt-2">
-            {newsCopy.title}
+            {/* id живёт на внутреннем span: GradientTitle в этой волне правит план 05-03,
+                а имя секции считается по тексту элемента, на который смотрит aria-labelledby. */}
+            <span id="news-title">{newsCopy.title}</span>
           </GradientTitle>
-          <p className="mt-4 font-body text-base leading-[1.5] text-paper/80">{newsCopy.body}</p>
+          <p className="mt-4 font-body text-base leading-[1.5] text-paper/78">{newsCopy.body}</p>
         </Reveal>
 
         {isEmpty ? (
           <div className="mt-12 rounded-card border border-[var(--glass-border)] p-8 text-center">
-            <p className="font-body text-base leading-[1.5] text-paper/80">{newsCopy.emptyTitle}</p>
+            <p className="font-body text-base leading-[1.5] text-paper/78">{newsCopy.emptyTitle}</p>
             {page > 1 ? (
               <Button
                 variant="ghost"
@@ -59,7 +62,7 @@ export function News({ items = news }: { items?: NewsItem[] } = {}) {
           // и карточки следующей страницы встают в готовое состояние без ожидания.
           <RevealGroup as="ul" className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3 lg:gap-8">
             {result.items.map((item) => (
-              <RevealItem as="li" key={item.id}>
+              <RevealItem as="li" key={item.id} className="min-w-0">
                 <NewsCard item={item} />
               </RevealItem>
             ))}

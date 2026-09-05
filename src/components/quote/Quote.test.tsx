@@ -46,9 +46,11 @@ describe("Quote", () => {
     expect(cite).toHaveTextContent("Эллен Уайт, «Евангелизм», стр. 122");
   });
 
-  it("показывает надзаголовок «Слово на дорогу»", () => {
-    renderQuote();
-    expect(screen.getByText("Слово на дорогу")).toBeInTheDocument();
+  it("показывает надзаголовок «Слово на дорогу» абзацем", () => {
+    const section = renderQuote();
+    const eyebrow = section.querySelector("p.eyebrow");
+    expect(eyebrow).not.toBeNull();
+    expect(eyebrow).toHaveTextContent("Слово на дорогу");
   });
 
   it("прячет силуэт карты от скринридера и клавиатуры", () => {
@@ -72,8 +74,21 @@ describe("Quote", () => {
     expect(quoteMark).toBeDefined();
   });
 
-  it("идёт без заголовка второго уровня", () => {
+  it("именует секцию скрытым заголовком второго уровня", () => {
     const section = renderQuote();
-    expect(section.querySelector("h2")).toBeNull();
+
+    expect(section).toHaveAttribute("aria-labelledby", "quote-title");
+
+    const heading = screen.getByRole("heading", { level: 2, name: "Слово на дорогу" });
+    expect(heading).toHaveAttribute("id", "quote-title");
+    expect(heading).toHaveClass("sr-only");
+    expect(section.contains(heading)).toBe(true);
+  });
+
+  it("держит содержимое в колонке max-w-3xl и режет вылет силуэта", () => {
+    const section = renderQuote();
+
+    expect(section.className).toContain("overflow-hidden");
+    expect(section.querySelector("figure")?.className).toContain("max-w-3xl");
   });
 });

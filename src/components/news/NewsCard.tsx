@@ -36,7 +36,7 @@ export function NewsCard({ item }: { item: NewsItem }) {
       <a
         href={item.href}
         target="_blank" rel="noopener noreferrer"
-        className="group relative block h-full overflow-hidden rounded-card border border-[var(--glass-border)] bg-midnight-900 transition-colors duration-[420ms] ease-header hover:border-[rgb(123_194_199/.4)] focus-within:border-[rgb(123_194_199/.4)] focus-visible:outline-2 focus-visible:outline-offset-[3px] focus-visible:outline-horizon-400"
+        className="group relative block h-full overflow-hidden rounded-card border border-[var(--glass-border)] bg-midnight-900 transition-colors duration-[420ms] ease-header hover:border-[rgb(123_194_199/.4)] focus-within:border-[rgb(123_194_199/.4)] focus-visible:outline-2 focus-visible:-outline-offset-3 focus-visible:outline-horizon-400"
       >
         <div className="aspect-[4/5] w-full overflow-hidden">
           {coverFailed ? (
@@ -44,10 +44,10 @@ export function NewsCard({ item }: { item: NewsItem }) {
               aria-hidden="true"
               className="flex h-full w-full flex-col items-center justify-center gap-1 bg-[linear-gradient(145deg,rgb(48_63_131/.86),rgb(18_12_52/.76))] px-4 pb-20 text-center"
             >
-              <p className="font-body text-xs font-bold uppercase leading-[1.4] tracking-[0.08em] text-paper/62">
+              <p className="font-body text-xs font-bold uppercase leading-[1.4] tracking-[0.08em] text-paper/78">
                 {newsCopy.coverFailedTitle}
               </p>
-              <p className="font-body text-xs leading-[1.4] text-paper/80">
+              <p className="font-body text-xs leading-[1.4] text-paper/78">
                 {newsCopy.coverFailedBody}
               </p>
             </div>
@@ -58,13 +58,13 @@ export function NewsCard({ item }: { item: NewsItem }) {
               loading="lazy"
               decoding="async"
               onError={() => setCoverFailed(true)}
-              className="h-full w-full object-cover object-center transition-transform duration-[520ms] ease-header motion-safe:group-hover:scale-[1.04]"
+              className="h-full w-full max-w-full object-cover object-center transition-transform duration-[520ms] ease-header motion-safe:group-hover:scale-[1.04]"
             />
           )}
         </div>
         <span
           aria-hidden="true"
-          className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,transparent_38%,rgb(7_2_16/.82)_100%)]"
+          className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,transparent_38%,rgb(7_2_16/.9)_100%)]"
         />
         <div className="absolute inset-x-4 bottom-4 flex flex-col gap-2">
           {date ? (
