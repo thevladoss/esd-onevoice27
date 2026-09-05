@@ -163,6 +163,8 @@ describe("Header: мобильный оверлей", () => {
       "true",
     );
     expect(document.body.style.overflow).toBe("hidden");
+    expect(dialog).toHaveAttribute("aria-hidden", "false");
+    expect(dialog).not.toHaveAttribute("inert");
     expect(document.activeElement).toBe(within(dialog).getAllByRole("link")[0]);
   });
 
