@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import "./involve.css";
 import { involveCopy, type InvolveCardId } from "../../data/copy.involve";
 import { Section } from "../layout/Section";
 import { Eyebrow } from "../layout/Eyebrow";
