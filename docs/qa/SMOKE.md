@@ -150,3 +150,21 @@ curl -sI https://thevladoss.github.io/esd-onevoice27/ | head -1   # ожидае
 Сознательные отступления от оригинала: бургер остаётся `<button>` (у оригинала `<a role="button">`); кольцо фокуса на пунктах меню сохранено (оригинал ставит `outline: none`); шрифт Onest вместо Figtree; активный пункт меню подсвечен как hover; горизонтальный overflow оригинала не скопирован.
 
 **Вердикт фазы 6:** принято.
+
+### Перепроверка после code review и UI-аудита фазы 6
+
+Сборка d188e78 (прогон [runs/33993240658](https://github.com/thevladoss/esd-onevoice27/actions/runs/33993240658), sha256 index.html и трёх ассетов равен `dist`). Code review: 3 critical, 6 warning ([06-REVIEW.md](../../.planning/phases/06-original-fidelity/06-REVIEW.md), фиксы в [06-REVIEW-FIX.md](../../.planning/phases/06-original-fidelity/06-REVIEW-FIX.md)); UI-аудит 15/24 с двумя блокерами ([06-UI-REVIEW.md](../../.planning/phases/06-original-fidelity/06-UI-REVIEW.md)).
+
+| Находка | Проверка на проде | Статус |
+|---|---|---|
+| CR-01: оверлей внутри трансформируемой шапки | шапка спрятана прокруткой, затем открыт бургер: через 120 мс оверлей уже 0/0/390/844, у шапки `transform: none`, `transition-duration: 0s` | закрыто |
+| CR-02: deep link срабатывает один раз | два клика по «Скачать материалы» с Esc между ними: панели `false,true,false` → `false,false,false` → `false,true,false` | закрыто |
+| CR-03 / UI-блокер 2: спрятанная шапка в порядке табуляции | шапка с `is-header-hidden`, фокус на пункт меню: класс снят, `transform: none`, opacity 1 | закрыто |
+| WR-01: `isolation: isolate` глушит blur | `isolation: auto` у контента, `backdrop-filter: blur(18px) saturate(1.35)` у стекла, бургер поверх оверлея (`elementFromPoint`) | закрыто |
+| WR-03: логотип доступен под оверлеем | `inert` и `aria-hidden` на вордмарке и `.site-nav` при открытом меню | закрыто |
+| UI-блокер 1: активный пункт в hover-градиенте (1,77:1) | `aria-current` на «Что это?», `background-position` span остаётся `100% 50%` | закрыто |
+| UI: веса Onest 650/750 не загружены | `document.fonts`: Onest `400 900` loaded, `fonts.check('650 16px Onest')` и `750` → true | закрыто |
+| UI: ховер кнопки не по оригиналу | hover: `translateY(-2px)`, поверхность не меняется | закрыто |
+| Секции, консоль, сеть | 8 секций, 0 ошибок консоли, 0 ответов ≥ 400 из 30 | да |
+
+Итого по фазе 6 после фиксов: 45 файлов / 386 тестов, lint чист, `check:dist` 11 из 11.
