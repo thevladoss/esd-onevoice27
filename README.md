@@ -18,7 +18,7 @@ npm run preview # локальный просмотр собранного би�
 
 Сайт живёт по адресу https://thevladoss.github.io/esd-onevoice27/.
 
-Пуш в ветку `main` запускает workflow `.github/workflows/deploy.yml`: он ставит зависимости через `npm ci`, гоняет `npm test`, собирает `npm run build` и публикует папку `dist` на GitHub Pages. Публикация идёт через OIDC, секреты и токены не нужны. Билд собирается с базовым путём `/esd-onevoice27/`, поэтому ассеты подтягиваются из подпапки репозитория.
+Пуш в ветку `main` запускает workflow `.github/workflows/deploy.yml`: он ставит зависимости через `npm ci`, гоняет `npm run lint` и `npm test`, собирает `npm run build`, проверяет сборку командой `npm run check:dist` и публикует папку `dist` на GitHub Pages. Публикация идёт через OIDC, секреты и токены не нужны. Билд собирается с базовым путём `/esd-onevoice27/`, поэтому ассеты подтягиваются из подпапки репозитория.
 
 ## Проверка
 
