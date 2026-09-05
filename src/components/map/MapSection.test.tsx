@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { createEvent, fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { LightsProvider } from "../../state/lights";
@@ -83,6 +83,27 @@ function readScale(): number {
   return Number(/scale\(([\d.]+)\)/.exec(readTransform())?.[1]);
 }
 
+/**
+ * Панорама мышью. d3-zoom вешает движение и отпускание на event.view, а jsdom
+ * не принимает окно vitest в конструктор события: view подставляется вручную.
+ */
+function dragMap(dx: number): void {
+  const svg = document.querySelector("svg") as SVGSVGElement;
+  const target = window as unknown as Element;
+
+  const down = createEvent.mouseDown(svg, { button: 0, clientX: 600, clientY: 350 });
+  Object.defineProperty(down, "view", { value: window });
+  fireEvent(svg, down);
+
+  const move = createEvent.mouseMove(document, { clientX: 600 + dx, clientY: 350 });
+  Object.defineProperty(move, "view", { value: window });
+  fireEvent(target, move);
+
+  const up = createEvent.mouseUp(document, { clientX: 600 + dx, clientY: 350 });
+  Object.defineProperty(up, "view", { value: window });
+  fireEvent(target, up);
+}
+
 describe("MapSection: выбор страны чипами", () => {
   beforeEach(() => {
     stubReducedMotion();
@@ -145,6 +166,41 @@ describe("MapSection: выбор страны чипами", () => {
       "true",
     );
     expect(document.querySelector('path[data-selected="true"]')).toBeNull();
+  });
+
+  it("снимает выбор страны, когда посетитель утаскивает карту", async () => {
+    renderSection();
+
+    await userEvent.click(screen.getByRole("button", { name: "Казахстан" }));
+    const framed = readTransform();
+
+    dragMap(-300);
+
+    expect(screen.getByRole("button", { name: "Казахстан" })).toHaveAttribute(
+      "aria-pressed",
+      "false",
+    );
+    // Камера остаётся там, куда её увёл посетитель: обзор дивизиона обратно не возвращается.
+    expect(readTransform()).not.toBe(framed);
+    expect(readTransform()).not.toBe("translate(0,0) scale(1)");
+  });
+
+  it("возвращает камеру к стране повторным кликом по активному чипу", async () => {
+    renderSection();
+
+    await userEvent.click(screen.getByRole("button", { name: "Армения" }));
+    const framed = readTransform();
+
+    // Сдвиг меньше порога: чип остаётся активным, а вид уже другой.
+    dragMap(30);
+    expect(screen.getByRole("button", { name: "Армения" })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
+    expect(readTransform()).not.toBe(framed);
+
+    await userEvent.click(screen.getByRole("button", { name: "Армения" }));
+    expect(readTransform()).toBe(framed);
   });
 
   it("держит подсказку о жестах внутри сцены карты", () => {

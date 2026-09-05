@@ -1,4 +1,5 @@
 import { geoPath } from "d3-geo";
+import type { ZoomTransform } from "d3-zoom";
 import { zoomIdentity } from "d3-zoom";
 import {
   useCallback,
@@ -14,7 +15,7 @@ import { mapCopy } from "../../data/copy.map";
 import type { Light } from "../../data/lights";
 import { featureById, isEsd, makeProjection, worldFeatures } from "../../lib/geo";
 import { usePrefersReducedMotion } from "../../lib/useReducedMotion";
-import { ZOOM_MAX, ZOOM_MIN, useMapZoom } from "./useMapZoom";
+import { ZOOM_MAX, ZOOM_MIN, movedAway, useMapZoom } from "./useMapZoom";
 import "./map.css";
 
 export interface EsdMapProps {
@@ -27,6 +28,8 @@ export interface EsdMapProps {
   onError?: (hasError: boolean) => void;
   /** Размер вьюбокса в обход измерения контейнера. */
   size?: { width: number; height: number };
+  /** Растёт на каждый выбор страны: повторный клик по активному чипу снова уводит к ней камеру. */
+  flightKey?: number;
 }
 
 export const LIGHT_CORE_RADIUS = 2.2;
@@ -36,9 +39,6 @@ export const PULSE_EVERY = 24;
 
 /** Опорная точка проверки проекции: Москва. */
 const PROBE: [number, number] = [37.6, 55.7];
-
-/** Насколько посетитель должен изменить масштаб, чтобы выбор страны сбросился. */
-const ZOOM_AWAY_RATIO = 0.15;
 
 interface Size {
   width: number;
@@ -51,6 +51,7 @@ export function EsdMap({
   onUserZoomAway,
   onError,
   size,
+  flightKey = 0,
 }: EsdMapProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const svgRef = useRef<SVGSVGElement>(null);
@@ -138,20 +139,26 @@ export function EsdMap({
   const reduced = usePrefersReducedMotion();
   const selectedRef = useRef(selectedCountryId);
   const zoomAwayRef = useRef(onUserZoomAway);
-  // Масштаб, на котором страна оказалась после полёта: от него считается уход камеры.
-  const kAtSelectionRef = useRef(ZOOM_MIN);
+  // Положение камеры после полёта к стране: от него считается уход.
+  const transformAtSelectionRef = useRef<ZoomTransform>(zoomIdentity);
+  // Камеру только что увёл посетитель: снятый выбор не повод возвращать обзор дивизиона.
+  const userCameraRef = useRef(false);
 
   useEffect(() => {
     selectedRef.current = selectedCountryId;
     zoomAwayRef.current = onUserZoomAway;
   }, [selectedCountryId, onUserZoomAway]);
 
-  const handleUserZoom = useCallback((k: number) => {
-    if (selectedRef.current === null) return;
-    const base = kAtSelectionRef.current;
-    if (base <= 0) return;
-    if (Math.abs(k / base - 1) > ZOOM_AWAY_RATIO) zoomAwayRef.current?.();
-  }, []);
+  const handleUserZoom = useCallback(
+    (next: ZoomTransform) => {
+      if (selectedRef.current === null) return;
+      if (!movedAway(transformAtSelectionRef.current, next, width, height)) return;
+
+      userCameraRef.current = true;
+      zoomAwayRef.current?.();
+    },
+    [width, height],
+  );
 
   const { transform, dragging, zoomTo } = useMapZoom(svgRef, {
     width,
@@ -161,15 +168,26 @@ export function EsdMap({
   });
 
   // Что уже отыграл полёт: по этой записи видно, сменился выбор или только размер контейнера.
-  const lastFlightRef = useRef<{ id: number | null; width: number; height: number } | null>(null);
+  const lastFlightRef = useRef<{
+    id: number | null;
+    key: number;
+    width: number;
+    height: number;
+  } | null>(null);
 
   useEffect(() => {
     if (!projection) return;
 
     const prev = lastFlightRef.current;
     const sizeChanged = prev !== null && (prev.width !== width || prev.height !== height);
-    const selectionChanged = prev === null || prev.id !== selectedCountryId;
-    lastFlightRef.current = { id: selectedCountryId, width, height };
+    const selectionChanged =
+      prev === null || prev.id !== selectedCountryId || prev.key !== flightKey;
+    lastFlightRef.current = { id: selectedCountryId, key: flightKey, width, height };
+
+    // Выбор снялся сам, потому что посетитель увёл камеру: вид остаётся за ним.
+    const byUser = userCameraRef.current;
+    userCameraRef.current = false;
+    if (byUser && selectedCountryId === null) return;
 
     // Поворот телефона и схлопывание адресной строки меняют размер прямо во время просмотра.
     // Страну при этом не переключали, поэтому камеру посетителя оставляем как есть.
@@ -190,10 +208,10 @@ export function EsdMap({
         .translate(-(x0 + x1) / 2, -(y0 + y1) / 2);
     }
 
-    kAtSelectionRef.current = target.k;
+    transformAtSelectionRef.current = target;
     // Перекадрирование по новому размеру идёт мгновенно: анимация на каждый шаг ресайза дёргается.
     zoomTo(target, !reduced && selectionChanged);
-  }, [projection, selectedCountryId, width, height, reduced, zoomTo]);
+  }, [projection, selectedCountryId, flightKey, width, height, reduced, zoomTo]);
 
   // Радиусы огоньков делятся на масштаб вьюпорта: на любом зуме точка одного экранного размера.
   const coreRadius = LIGHT_CORE_RADIUS / transform.k;

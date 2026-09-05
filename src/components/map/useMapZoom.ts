@@ -12,6 +12,31 @@ export const ZOOM_MAX = 8;
 export const ZOOM_PAD = 200;
 /** Длительность полёта камеры к стране. */
 export const FLIGHT_MS = 600;
+/** Насколько посетитель должен изменить масштаб, чтобы выбор страны сбросился. */
+export const ZOOM_AWAY_RATIO = 0.15;
+/** На сколько пикселей страна должна уехать по экрану, чтобы выбор сбросился. */
+export const ZOOM_AWAY_PX = 48;
+
+/**
+ * Камера ушла от страны, к которой её привёл полёт: масштаб изменился заметно
+ * или страна уехала по экрану. Уезд считается по точке, которая стояла в центре
+ * вьюбокса: при панораме d3 шлёт тот же k, и по одному масштабу уход не виден.
+ */
+export function movedAway(
+  base: ZoomTransform,
+  next: ZoomTransform,
+  width: number,
+  height: number,
+): boolean {
+  if (base.k <= 0) return false;
+
+  const scaled = Math.abs(next.k / base.k - 1) > ZOOM_AWAY_RATIO;
+  const center: [number, number] = [width / 2, height / 2];
+  const [x, y] = next.apply(base.invert(center));
+  const drifted = Math.hypot(x - center[0], y - center[1]) > ZOOM_AWAY_PX;
+
+  return scaled || drifted;
+}
 
 export interface UseMapZoomOptions {
   width: number;
@@ -19,7 +44,7 @@ export interface UseMapZoomOptions {
   /** false, пока карта не измерена или не отрисовалась. */
   enabled: boolean;
   /** Вызывается только на жестах посетителя, не на программном полёте. */
-  onUserZoom?: (k: number) => void;
+  onUserZoom?: (transform: ZoomTransform) => void;
 }
 
 export interface MapZoomApi {
@@ -96,7 +121,7 @@ export function useMapZoom(
       .on("zoom", (event: D3ZoomEvent<SVGSVGElement, unknown>) => {
         setTransform(event.transform);
         // sourceEvent есть только у жестов: программный полёт сюда не попадает.
-        if (event.sourceEvent) onUserZoomRef.current?.(event.transform.k);
+        if (event.sourceEvent) onUserZoomRef.current?.(event.transform);
       })
       .on("end", () => setDragging(false));
 

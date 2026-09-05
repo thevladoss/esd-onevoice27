@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 import { mapCopy } from "../../data/copy.map";
 import { useLights } from "../../state/lights";
@@ -10,10 +10,26 @@ import { EsdMap } from "./EsdMap";
 import { ZoomHint } from "./ZoomHint";
 import "./map.css";
 
+/** Выбранная страна и номер полёта: по номеру карта отличает новый клик от повторного рендера. */
+interface Selection {
+  id: number | null;
+  key: number;
+}
+
 export function MapSection() {
   const { lights } = useLights();
-  const [selectedId, setSelectedId] = useState<number | null>(null);
+  const [selection, setSelection] = useState<Selection>({ id: null, key: 0 });
   const [mapError, setMapError] = useState(false);
+
+  // Клик по уже активному чипу тоже растит номер: камера возвращается к стране.
+  const handleSelect = useCallback((id: number | null) => {
+    setSelection((prev) => ({ id, key: prev.key + 1 }));
+  }, []);
+
+  // Камеру увёл посетитель: снимаем подсветку, но полёт не заводим.
+  const handleZoomAway = useCallback(() => {
+    setSelection((prev) => (prev.id === null ? prev : { ...prev, id: null }));
+  }, []);
 
   return (
     <section id="map" className="map-section">
@@ -26,14 +42,15 @@ export function MapSection() {
               {mapCopy.title}
             </GradientTitle>
           </div>
-          <CountryChips selectedId={selectedId} onSelect={setSelectedId} disabled={mapError} />
+          <CountryChips selectedId={selection.id} onSelect={handleSelect} disabled={mapError} />
           <div className="map-stage">
             <Counters />
             <div className="map-container">
               <EsdMap
                 lights={lights}
-                selectedCountryId={selectedId}
-                onUserZoomAway={() => setSelectedId(null)}
+                selectedCountryId={selection.id}
+                flightKey={selection.key}
+                onUserZoomAway={handleZoomAway}
                 onError={setMapError}
               />
             </div>

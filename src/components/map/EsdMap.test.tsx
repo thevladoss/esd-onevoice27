@@ -6,7 +6,9 @@ import { ESD_IDS } from "../../data/countries";
 import { generateLights } from "../../data/lights";
 import { LightsProvider, useLights } from "../../state/lights";
 import { EsdMap, LIGHT_CORE_RADIUS, LIGHT_HALO_RADIUS } from "./EsdMap";
-import { ZOOM_MAX, ZOOM_MIN, zoomEventFilter } from "./useMapZoom";
+import { ZoomTransform } from "d3-zoom";
+
+import { ZOOM_MAX, ZOOM_MIN, movedAway, zoomEventFilter } from "./useMapZoom";
 
 const SIZE = { width: 1200, height: 700 };
 
@@ -246,6 +248,29 @@ describe("зум карты", () => {
     first.unmount();
     expect(select(svg).on("wheel.zoom")).toBeUndefined();
     expect(() => render(<EsdMap lights={lights} size={SIZE} />)).not.toThrow();
+  });
+
+  it("считает уходом камеры и масштаб, и сдвиг", () => {
+    const { width, height } = SIZE;
+    const base = new ZoomTransform(4, 100, 100);
+
+    /** Масштаб вокруг центра вьюбокса: точка в центре остаётся на месте. */
+    function zoomAtCenter(k: number): ZoomTransform {
+      return new ZoomTransform(
+        k,
+        width / 2 - (k * (width / 2 - base.x)) / base.k,
+        height / 2 - (k * (height / 2 - base.y)) / base.k,
+      );
+    }
+
+    expect(movedAway(base, base, width, height)).toBe(false);
+    // Мелкий сдвиг и мелкий доворот масштаба выбор не снимают.
+    expect(movedAway(base, new ZoomTransform(4, 130, 100), width, height)).toBe(false);
+    expect(movedAway(base, zoomAtCenter(4.4), width, height)).toBe(false);
+    // Панорама идёт с тем же k: по одному масштабу такой уход не виден.
+    expect(movedAway(base, new ZoomTransform(4, 400, 100), width, height)).toBe(true);
+    expect(movedAway(base, new ZoomTransform(4, 100, 400), width, height)).toBe(true);
+    expect(movedAway(base, zoomAtCenter(6), width, height)).toBe(true);
   });
 
   it("пропускает колесо только с Ctrl или ⌘, а touch только двумя пальцами", () => {
