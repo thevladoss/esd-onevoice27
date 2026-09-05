@@ -60,10 +60,10 @@ function fillValidForm() {
   fireEvent.click(control("consent"));
 }
 
-beforeEach(() => {
-  vi.useFakeTimers();
+/** По умолчанию движение разрешено: тост проходит фазу ухода в 200 мс. */
+function mockReducedMotion(reduced: boolean) {
   window.matchMedia = vi.fn((query: string) => ({
-    matches: query.includes("prefers-reduced-motion"),
+    matches: reduced && query.includes("prefers-reduced-motion"),
     media: query,
     onchange: null,
     addEventListener: vi.fn(),
@@ -72,6 +72,11 @@ beforeEach(() => {
     removeListener: vi.fn(),
     dispatchEvent: vi.fn(),
   })) as unknown as typeof window.matchMedia;
+}
+
+beforeEach(() => {
+  vi.useFakeTimers();
+  mockReducedMotion(false);
 });
 
 afterEach(() => {
@@ -222,6 +227,11 @@ describe("LightForm: тост", () => {
     act(() => {
       vi.advanceTimersByTime(4000);
     });
+    expect(screen.getByRole("status")).toHaveAttribute("data-state", "closing");
+
+    act(() => {
+      vi.advanceTimersByTime(200);
+    });
     expect(screen.queryByRole("status")).toBeNull();
   });
 
@@ -233,6 +243,31 @@ describe("LightForm: тост", () => {
     act(() => {
       vi.advanceTimersByTime(1200);
     });
+
+    fireEvent.click(screen.getByRole("status"));
+    expect(screen.getByRole("status")).toHaveAttribute("data-state", "closing");
+
+    act(() => {
+      vi.advanceTimersByTime(200);
+    });
+    expect(screen.queryByRole("status")).toBeNull();
+
+    act(() => {
+      vi.advanceTimersByTime(4000);
+    });
+    expect(screen.queryByRole("status")).toBeNull();
+  });
+
+  it("при уменьшенном движении убирает тост по клику без фазы ухода", () => {
+    mockReducedMotion(true);
+    renderForm();
+    fillValidForm();
+    clickSubmit();
+
+    act(() => {
+      vi.advanceTimersByTime(1200);
+    });
+    expect(screen.getByRole("status")).toHaveAttribute("data-state", "open");
 
     fireEvent.click(screen.getByRole("status"));
     expect(screen.queryByRole("status")).toBeNull();

@@ -1,3 +1,4 @@
+import "./light-form.css";
 import type { FormEvent } from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
