@@ -42,7 +42,7 @@ describe("Секция «От убеждения к действию»", () => {
     const section = container.querySelector("section#involve") as HTMLElement;
     expect(within(section).getAllByRole("link")).toHaveLength(3);
 
-    for (const article of container.querySelectorAll("article")) {
+    for (const article of Array.from(container.querySelectorAll("article"))) {
       expect(article.getAttribute("href")).toBeNull();
       expect(article.getAttribute("role")).toBeNull();
       expect(article.getAttribute("tabindex")).toBeNull();
@@ -58,7 +58,7 @@ describe("Секция «От убеждения к действию»", () => {
     );
     expect(arts).toHaveLength(3);
 
-    for (const art of arts) {
+    for (const art of Array.from(arts)) {
       expect(art.getAttribute("viewBox")).toBe("0 0 400 300");
       expect(art.getAttribute("focusable")).toBe("false");
       expect(art.querySelectorAll("text, image, foreignObject, script")).toHaveLength(0);
