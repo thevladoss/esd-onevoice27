@@ -109,53 +109,51 @@
 
 ## Traceability
 
-Заполняется при создании roadmap.
-
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| SHELL-01 | — | Pending |
-| SHELL-02 | — | Pending |
-| SHELL-03 | — | Pending |
-| SHELL-04 | — | Pending |
-| SHELL-05 | — | Pending |
-| SHELL-06 | — | Pending |
-| HERO-01 | — | Pending |
-| HERO-02 | — | Pending |
-| HERO-03 | — | Pending |
-| MAP-01 | — | Pending |
-| MAP-02 | — | Pending |
-| MAP-03 | — | Pending |
-| MAP-04 | — | Pending |
-| MAP-05 | — | Pending |
-| MAP-06 | — | Pending |
-| FORM-01 | — | Pending |
-| FORM-02 | — | Pending |
-| FORM-03 | — | Pending |
-| ABOUT-01 | — | Pending |
-| ABOUT-02 | — | Pending |
-| ABOUT-03 | — | Pending |
-| INVOLVE-01 | — | Pending |
-| NEWS-01 | — | Pending |
-| NEWS-02 | — | Pending |
-| RES-01 | — | Pending |
-| RES-02 | — | Pending |
-| RES-03 | — | Pending |
-| RES-04 | — | Pending |
-| QUOTE-01 | — | Pending |
-| MOTION-01 | — | Pending |
-| MOTION-02 | — | Pending |
-| MOTION-03 | — | Pending |
-| MOTION-04 | — | Pending |
-| QA-01 | — | Pending |
-| QA-02 | — | Pending |
-| QA-03 | — | Pending |
-| QA-04 | — | Pending |
+| SHELL-01 | Phase 1 | Pending |
+| SHELL-02 | Phase 1 | Pending |
+| SHELL-03 | Phase 1 | Pending |
+| SHELL-04 | Phase 1 | Pending |
+| SHELL-05 | Phase 1 | Pending |
+| SHELL-06 | Phase 1 | Pending |
+| QA-03 | Phase 1 | Pending |
+| HERO-01 | Phase 2 | Pending |
+| HERO-02 | Phase 2 | Pending |
+| HERO-03 | Phase 2 | Pending |
+| MAP-01 | Phase 2 | Pending |
+| MAP-02 | Phase 2 | Pending |
+| MAP-03 | Phase 2 | Pending |
+| MAP-04 | Phase 2 | Pending |
+| MAP-05 | Phase 2 | Pending |
+| MAP-06 | Phase 2 | Pending |
+| QA-01 | Phase 2 | Pending |
+| FORM-01 | Phase 3 | Pending |
+| FORM-02 | Phase 3 | Pending |
+| FORM-03 | Phase 3 | Pending |
+| ABOUT-01 | Phase 3 | Pending |
+| ABOUT-02 | Phase 3 | Pending |
+| ABOUT-03 | Phase 3 | Pending |
+| INVOLVE-01 | Phase 3 | Pending |
+| NEWS-01 | Phase 4 | Pending |
+| NEWS-02 | Phase 4 | Pending |
+| RES-01 | Phase 4 | Pending |
+| RES-02 | Phase 4 | Pending |
+| RES-03 | Phase 4 | Pending |
+| RES-04 | Phase 4 | Pending |
+| QUOTE-01 | Phase 4 | Pending |
+| MOTION-01 | Phase 5 | Pending |
+| MOTION-02 | Phase 5 | Pending |
+| MOTION-03 | Phase 5 | Pending |
+| MOTION-04 | Phase 5 | Pending |
+| QA-02 | Phase 5 | Pending |
+| QA-04 | Phase 5 | Pending |
 
 **Coverage:**
 - v1 requirements: 37 total
-- Mapped to phases: 0
-- Unmapped: 37 ⚠️
+- Mapped to phases: 37
+- Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-09-05*
-*Last updated: 2026-09-05 after initial definition*
+*Last updated: 2026-09-05 after roadmap creation (5 фаз, coarse granularity, 37/37 requirements mapped)*
