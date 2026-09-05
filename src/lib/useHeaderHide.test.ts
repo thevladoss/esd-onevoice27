@@ -99,6 +99,27 @@ describe("useHeaderHide", () => {
     expect(result.current).toBe(false);
   });
 
+  it("возвращает спрятанную шапку на фокус внутри ландмарки", () => {
+    const header = document.createElement("header");
+    const link = document.createElement("a");
+    link.href = "#top";
+    header.append(link);
+    document.body.append(header);
+    const ref = { current: header };
+
+    try {
+      const { result } = renderHook(() => useHeaderHide({ menuOpen: false, header: ref }));
+
+      scrollTo(300);
+      expect(result.current).toBe(true);
+
+      act(() => link.focus());
+      expect(result.current).toBe(false);
+    } finally {
+      header.remove();
+    }
+  });
+
   it("снимает слушатель скролла при размонтировании", () => {
     const remove = vi.spyOn(window, "removeEventListener");
     const { unmount } = renderHook(() => useHeaderHide({ menuOpen: false }));

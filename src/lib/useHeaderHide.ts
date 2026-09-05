@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import type { RefObject } from "react";
 
 /** Ниже этой отметки шапка всегда на экране: там она стоит над первым экраном. */
 const THRESHOLD = 80;
@@ -11,6 +12,8 @@ const STEP = 4;
 
 type Options = {
   menuOpen: boolean;
+  /** Сама ландмарка: фокус внутри спрятанной шапки возвращает её на экран. */
+  header?: RefObject<HTMLElement | null>;
   threshold?: number;
 };
 
@@ -22,9 +25,10 @@ type Options = {
  * всё равно применялся бы один раз при отрисовке.
  *
  * Пока открыто мобильное меню, шапка видна всегда: в ней лежит бургер, которым
- * меню и закрывают.
+ * меню и закрывают. Фокус внутри шапки тоже возвращает её на экран — для этого
+ * хук принимает ссылку на саму ландмарку.
  */
-export function useHeaderHide({ menuOpen, threshold = THRESHOLD }: Options): boolean {
+export function useHeaderHide({ menuOpen, header, threshold = THRESHOLD }: Options): boolean {
   const [hidden, setHidden] = useState(false);
   const [menuWasOpen, setMenuWasOpen] = useState(menuOpen);
 
@@ -37,6 +41,20 @@ export function useHeaderHide({ menuOpen, threshold = THRESHOLD }: Options): boo
       setHidden(false);
     }
   }
+
+  // Спрятанная шапка остаётся в порядке табуляции: ни transform, ни opacity из
+  // обхода не убирают. Фокус внутри неё возвращает шапку на экран, иначе кольцо
+  // :focus-visible рисуется за верхней границей вьюпорта.
+  useEffect(() => {
+    const node = header?.current;
+    if (!node) {
+      return;
+    }
+
+    const onFocusIn = () => setHidden(false);
+    node.addEventListener("focusin", onFocusIn);
+    return () => node.removeEventListener("focusin", onFocusIn);
+  }, [header]);
 
   useEffect(() => {
     if (menuOpen) {

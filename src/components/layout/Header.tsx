@@ -32,11 +32,14 @@ function useMediaQuery(query: string): boolean {
 }
 
 export function Header() {
+  const headerRef = useRef<HTMLElement>(null);
   const burgerRef = useRef<HTMLButtonElement>(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const navInline = useMediaQuery(navQuery());
   const activeSection = useActiveSection(sectionIds, navInline);
-  const hidden = useHeaderHide({ menuOpen });
+  // Ссылка на ландмарку нужна хуку, чтобы вернуть спрятанную шапку на экран,
+  // когда фокус приходит на вордмарк, пункт меню или бургер.
+  const hidden = useHeaderHide({ menuOpen, header: headerRef });
 
   const closeMenu = useCallback(() => setMenuOpen(false), []);
 
@@ -76,7 +79,7 @@ export function Header() {
     .join(" ");
 
   return (
-    <header className={headerClass}>
+    <header ref={headerRef} className={headerClass}>
       <div className="site-header__content">
         <a
           className="site-header__brand"

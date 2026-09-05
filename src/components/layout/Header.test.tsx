@@ -218,6 +218,32 @@ describe("Header", () => {
     }
   });
 
+  it("возвращает спрятанную шапку, когда фокус попадает на её ссылку", () => {
+    vi.stubGlobal("requestAnimationFrame", (callback: FrameRequestCallback) => {
+      callback(0);
+      return 1;
+    });
+    vi.stubGlobal("cancelAnimationFrame", vi.fn());
+
+    try {
+      render(<Header />);
+      const header = screen.getByRole("banner");
+
+      setScrollY(400);
+      fireEvent.scroll(window);
+      expect(header).toHaveClass("is-header-hidden");
+
+      // Спрятанная шапка остаётся в обходе Tab: кольцо фокуса рисовалось бы за
+      // верхней границей экрана при нулевой прозрачности.
+      act(() => screen.getByRole("link", { name: "Единый голос 27, на главную" }).focus());
+
+      expect(header).not.toHaveClass("is-header-hidden");
+    } finally {
+      vi.unstubAllGlobals();
+      setScrollY(0);
+    }
+  });
+
   it("даёт бургеру подпись и связь с оверлеем", () => {
     render(<Header />);
     const burger = screen.getByRole("button", { name: "Открыть меню" });
@@ -631,5 +657,11 @@ describe("Header: контракт стилей пилюли", () => {
     // Оверлей меню фиксирован внутри ландмарки: анимированный transform на ней
     // все 420 мс держал бы меню в коробке пилюли.
     expect(HEADER_CSS).toMatch(/\.site-header\.is-menu-open \{[^}]*transition: none;/);
+  });
+
+  it("выводит спрятанную шапку на экран, пока фокус внутри неё", () => {
+    expect(HEADER_CSS).toMatch(
+      /\.site-header\.is-header-hidden:focus-within \{[^}]*transform: none;[^}]*opacity: 1;/,
+    );
   });
 });
