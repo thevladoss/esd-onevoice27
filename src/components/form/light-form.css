@@ -306,3 +306,83 @@ select.lf-control option {
   opacity: .72;
   cursor: progress;
 }
+
+/* Тост уходит порталом в body, поэтому свои переменные объявляет сам */
+.lf-toast {
+  --focus-ring: #aad9dc;
+  --ui-transition: 420ms cubic-bezier(0.32, 0.72, 0, 1);
+
+  position: fixed;
+  inset-inline: 0;
+  bottom: 24px;
+  z-index: 60;
+  display: flex;
+  justify-content: center;
+  padding-inline: 16px;
+  pointer-events: none;
+}
+
+.lf-toast-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: 26rem;
+  padding: 16px 20px;
+  cursor: pointer;
+  pointer-events: auto;
+  font: 400 16px/1.6 var(--font-body);
+  animation: lf-toast-in 240ms cubic-bezier(0.32, 0.72, 0, 1) both;
+}
+
+.lf-toast[data-state="closing"] .lf-toast-card {
+  animation: lf-toast-out 200ms ease both;
+}
+
+@keyframes lf-toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes lf-toast-out {
+  to {
+    opacity: 0;
+  }
+}
+
+.lf-toast-icon {
+  flex: 0 0 20px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: linear-gradient(125deg, #6c2c68 0%, #3b4da1 50%, #39727e 100%);
+  display: grid;
+  place-items: center;
+  color: var(--color-paper);
+}
+
+.lf-toast-icon svg {
+  width: 12px;
+  height: 12px;
+}
+
+/* Автозакрытие через 4 с остаётся: это таймер, а не анимация */
+@media (prefers-reduced-motion: reduce) {
+  .lf-toast-card {
+    animation: none;
+  }
+
+  .lf-type,
+  .lf-type-dot,
+  .lf-control,
+  .lf-check-box,
+  .lf-check-box svg {
+    transition: none;
+  }
+}
