@@ -1,0 +1,59 @@
+<!-- Исходник превью для соцсетей. PNG рядом (og-cover.png) перерисовывается из
+     этого файла: qlmanage -t -s 1200 -o public public/og-cover.svg -->
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#120c34" />
+      <stop offset="0.55" stop-color="#070210" />
+      <stop offset="1" stop-color="#141833" />
+    </linearGradient>
+    <linearGradient id="title" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0.02" stop-color="#e3afd2" />
+      <stop offset="0.52" stop-color="#8f9dd6" />
+      <stop offset="0.98" stop-color="#7bc2c7" />
+    </linearGradient>
+    <radialGradient id="halo-signal" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#9e439a" stop-opacity="0.55" />
+      <stop offset="1" stop-color="#9e439a" stop-opacity="0" />
+    </radialGradient>
+    <radialGradient id="halo-horizon" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#54a4ac" stop-opacity="0.5" />
+      <stop offset="1" stop-color="#54a4ac" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg)" />
+  <circle cx="150" cy="120" r="380" fill="url(#halo-signal)" />
+  <circle cx="1060" cy="560" r="420" fill="url(#halo-horizon)" />
+
+  <g fill="#f8f7fb" opacity="0.75">
+    <circle cx="980" cy="140" r="2.5" />
+    <circle cx="1080" cy="250" r="1.8" />
+    <circle cx="880" cy="90" r="1.6" />
+    <circle cx="1010" cy="410" r="2.2" />
+    <circle cx="120" cy="420" r="1.5" />
+    <circle cx="700" cy="70" r="1.4" />
+  </g>
+
+  <text x="90" y="200" font-family="Onest, 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="26" font-weight="700" letter-spacing="6" fill="#aad9dc">
+    ЕДИНОЕ ГЛОБАЛЬНОЕ ДВИЖЕНИЕ
+  </text>
+
+  <text x="90" y="320" font-family="Onest, 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="92" font-weight="800" letter-spacing="-2" fill="url(#title)">
+    Единый голос 27
+  </text>
+
+  <text x="90" y="400" font-family="'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="38" font-weight="400" fill="#f8f7fb">
+    Евро-Азиатский дивизион
+  </text>
+
+  <text x="90" y="470" font-family="'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="28" font-weight="400" fill="#b8c0e6">
+    Сентябрь 2027 — вместе, единым голосом
+  </text>
+
+  <rect x="90" y="520" width="230" height="6" rx="3" fill="url(#title)" />
+</svg>
