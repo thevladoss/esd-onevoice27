@@ -50,7 +50,10 @@ describe("News", () => {
       "page",
     );
     expect(screen.getByRole("button", { name: "Страница 1" })).not.toHaveAttribute("aria-current");
-    expect(screen.getByRole("button", { name: "Следующая страница" })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "Следующая страница" })).toHaveAttribute(
+      "aria-disabled",
+      "true",
+    );
     expect(screen.getByRole("status")).toHaveTextContent("Страница 2 из 2");
     expect(document.activeElement).toBe(screen.getByRole("button", { name: "Страница 2" }));
     expect(window.scrollTo).not.toHaveBeenCalled();
@@ -61,12 +64,33 @@ describe("News", () => {
     render(<News />);
 
     const next = screen.getByRole("button", { name: "Следующая страница" });
-    expect(next).toBeEnabled();
+    expect(next).toHaveAttribute("aria-disabled", "false");
 
     fireEvent.click(next);
 
     expect(screen.getAllByRole("article")).toHaveLength(3);
-    expect(screen.getByRole("button", { name: "Следующая страница" })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "Следующая страница" })).toHaveAttribute(
+      "aria-disabled",
+      "true",
+    );
+  });
+
+  it("держит погашенную стрелку в дереве фокуса и не листает дальше последней страницы", () => {
+    render(<News />);
+
+    const next = screen.getByRole("button", { name: "Следующая страница" });
+    next.focus();
+    fireEvent.click(next);
+
+    const quenched = screen.getByRole("button", { name: "Следующая страница" });
+    expect(quenched).toHaveAttribute("aria-disabled", "true");
+    expect(document.activeElement).toBe(quenched);
+
+    fireEvent.click(quenched);
+
+    expect(screen.getByRole("status")).toHaveTextContent("Страница 2 из 2");
+    expect(screen.getAllByRole("article")).toHaveLength(3);
+    expect(document.activeElement).toBe(quenched);
   });
 
   it("подписывает навигацию пагинации", () => {
@@ -122,7 +146,10 @@ describe("News", () => {
       "page",
     );
     expect(screen.queryByRole("button", { name: "Страница 2" })).toBeNull();
-    expect(screen.getByRole("button", { name: "Следующая страница" })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "Следующая страница" })).toHaveAttribute(
+      "aria-disabled",
+      "true",
+    );
     expect(screen.getByRole("status")).toHaveTextContent("Страница 1 из 1");
   });
 });

@@ -59,14 +59,21 @@ export function NewsPagination({
           );
         })}
         <li>
+          {/* На последней странице стрелка гасится через `aria-disabled`, а не `disabled`:
+              нативный `disabled` выбрасывает кнопку из дерева фокуса, браузер отдаёт фокус
+              в `body`, и клавиатурный пользователь после клика начинает обход с начала страницы. */}
           <button
             type="button"
             aria-label={newsCopy.nextPage}
-            disabled={isLast}
-            onClick={() => onChange(page + 1)}
+            aria-disabled={isLast}
+            onClick={() => {
+              if (!isLast) {
+                onChange(page + 1);
+              }
+            }}
             className={
               BUTTON_BASE +
-              " text-paper/62 hover:bg-[rgb(33_26_62/.44)] hover:text-paper disabled:cursor-not-allowed disabled:opacity-[.38] disabled:hover:bg-transparent disabled:hover:text-paper/62"
+              " text-paper/62 hover:bg-[rgb(33_26_62/.44)] hover:text-paper aria-disabled:cursor-not-allowed aria-disabled:opacity-[.38] aria-disabled:hover:bg-transparent aria-disabled:hover:text-paper/62"
             }
           >
             <ChevronRight />
