@@ -1,22 +1,6 @@
 import "@testing-library/jest-dom/vitest";
 
-class IntersectionObserverMock implements IntersectionObserver {
-  readonly root: Element | Document | null = null;
-  readonly rootMargin: string = "";
-  readonly thresholds: ReadonlyArray<number> = [];
-  readonly callback: IntersectionObserverCallback;
-
-  constructor(callback: IntersectionObserverCallback) {
-    this.callback = callback;
-  }
-
-  observe(): void {}
-  unobserve(): void {}
-  disconnect(): void {}
-  takeRecords(): IntersectionObserverEntry[] {
-    return [];
-  }
-}
+import { IntersectionObserverMock } from "./intersection";
 
 class ResizeObserverMock implements ResizeObserver {
   observe(): void {}
