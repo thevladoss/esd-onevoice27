@@ -114,15 +114,18 @@ export function Header() {
             controls={MENU_ID}
           />
         </div>
-      </div>
 
-      <MobileMenu
-        open={menuOpen}
-        onClose={closeMenu}
-        onNavigate={navigate}
-        items={copy.shell.nav}
-        burgerRef={burgerRef}
-      />
+        {/* Оверлей живёт внутри изолированного контекста пилюли, как в оригинале:
+            так бургер (z-index 42) остаётся поверх оверлея (z-index 40), и меню
+            закрывается крестом, а логотип и стекло уходят под оверлей. */}
+        <MobileMenu
+          open={menuOpen}
+          onClose={closeMenu}
+          onNavigate={navigate}
+          items={copy.shell.nav}
+          burgerRef={burgerRef}
+        />
+      </div>
     </header>
   );
 }
