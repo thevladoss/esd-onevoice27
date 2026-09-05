@@ -1,5 +1,5 @@
 import type { FormEvent } from "react";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { formCopy } from "../../data/copy.form";
 import { ESD_COUNTRIES } from "../../data/countries";
@@ -19,6 +19,7 @@ import { Section } from "../layout/Section";
 import { ConsentCheckbox } from "./ConsentCheckbox";
 import { FormField } from "./FormField";
 import { LightTypeChoice } from "./LightTypeChoice";
+import { SuccessToast } from "./SuccessToast";
 
 const SUBMIT_DELAY = 1200;
 const SUBMIT_ID = "light-form-submit";
@@ -39,8 +40,9 @@ export function LightForm() {
   const [errors, setErrors] = useState<LightFormErrors>({});
   const [attempted, setAttempted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-  // Тост подключается ниже по разметке, состояние держит форма.
-  const [, setToastOpen] = useState(false);
+  const [toastOpen, setToastOpen] = useState(false);
+  // Каждый успех монтирует тост заново: таймер автозакрытия отсчитывается от последнего огонька.
+  const [toastKey, setToastKey] = useState(0);
   const submitTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const returnFocus = useRef(false);
 
@@ -112,9 +114,12 @@ export function LightForm() {
       setAttempted(false);
       setSubmitting(false);
       setToastOpen(true);
+      setToastKey((prev) => prev + 1);
       returnFocus.current = true;
     }, SUBMIT_DELAY);
   }
+
+  const closeToast = useCallback(() => setToastOpen(false), []);
 
   return (
     <Section id="light-form" className="lf-section">
@@ -252,6 +257,13 @@ export function LightForm() {
           </Button>
         </form>
       </GlassCard>
+
+      <SuccessToast
+        key={toastKey}
+        open={toastOpen}
+        message={formCopy.success}
+        onClose={closeToast}
+      />
     </Section>
   );
 }
