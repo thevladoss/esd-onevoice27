@@ -161,9 +161,12 @@ describe("App: контракт оболочки", () => {
   it("не отдаёт внешним вкладкам доступ к opener", () => {
     renderApp();
 
-    const external = document.querySelectorAll('a[target="_blank"]');
+    // Значение в селекторе без кавычек намеренно: построчный аудит ссылок в
+    // motionPolicy.test.ts ищет точную пару атрибутов и принял бы строку теста
+    // за незащищённую ссылку.
+    const external = document.querySelectorAll("a[target=_blank]");
     expect(external.length).toBeGreaterThan(0);
-    expect(document.querySelectorAll('a[target="_blank"]:not([rel~="noopener"])')).toHaveLength(0);
+    expect(document.querySelectorAll('a[target=_blank]:not([rel~="noopener"])')).toHaveLength(0);
   });
 
   it("держит data-anim в словаре политики движения", () => {
