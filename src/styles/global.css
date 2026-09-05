@@ -256,12 +256,10 @@ main:focus-visible {
   z-index: 2;
 }
 
+/* Ховер оригинала: кнопка приподнимается на 2px и усиливает тень, поверхность не меняется */
 .btn[data-beam]:hover,
 .btn[data-beam]:focus-visible {
-  background:
-    linear-gradient(125deg, rgb(132 53 127) 0%, rgb(79 93 175) 50%, rgb(67 139 150) 100%) padding-box,
-    conic-gradient(from var(--ov-hero-beam), transparent 0deg 238deg, rgb(170 217 220) 270deg, rgb(248 234 244) 294deg, white 304deg, rgb(240 211 231) 316deg, transparent 348deg 360deg) border-box;
-  transform: translateY(-1px);
+  transform: translateY(-2px);
   box-shadow:
     inset 0 0 0 1px rgb(217 222 244 / .34),
     0 14px 34px rgb(59 77 161 / .40),

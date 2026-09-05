@@ -252,9 +252,11 @@
     transition: background-position var(--dur-menu-hover) var(--ease-ui);
   }
 
+  /* Активный пункт (aria-current) градиентом не подсвечиваем: у оригинала активного
+     состояния нет, а стоп 18% градиента поверх стекла даёт контраст 1,77:1 (UI-аудит
+     фазы 6). Семантика остаётся в атрибуте. */
   .site-nav__link:hover > span,
-  .site-nav__link:focus-visible > span,
-  .site-nav__link[aria-current] > span {
+  .site-nav__link:focus-visible > span {
     background-position: 0 50%;
   }
 }
