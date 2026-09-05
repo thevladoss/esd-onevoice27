@@ -22,6 +22,24 @@ export function MobileMenu({ open, onClose, onNavigate, items, burgerRef }: Mobi
     return burgerRef.current ? [burgerRef.current, ...links] : links;
   }, [burgerRef]);
 
+  // Кнопка закрытия оверлея — бургер — лежит снаружи диалога, в пилюле header,
+  // поэтому aria-modal тут не годится: скринридер спрятал бы от пользователя
+  // элемент, на который фокус-ловушка ставит фокус первым. Вместо этого на время
+  // показа оверлея из обхода выключается остальная страница.
+  useEffect(() => {
+    if (!open) {
+      return;
+    }
+
+    const header = menuRef.current?.closest("header");
+    const siblings = Array.from(header?.parentElement?.children ?? []).filter(
+      (element): element is HTMLElement => element instanceof HTMLElement && element !== header,
+    );
+
+    siblings.forEach((element) => element.setAttribute("inert", ""));
+    return () => siblings.forEach((element) => element.removeAttribute("inert"));
+  }, [open]);
+
   // Скролл страницы блокируется на время показа оверлея и возвращается к тому
   // значению, которое было до открытия.
   useEffect(() => {
@@ -116,7 +134,6 @@ export function MobileMenu({ open, onClose, onNavigate, items, burgerRef }: Mobi
       id="mobile-menu"
       className="mobile-menu"
       role="dialog"
-      aria-modal="true"
       aria-label={copy.shell.menuDialogLabel}
       aria-hidden={!open}
       inert={!open}

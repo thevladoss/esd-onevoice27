@@ -145,7 +145,26 @@ describe("Header: мобильный оверлей", () => {
     render(<Header />);
 
     expect(overlay()).toHaveAttribute("id", "mobile-menu");
-    expect(overlay()).toHaveAttribute("aria-modal", "true");
+  });
+
+  it("не объявляет оверлей модальным: кнопка закрытия лежит снаружи диалога", () => {
+    render(<Header />);
+    openMenu();
+
+    expect(screen.getByRole("dialog", { name: "Меню" })).not.toHaveAttribute("aria-modal");
+  });
+
+  it("выключает остальную страницу из обхода, пока оверлей открыт", () => {
+    const page = document.createElement("main");
+    page.textContent = "Контент страницы";
+    const { container } = render(<Header />);
+    container.append(page);
+
+    openMenu();
+    expect(page).toHaveAttribute("inert");
+
+    fireEvent.keyDown(document, { key: "Escape" });
+    expect(page).not.toHaveAttribute("inert");
   });
 
   it("прячет закрытый оверлей от скринридера и клавиатуры", () => {
