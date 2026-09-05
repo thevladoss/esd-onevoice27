@@ -18,7 +18,7 @@ function wantsInstantClose(): boolean {
 
 /**
  * Визуальная копия успеха. Объявление скринридеру делает живой регион формы, поэтому карточка
- * помечена aria-hidden и закрывается по таймеру или по клику по карточке.
+ * помечена aria-hidden и закрывается по таймеру, по клику по карточке или по Escape.
  */
 export function SuccessToast({
   open,
@@ -84,6 +84,19 @@ function LiveToast({
 
     return () => clearTimeout(autoTimer);
   }, [duration]);
+
+  // Клавиатуре нужен свой способ убрать сообщение: кнопки внутри нет, кликнуть нечем.
+  useEffect(() => {
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        requestCloseRef.current();
+      }
+    }
+
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   // Таймер фазы ухода живёт до размонтирования: иначе тост завис бы прозрачным и ловил клики.
   useEffect(

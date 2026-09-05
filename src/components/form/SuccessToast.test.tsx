@@ -64,6 +64,35 @@ describe("SuccessToast", () => {
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 
+  it("закрывается по Escape, а другие клавиши игнорирует", () => {
+    const onClose = vi.fn();
+    render(<SuccessToast open message="Готово" onClose={onClose} />);
+
+    fireEvent.keyDown(document, { key: "Enter" });
+    expect(card()).toHaveAttribute("data-state", "open");
+
+    fireEvent.keyDown(document, { key: "Escape" });
+    expect(card()).toHaveAttribute("data-state", "closing");
+
+    act(() => {
+      vi.advanceTimersByTime(200);
+    });
+    expect(onClose).toHaveBeenCalledTimes(1);
+  });
+
+  it("снимает слушатель Escape при размонтировании", () => {
+    const onClose = vi.fn();
+    const { unmount } = render(<SuccessToast open message="Готово" onClose={onClose} />);
+
+    unmount();
+    fireEvent.keyDown(document, { key: "Escape" });
+
+    act(() => {
+      vi.advanceTimersByTime(200);
+    });
+    expect(onClose).not.toHaveBeenCalled();
+  });
+
   it("снимает таймер ухода при размонтировании", () => {
     const onClose = vi.fn();
     const { unmount } = render(<SuccessToast open message="Готово" onClose={onClose} />);
