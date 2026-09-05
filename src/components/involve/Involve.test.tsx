@@ -1,4 +1,4 @@
-import { render, screen, within } from "@testing-library/react";
+import { fireEvent, render, screen, within } from "@testing-library/react";
 import { involveCopy } from "../../data/copy.involve";
 import { Involve } from "./Involve";
 
@@ -42,11 +42,20 @@ describe("Секция «От убеждения к действию»", () => {
     const section = container.querySelector("section#involve") as HTMLElement;
     expect(within(section).getAllByRole("link")).toHaveLength(3);
 
+    const hashBefore = window.location.hash;
     for (const article of Array.from(container.querySelectorAll("article"))) {
       expect(article.getAttribute("href")).toBeNull();
       expect(article.getAttribute("role")).toBeNull();
       expect(article.getAttribute("tabindex")).toBeNull();
-      expect((article as HTMLElement).onclick).toBeNull();
+
+      // Единственный интерактив внутри карточки — ссылка действия.
+      expect(within(article as HTMLElement).getAllByRole("link")).toHaveLength(1);
+      expect(article.querySelectorAll("button, [role='button'], input, [tabindex]")).toHaveLength(0);
+
+      // Проверяем поведение, а не свойство onclick: React вешает обработчики
+      // делегированием на корень и в onclick узла ничего не пишет.
+      fireEvent.click(article);
+      expect(window.location.hash).toBe(hashBefore);
     }
   });
 
