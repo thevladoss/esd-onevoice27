@@ -4,7 +4,8 @@ export interface InvolveCardCopy {
   id: InvolveCardId;
   title: string;
   action: string;
-  href: "#about" | "#resources" | "#news";
+  /** `#resources-materials` — deep link фазы 4: раскрывает панель материалов и прокручивает к ней. */
+  href: "#about" | "#resources" | "#resources-materials" | "#news";
 }
 
 export interface InvolveCopy {
@@ -29,7 +30,7 @@ export const involveCopy = {
       id: "toolkit",
       title: "Материалы для церкви",
       action: "Скачать материалы",
-      href: "#resources",
+      href: "#resources-materials",
     },
     {
       id: "sharing",

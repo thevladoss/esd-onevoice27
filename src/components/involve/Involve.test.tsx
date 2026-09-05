@@ -4,7 +4,7 @@ import { Involve } from "./Involve";
 
 const expectedHrefs: Record<string, string> = {
   "Начать путь": "#about",
-  "Скачать материалы": "#resources",
+  "Скачать материалы": "#resources-materials",
   "Узнать, как делиться": "#news",
 };
 
