@@ -164,8 +164,8 @@ Plans:
 
 **Wave 1**
 
-- [ ] 05-01-PLAN.md — Reveal/RevealGroup/RevealItem на motion, тесты reduce, обёртки семи секций, fade hero (MOTION-01)
-- [ ] 05-02-PLAN.md — Единый блок reduced motion и токены reveal в global.css, data-anim на слоях оболочки, skip-link, ландмарки, кольцо фокуса, overflow-x clip (MOTION-02, MOTION-03)
+- [x] 05-01-PLAN.md — Reveal/RevealGroup/RevealItem на motion, тесты reduce, обёртки семи секций, fade hero (MOTION-01)
+- [x] 05-02-PLAN.md — Единый блок reduced motion и токены reveal в global.css, data-anim на слоях оболочки, skip-link, ландмарки, кольцо фокуса, overflow-x clip (MOTION-02, MOTION-03)
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
@@ -194,4 +194,4 @@ Phase 3 и Phase 4 обе зависят только от Phase 2 и незав
 | 2. Hero и карта | 5/5 | Complete   | 2026-09-05 |
 | 3. Форма, О проекте, Участие | 4/4 | Complete   | 2026-09-05 |
 | 4. Новости, Ресурсы, Цитата | 4/4 | Complete   | 2026-09-05 |
-| 5. Полировка и финальный прогон | 0/7 | Planned | - |
+| 5. Полировка и финальный прогон | 2/7 | In Progress|  |
