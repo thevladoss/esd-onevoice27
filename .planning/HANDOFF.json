@@ -1,0 +1,109 @@
+{
+  "version": "1.0",
+  "timestamp": "2026-09-05T16:26:29.926Z",
+  "source": "auto-postool",
+  "partial": true,
+  "phase": "05",
+  "phase_name": "polish-and-release",
+  "phase_dir": ".planning/phases/05-polish-and-release",
+  "plan": null,
+  "task": null,
+  "total_tasks": 7,
+  "status": "auto-checkpoint",
+  "completed_tasks": [],
+  "remaining_tasks": [
+    {
+      "id": "01",
+      "name": "Task 1: Контракт Reveal: константы, компоненты, тесты на reduced motion",
+      "status": "not_started"
+    },
+    {
+      "id": "02",
+      "name": "Task 1: Токены reveal, единый блок reduced motion и защита от горизонтального скролла в global.css",
+      "status": "not_started"
+    },
+    {
+      "id": "03",
+      "name": "Task 1: aria-labelledby и иерархия заголовков для hero, map, light-form, about, involve",
+      "status": "not_started"
+    },
+    {
+      "id": "04",
+      "name": "Task 1: Один видео-фасад: слияние VideoFacade в VideoEmbed и его aria-контракт",
+      "status": "not_started"
+    },
+    {
+      "id": "05",
+      "name": "Task 1: App.test.tsx: восемь секций, skip-link, ландмарки",
+      "status": "not_started"
+    },
+    {
+      "id": "06",
+      "name": "Task 1: Чанк vendor-map, зачистка console.* и сборка без предупреждений",
+      "status": "not_started"
+    },
+    {
+      "id": "07",
+      "name": "Task 1: Предполётные проверки, деплой, сверка прода с локальной сборкой",
+      "status": "not_started"
+    }
+  ],
+  "blockers": [
+    {
+      "description": "Фаза 2: производительность огоньков и проекция карты на реальном билде (антимеридиан, ≤40 анимированных огоньков)",
+      "type": "technical",
+      "workaround": ""
+    }
+  ],
+  "human_actions_pending": [],
+  "decisions": [
+    {
+      "decision": "Инициализация: собственная SVG-карта на d3-geo вместо Mapbox (без токенов, полный контроль над стилем)",
+      "rationale": "",
+      "phase": "05"
+    },
+    {
+      "decision": "Инициализация: canvas-глобус из частиц вместо webm-видео (нет исходника, вес 0 байт)",
+      "rationale": "",
+      "phase": "05"
+    },
+    {
+      "decision": "Инициализация: Onest вместо Figtree для заголовков (кириллица)",
+      "rationale": "",
+      "phase": "05"
+    },
+    {
+      "decision": "Инициализация: GitHub Pages + Actions, gh уже авторизован",
+      "rationale": "",
+      "phase": "05"
+    },
+    {
+      "decision": "[Phase 01]: Vitest закреплён на 4.1.11 и jsdom на 29.1.1 — локальный Node 25.2.1 не входит в engines vitest 5",
+      "rationale": "",
+      "phase": "05"
+    },
+    {
+      "decision": "[Phase 01]: Vite 8.2.2 работает с @tailwindcss/vite 4.3.3 и Vitest, откат на Vite 7 не нужен — блокер фазы 1 снят проверкой билда и тестов",
+      "rationale": "",
+      "phase": "05"
+    },
+    {
+      "decision": "[Phase 01]: TypeScript закреплён на ^5.9.3 вместо шаблонного ~6.0.2 — шаблон Vite и tsc -b проверены на 5.x",
+      "rationale": "",
+      "phase": "05"
+    },
+    {
+      "decision": "[Phase 01]: деплой фазы 1 подтверждён сверкой sha256 локального dist и живых файлов Pages на одном коммите, а не только кодом 200",
+      "rationale": "",
+      "phase": "05"
+    },
+    {
+      "decision": "[Phase 01]: ожидание прогона Actions на macOS делается циклом gh run view --json status,conclusion с паузой: timeout для обёртки gh run watch недоступен",
+      "rationale": "",
+      "phase": "05"
+    }
+  ],
+  "uncommitted_files": [],
+  "next_action": "Ready to plan",
+  "context_notes": "Status: Ready to plan\n\nStopped at: Phase 04 complete (4/4) — ready to discuss Phase 05"
+}
