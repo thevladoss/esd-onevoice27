@@ -33,6 +33,7 @@ export function Hero() {
           as="a"
           variant="primary"
           className="hero__cta"
+          data-beam="true"
           href={heroCopy.ctaHref}
           onClick={handleCtaClick}
         >
