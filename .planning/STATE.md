@@ -4,7 +4,7 @@ milestone: v1.0
 milestone_name: milestone
 status: planning
 stopped_at: Phase 1 UI-SPEC approved; planner running
-last_updated: "2026-09-05T15:07:43.076Z"
+last_updated: "2026-09-05T15:08:24.579Z"
 last_activity: 2026-09-05 — Roadmap создан, все 37 v1-требований распределены по 5 фазам
 progress:
   total_phases: 5

@@ -154,12 +154,23 @@ Plans:
 
 Plans:
 
+**Wave 1**
+
 - [ ] 05-01-PLAN.md — Reveal/RevealGroup/RevealItem на motion, тесты reduce, обёртки семи секций, fade hero (MOTION-01)
 - [ ] 05-02-PLAN.md — Единый блок reduced motion и токены reveal в global.css, data-anim на слоях оболочки, skip-link, ландмарки, кольцо фокуса, overflow-x clip (MOTION-02, MOTION-03)
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
 - [ ] 05-03-PLAN.md — Аудит a11y и адаптива hero/map/light-form/about/involve: aria-labelledby, карта, счётчики, чипы, форма, стек 390 (MOTION-03)
 - [ ] 05-04-PLAN.md — Слияние VideoFacade в VideoEmbed, a11y и адаптив news/resources/quote, data-anim частиц (MOTION-02, MOTION-03)
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
 - [ ] 05-05-PLAN.md — App.test, Header.test, добор CountryChips/LightForm/Resources, ноль предупреждений act (QA-02)
 - [ ] 05-06-PLAN.md — Чанк vendor-map, зачистка console.*, scripts/check-dist.mjs, README «Проверка», docs/qa/SMOKE.md (MOTION-04, QA-04)
+
+**Wave 4** *(blocked on Wave 3 completion)*
+
 - [ ] 05-07-PLAN.md — Деплой в main, gh run watch, сверка прода с dist, Playwright smoke через оркестратора, скриншоты (QA-04, MOTION-04)
 
 **UI hint**: yes
