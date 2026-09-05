@@ -2,18 +2,23 @@ import { readFileSync, readdirSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 
-// Корень vitest совпадает с корнем проекта: путь к исходникам считается от него,
-// а не от import.meta.url, который в jsdom приходит не файловым URL.
+/*
+ * Политика движения — свойство CSS проекта целиком, а не одного компонента,
+ * поэтому проверяется по тексту исходников. Файлы читаются с диска, а не через
+ * import.meta.glob: vitest настроен с css: false и отдаёт содержимое
+ * CSS-модулей пустой строкой даже по запросу ?raw.
+ */
 const SRC = resolve(process.cwd(), "src");
-const GLOBAL_CSS = readFileSync(join(SRC, "styles/global.css"), "utf8");
+const GLOBAL_CSS_PATH = join(SRC, "styles", "global.css");
+const GLOBAL_CSS = readFileSync(GLOBAL_CSS_PATH, "utf8");
 
-/** Все файлы `src` с одним из расширений, рекурсивно. */
-function filesWithExt(dir: string, extensions: readonly string[]): string[] {
+/** Пути всех файлов `src` с одним из расширений, рекурсивно. */
+function filesWithExt(extensions: readonly string[], dir: string = SRC): string[] {
   const found: string[] = [];
   for (const entry of readdirSync(dir, { withFileTypes: true })) {
     const path = join(dir, entry.name);
     if (entry.isDirectory()) {
-      found.push(...filesWithExt(path, extensions));
+      found.push(...filesWithExt(extensions, path));
     } else if (extensions.some((ext) => entry.name.endsWith(ext))) {
       found.push(path);
     }
@@ -23,12 +28,11 @@ function filesWithExt(dir: string, extensions: readonly string[]): string[] {
 
 describe("политика reduced motion", () => {
   it("живёт в единственном блоке единственного файла", () => {
-    const withMedia = filesWithExt(SRC, [".css"]).filter((path) =>
+    const withMedia = filesWithExt([".css"]).filter((path) =>
       readFileSync(path, "utf8").includes("prefers-reduced-motion"),
     );
 
-    expect(withMedia).toHaveLength(1);
-    expect(withMedia[0].endsWith("styles/global.css")).toBe(true);
+    expect(withMedia).toEqual([GLOBAL_CSS_PATH]);
     expect(GLOBAL_CSS.match(/@media \(prefers-reduced-motion: reduce\)/g)).toHaveLength(1);
   });
 
@@ -58,7 +62,9 @@ describe("оболочка страницы", () => {
     expect(GLOBAL_CSS).toContain("--ease-reveal: cubic-bezier(0.22, 1, 0.36, 1)");
     expect(GLOBAL_CSS).toContain("--stagger-reveal: 80ms");
     expect(GLOBAL_CSS).toContain("--reveal-shift: 24px");
-    expect(GLOBAL_CSS).toMatch(/@media \(max-width: 767px\) \{\s*:root \{\s*--reveal-shift: 16px;/);
+    expect(GLOBAL_CSS).toMatch(
+      /@media \(max-width: 767px\) \{\s*:root \{\s*--reveal-shift: 16px;/,
+    );
   });
 
   it("режет горизонтальную прокрутку через clip, а не hidden", () => {
@@ -67,16 +73,15 @@ describe("оболочка страницы", () => {
   });
 
   it("держит кольцо фокуса и в утилите, и глобальным правилом", () => {
-    expect(
-      GLOBAL_CSS.match(/outline: 2px solid var\(--color-horizon-200\)/g),
-    ).toHaveLength(2);
+    expect(GLOBAL_CSS.match(/outline: 2px solid var\(--color-horizon-200\)/g)).toHaveLength(2);
     expect(GLOBAL_CSS).toContain("outline-offset: 4px");
   });
 
   it("нигде в исходниках не снимает обводку фокуса", () => {
-    const sources = filesWithExt(SRC, [".css", ".ts", ".tsx"]);
-    const offenders = sources.filter((path) =>
-      /outline:\s*none|outline-width:\s*0|\boutline-none\b/.test(readFileSync(path, "utf8")),
+    // Скобки вокруг дефиса нужны, чтобы сам тест не попал под свой же поиск.
+    const ringOff = /outline:\s*none|outline-width:\s*0|\boutline[-]none\b/;
+    const offenders = filesWithExt([".css", ".ts", ".tsx"]).filter((path) =>
+      ringOff.test(readFileSync(path, "utf8")),
     );
 
     expect(offenders).toEqual([]);
