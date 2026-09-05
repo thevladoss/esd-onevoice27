@@ -9,8 +9,7 @@ import {
   shouldAnimate,
   type GlobeLayout,
 } from "./globe";
-
-const REDUCED_MOTION = "(prefers-reduced-motion: reduce)";
+import { REDUCED_MOTION_QUERY } from "../../lib/useReducedMotion";
 
 export function GlobeCanvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -24,7 +23,7 @@ export function GlobeCanvas() {
     if (!ctx) return;
 
     const points = fibonacciSphere(GLOBE_POINTS);
-    const motionQuery = window.matchMedia(REDUCED_MOTION);
+    const motionQuery = window.matchMedia(REDUCED_MOTION_QUERY);
 
     let angle = 0;
     // Метка предыдущего кадра: null значит «цикл только что запустился».
@@ -133,5 +132,9 @@ export function GlobeCanvas() {
     };
   }, []);
 
-  return <canvas ref={canvasRef} className="globe-canvas" aria-hidden="true" />;
+  // Вращение живёт в rAF, а не в CSS, поэтому data-anim здесь не столько
+  // гасит анимацию, сколько объявляет canvas декоративным слоем реестра.
+  return (
+    <canvas ref={canvasRef} className="globe-canvas" data-anim="globe" aria-hidden="true" />
+  );
 }

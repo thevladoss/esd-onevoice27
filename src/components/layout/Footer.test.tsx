@@ -43,6 +43,18 @@ describe("Footer", () => {
     }
   });
 
+  it("помечает волны и гало атрибутами реестра движения", () => {
+    render(<Footer />);
+    const footer = screen.getByRole("contentinfo");
+
+    // Волны дрейфуют фоном самого footer, гало живёт отдельным узлом.
+    expect(footer).toHaveAttribute("data-anim", "wave");
+
+    const halo = footer.querySelector(".site-footer__halo");
+    expect(halo).toHaveAttribute("data-anim", "halo");
+    expect(halo).toHaveAttribute("aria-hidden", "true");
+  });
+
   it("не добавляет заголовков в footer", () => {
     render(<Footer />);
     const footer = screen.getByRole("contentinfo");

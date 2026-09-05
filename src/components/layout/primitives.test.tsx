@@ -98,6 +98,17 @@ describe("Button", () => {
     expect(screen.getByRole("button", { name: "Отправить" })).toHaveClass("btn", "btn--ghost");
   });
 
+  it("объявляет луч только у основного варианта", () => {
+    const { rerender } = render(<Button>Отправить</Button>);
+    expect(screen.getByRole("button", { name: "Отправить" })).toHaveAttribute(
+      "data-anim",
+      "beam",
+    );
+
+    rerender(<Button variant="ghost">Отправить</Button>);
+    expect(screen.getByRole("button", { name: "Отправить" })).not.toHaveAttribute("data-anim");
+  });
+
   it("пробрасывает disabled на кнопку", () => {
     render(<Button disabled>Отправить</Button>);
     expect(screen.getByRole("button", { name: "Отправить" })).toBeDisabled();

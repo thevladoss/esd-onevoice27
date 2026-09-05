@@ -56,6 +56,38 @@ describe("политика reduced motion", () => {
   });
 });
 
+describe("реестр data-anim", () => {
+  /** Закрытый список из 05-UI-SPEC: значения вне его блок reduce не гасит. */
+  const REGISTRY = [
+    "stars",
+    "globe",
+    "beam",
+    "pulse",
+    "new-light",
+    "particles",
+    "atmosphere",
+    "wave",
+    "halo",
+  ];
+
+  const used = new Set(
+    filesWithExt([".css", ".ts", ".tsx"])
+      .flatMap((path) => readFileSync(path, "utf8").match(/data-anim="[a-z-]+"/g) ?? [])
+      .map((match) => match.slice('data-anim="'.length, -1)),
+  );
+
+  it("не заводит значений вне закрытого списка", () => {
+    expect([...used].filter((value) => !REGISTRY.includes(value))).toEqual([]);
+  });
+
+  it("проставлен на всех декоративных слоях оболочки, hero и карты", () => {
+    // particles и atmosphere проставляет план 05-04 в секции ресурсов.
+    for (const value of ["stars", "globe", "beam", "pulse", "new-light", "wave", "halo"]) {
+      expect(used).toContain(value);
+    }
+  });
+});
+
 describe("оболочка страницы", () => {
   it("объявляет токены reveal, включая укороченный сдвиг на узком экране", () => {
     expect(GLOBAL_CSS).toContain("--dur-reveal: 700ms");
