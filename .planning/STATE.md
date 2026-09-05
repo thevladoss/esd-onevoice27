@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: milestone_complete
-stopped_at: Milestone complete (Phase 06 was final phase)
-last_updated: 2026-09-05T21:04:57.436Z
-last_activity: 2026-09-05 -- Фаза 6 «Точность оригинала» по правкам пользователя: планы 06-01 шапка, 06-02 кнопка, 06-03 фоны исполняются
+status: Awaiting next milestone
+stopped_at: Completed 05-07-PLAN.md
+last_updated: "2026-09-05T21:35:23.305Z"
+last_activity: 2026-09-05 — Milestone v1.0 completed and archived
 progress:
   total_phases: 6
-  completed_phases: 5
+  completed_phases: 6
   total_plans: 30
   completed_plans: 30
-  percent: 83
+  percent: 100
 ---
 
 # Project State
@@ -21,16 +21,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-09-05)
 
 **Core value:** Посетитель открывает страницу и видит красивый, живой лендинг уровня оригинала onevoice27.org, но про ЕАД: узнаёт, что такое «Единый голос 27», видит карту движения по дивизиону и может «зажечь свой свет».
-**Current focus:** Milestone complete
+**Current focus:** Milestone v1.0 shipped 2026-09-05; следующий milestone не запланирован (`/bm:new-milestone`)
 
 ## Current Position
 
-Phase: 06
-Plan: Not started
-Status: Milestone complete
-Last activity: 2026-09-05
-
-Progress: [██████████] 100%
+Phase: Milestone v1.0 complete
+Plan: —
+Status: Awaiting next milestone
+Last activity: 2026-09-05 — Milestone v1.0 completed and archived
 
 ## Performance Metrics
 
@@ -88,7 +86,7 @@ Progress: [██████████] 100%
 
 ### Blockers/Concerns
 
-- Фаза 2: производительность огоньков и проекция карты на реальном билде (антимеридиан, ≤40 анимированных огоньков)
+Нет открытых: проекция и производительность карты подтверждены smoke фаз 2, 5 и 6.
 
 ## Deferred Items
 
@@ -103,3 +101,7 @@ Items acknowledged and carried forward from previous milestone close:
 Last session: 2026-09-05T18:49:13.640Z
 Stopped at: Completed 05-07-PLAN.md
 Resume file: .planning/phases/05-polish-and-release/05-07-SUMMARY.md
+
+## Operator Next Steps
+
+- Start the next milestone with /gsd-new-milestone
