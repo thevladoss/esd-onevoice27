@@ -1,0 +1,308 @@
+/* Секция «Зажгите свой свет»: локальные токены полей и радио-карточек живут на секции,
+   палитра и шрифты приходят из токенов фазы 1. */
+
+.lf-section {
+  /* Поля */
+  --field-height: 54px;
+  --field-radius: 12px;
+  --field-surface: rgb(18 12 52 / .58);
+  --field-surface-focus: rgb(33 26 62 / .7);
+  --field-border: rgb(248 247 251 / .18);
+  --field-border-focus: rgb(123 194 199 / .46);
+  --field-placeholder: rgb(248 247 251 / .56);
+  --field-error: #fca5a5;
+
+  /* Радио-карточки типа света */
+  --option-surface: rgb(18 12 52 / .42);
+  --option-surface-active: rgb(84 164 172 / .16);
+  --option-border: rgb(248 247 251 / .16);
+  --option-border-active: rgb(123 194 199 / .72);
+
+  /* Общее */
+  --focus-ring: #aad9dc;
+  --ui-transition: 420ms cubic-bezier(0.32, 0.72, 0, 1);
+
+  position: relative;
+  isolation: isolate;
+  overflow-x: clip;
+  background: var(--color-midnight-950);
+}
+
+/* Шар атмосферы справа: секция растянута на всю ширину окна, поэтому круг рисуется
+   прямо на ней и обрезается по правому краю, а не по контейнеру 72rem. */
+.lf-section::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 0;
+  z-index: -1;
+  width: clamp(520px, 72vw, 1100px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgb(59 77 161 / .28), transparent 70%);
+  transform: translate(38%, -50%);
+  pointer-events: none;
+}
+
+/* Заголовочный блок: размер и вес заголовка задаёт GradientTitle фазы 1 */
+.lf-head {
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+.lf-lead {
+  max-width: 42rem;
+  margin-inline: auto;
+  color: rgb(248 247 251 / .8);
+  font: 400 16px/1.6 var(--font-body);
+}
+
+.lf-card {
+  max-width: 56rem;
+  margin-inline: auto;
+  padding: 24px;
+}
+
+@media (min-width: 768px) {
+  .lf-card {
+    padding: 40px;
+  }
+}
+
+.lf-form {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+/* Тип света */
+.lf-types {
+  display: grid;
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+@media (min-width: 768px) {
+  .lf-types {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.lf-legend {
+  padding: 0;
+  margin-bottom: 8px;
+  font: 700 14px/1.35 var(--font-body);
+}
+
+.lf-type {
+  position: relative;
+  display: block;
+  min-height: 44px;
+  padding: 16px;
+  padding-right: 40px;
+  border: 1px solid var(--option-border);
+  border-radius: 16px;
+  background: var(--option-surface);
+  cursor: pointer;
+  transition:
+    border-color var(--ui-transition),
+    background-color var(--ui-transition);
+}
+
+@media (hover: hover) {
+  .lf-type:hover {
+    border-color: rgb(123 194 199 / .4);
+  }
+}
+
+.lf-type:has(input:checked) {
+  border-color: var(--option-border-active);
+  background: var(--option-surface-active);
+}
+
+.lf-type:has(input:focus-visible) {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 3px;
+}
+
+.lf-type-title {
+  display: block;
+  margin-bottom: 8px;
+  font: 800 24px/1.15 var(--font-display);
+  text-wrap: balance;
+}
+
+.lf-type-text {
+  display: block;
+  color: rgb(248 247 251 / .8);
+  font: 400 16px/1.6 var(--font-body);
+}
+
+.lf-type-dot {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity var(--ui-transition);
+}
+
+.lf-type:has(input:checked) .lf-type-dot {
+  opacity: 1;
+}
+
+.lf-type[data-type="individual"] .lf-type-dot {
+  background: var(--color-signal-400);
+}
+
+.lf-type[data-type="group"] .lf-type-dot {
+  background: var(--color-horizon-400);
+}
+
+/* Поля */
+.lf-grid {
+  display: grid;
+  gap: 16px;
+}
+
+@media (min-width: 768px) {
+  .lf-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .lf-span {
+    grid-column: 1 / -1;
+  }
+}
+
+.lf-label {
+  display: block;
+  margin-bottom: 8px;
+  font: 700 14px/1.35 var(--font-body);
+}
+
+/* background-color, а не background: иначе стрелка select стирается вместе с фоном */
+.lf-control {
+  width: 100%;
+  height: var(--field-height);
+  padding: 0 16px;
+  border: 1px solid var(--field-border);
+  border-radius: var(--field-radius);
+  background-color: var(--field-surface);
+  color: rgb(248 247 251 / .94);
+  font: 400 16px/1.6 var(--font-body);
+  transition:
+    border-color 180ms ease,
+    background-color 180ms ease;
+}
+
+.lf-control::placeholder {
+  color: var(--field-placeholder);
+}
+
+@media (hover: hover) {
+  .lf-control:hover {
+    border-color: rgb(123 194 199 / .3);
+  }
+}
+
+.lf-control:focus {
+  border-color: var(--field-border-focus);
+  background-color: var(--field-surface-focus);
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.lf-control[aria-invalid="true"] {
+  border-color: var(--field-error);
+}
+
+/* Своя стрелка: инлайн-SVG из репозитория, внешних адресов нет */
+select.lf-control {
+  appearance: none;
+  padding-right: 44px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23aad9dc' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m3 6 5 5 5-5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  background-size: 16px;
+}
+
+select.lf-control option {
+  background: #120c34;
+  color: #f8f7fb;
+}
+
+.lf-error {
+  margin-top: 8px;
+  color: var(--field-error);
+  font: 400 13px/1.35 var(--font-body);
+}
+
+/* Согласие */
+.lf-check {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  min-height: 44px;
+  cursor: pointer;
+}
+
+.lf-check-box {
+  flex: 0 0 20px;
+  width: 20px;
+  height: 20px;
+  margin-top: 2px;
+  border: 1px solid var(--field-border);
+  border-radius: 6px;
+  background: var(--field-surface);
+  display: grid;
+  place-items: center;
+  transition:
+    border-color var(--ui-transition),
+    background-color var(--ui-transition);
+}
+
+.lf-check-box svg {
+  width: 12px;
+  height: 12px;
+  color: var(--color-paper);
+  opacity: 0;
+  transition: opacity var(--ui-transition);
+}
+
+.lf-check:has(input:checked) .lf-check-box {
+  border-color: var(--option-border-active);
+  background: var(--option-surface-active);
+}
+
+.lf-check:has(input:checked) .lf-check-box svg {
+  opacity: 1;
+}
+
+.lf-check:has(input:focus-visible) .lf-check-box {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.lf-check:has(input[aria-invalid="true"]) .lf-check-box {
+  border-color: var(--field-error);
+}
+
+.lf-check-text {
+  color: rgb(248 247 251 / .8);
+  font: 400 16px/1.6 var(--font-body);
+}
+
+/* Кнопка: заливку и радиус даёт примитив, здесь только ширина и состояние отправки */
+.lf-submit {
+  width: 100%;
+}
+
+.lf-submit[aria-busy="true"] {
+  opacity: .72;
+  cursor: progress;
+}
