@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { createEvent, fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { LightsProvider } from "../../state/lights";
@@ -28,14 +28,16 @@ describe("MapSection", () => {
     renderSection();
     expect(screen.getByText("ЧЕЛОВЕК")).toBeInTheDocument();
     expect(screen.getByText("ГРУПП")).toBeInTheDocument();
-    expect(screen.getByText("694")).toBeInTheDocument();
+    expect(screen.getByText("Людей: 694")).toBeInTheDocument();
   });
 
-  it("сообщает об ошибке карты, когда контейнер без размеров", () => {
+  it("молчит про ошибку, пока контейнер не измерен", () => {
     renderSection();
-    expect(screen.getByRole("status")).toHaveTextContent(
-      "Карта не загрузилась. Обновите страницу, чтобы попробовать снова.",
-    );
+    expect(screen.queryByRole("status")).not.toBeInTheDocument();
+
+    for (const chip of screen.getAllByRole("button")) {
+      expect(chip).not.toHaveAttribute("aria-disabled");
+    }
   });
 
   it("держит скошенный слой внутри секции", () => {
@@ -79,6 +81,27 @@ function readTransform(): string {
 
 function readScale(): number {
   return Number(/scale\(([\d.]+)\)/.exec(readTransform())?.[1]);
+}
+
+/**
+ * Панорама мышью. d3-zoom вешает движение и отпускание на event.view, а jsdom
+ * не принимает окно vitest в конструктор события: view подставляется вручную.
+ */
+function dragMap(dx: number): void {
+  const svg = document.querySelector("svg") as SVGSVGElement;
+  const target = window as unknown as Element;
+
+  const down = createEvent.mouseDown(svg, { button: 0, clientX: 600, clientY: 350 });
+  Object.defineProperty(down, "view", { value: window });
+  fireEvent(svg, down);
+
+  const move = createEvent.mouseMove(document, { clientX: 600 + dx, clientY: 350 });
+  Object.defineProperty(move, "view", { value: window });
+  fireEvent(target, move);
+
+  const up = createEvent.mouseUp(document, { clientX: 600 + dx, clientY: 350 });
+  Object.defineProperty(up, "view", { value: window });
+  fireEvent(target, up);
 }
 
 describe("MapSection: выбор страны чипами", () => {
@@ -145,6 +168,41 @@ describe("MapSection: выбор страны чипами", () => {
     expect(document.querySelector('path[data-selected="true"]')).toBeNull();
   });
 
+  it("снимает выбор страны, когда посетитель утаскивает карту", async () => {
+    renderSection();
+
+    await userEvent.click(screen.getByRole("button", { name: "Казахстан" }));
+    const framed = readTransform();
+
+    dragMap(-300);
+
+    expect(screen.getByRole("button", { name: "Казахстан" })).toHaveAttribute(
+      "aria-pressed",
+      "false",
+    );
+    // Камера остаётся там, куда её увёл посетитель: обзор дивизиона обратно не возвращается.
+    expect(readTransform()).not.toBe(framed);
+    expect(readTransform()).not.toBe("translate(0,0) scale(1)");
+  });
+
+  it("возвращает камеру к стране повторным кликом по активному чипу", async () => {
+    renderSection();
+
+    await userEvent.click(screen.getByRole("button", { name: "Армения" }));
+    const framed = readTransform();
+
+    // Сдвиг меньше порога: чип остаётся активным, а вид уже другой.
+    dragMap(30);
+    expect(screen.getByRole("button", { name: "Армения" })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
+    expect(readTransform()).not.toBe(framed);
+
+    await userEvent.click(screen.getByRole("button", { name: "Армения" }));
+    expect(readTransform()).toBe(framed);
+  });
+
   it("держит подсказку о жестах внутри сцены карты", () => {
     renderSection();
     expect(document.querySelectorAll(".map-stage .map-hint")).toHaveLength(1);
@@ -152,7 +210,13 @@ describe("MapSection: выбор страны чипами", () => {
 });
 
 describe("MapSection: карта не отрисовалась", () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
   it("гасит чипы вместе с картой", () => {
+    // Бесконечный размер уводит fitExtent в NaN: проекция считается сломанной.
+    stubSize(Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY);
     renderSection();
 
     expect(screen.getByRole("status")).toBeInTheDocument();

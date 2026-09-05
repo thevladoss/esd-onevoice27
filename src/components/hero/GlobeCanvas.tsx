@@ -1,7 +1,8 @@
 import { useEffect, useRef } from "react";
 import {
+  FRAME_MS,
   GLOBE_POINTS,
-  GLOBE_SPEED,
+  angleStep,
   drawGlobe,
   fibonacciSphere,
   globeLayout,
@@ -26,6 +27,8 @@ export function GlobeCanvas() {
     const motionQuery = window.matchMedia(REDUCED_MOTION);
 
     let angle = 0;
+    // Метка предыдущего кадра: null значит «цикл только что запустился».
+    let lastAt: number | null = null;
     let inView = true;
     let hidden = document.hidden;
     let reduced = motionQuery.matches;
@@ -54,8 +57,9 @@ export function GlobeCanvas() {
       drawGlobe(ctx, points, angle, layout, width, height);
     };
 
-    const tick = () => {
-      angle += GLOBE_SPEED;
+    const tick = (now: number) => {
+      angle += angleStep(lastAt === null ? FRAME_MS : now - lastAt);
+      lastAt = now;
       renderFrame();
       frameId = window.requestAnimationFrame(tick);
     };
@@ -69,6 +73,8 @@ export function GlobeCanvas() {
         window.cancelAnimationFrame(frameId);
         frameId = null;
       }
+      // Пауза рвёт отсчёт: иначе после возврата вкладки первый кадр прыгнет на всю паузу.
+      lastAt = null;
       if (reduced) renderFrame();
     };
 

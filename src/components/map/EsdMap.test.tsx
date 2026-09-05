@@ -1,12 +1,21 @@
 import { select } from "d3-selection";
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { ESD_IDS } from "../../data/countries";
 import { generateLights } from "../../data/lights";
 import { LightsProvider, useLights } from "../../state/lights";
 import { EsdMap, LIGHT_CORE_RADIUS, LIGHT_HALO_RADIUS } from "./EsdMap";
-import { ZOOM_MAX, ZOOM_MIN, zoomEventFilter } from "./useMapZoom";
+import { ZoomTransform } from "d3-zoom";
+
+import {
+  ZOOM_MAX,
+  ZOOM_MIN,
+  ZOOM_PAD,
+  constrainTransform,
+  movedAway,
+  zoomEventFilter,
+} from "./useMapZoom";
 
 const SIZE = { width: 1200, height: 700 };
 
@@ -99,11 +108,23 @@ describe("EsdMap", () => {
     expect(count(".light-core")).toBe(0);
   });
 
-  it("показывает ошибку вместо карты при нулевом контейнере", () => {
+  it("молчит про ошибку, пока контейнер не измерен", () => {
     const onError = vi.fn();
     const { container } = render(
       <EsdMap lights={lights} size={{ width: 0, height: 0 }} onError={onError} />,
     );
+
+    expect(screen.queryByRole("status")).not.toBeInTheDocument();
+    expect(container.querySelector("svg")).toBeNull();
+    expect(onError).toHaveBeenCalledWith(false);
+    expect(onError).not.toHaveBeenCalledWith(true);
+  });
+
+  it("показывает ошибку, когда проекция вернула не-число", () => {
+    const onError = vi.fn();
+    // Бесконечный контейнер уводит fitExtent в NaN: это и есть сломанная проекция.
+    const broken = { width: Number.POSITIVE_INFINITY, height: Number.POSITIVE_INFINITY };
+    const { container } = render(<EsdMap lights={lights} size={broken} onError={onError} />);
 
     expect(screen.getByRole("status")).toHaveTextContent(
       "Карта не загрузилась. Обновите страницу, чтобы попробовать снова.",
@@ -190,10 +211,47 @@ describe("зум карты", () => {
     expect(Number(halo?.getAttribute("r"))).toBeCloseTo(LIGHT_HALO_RADIUS / k, 3);
   });
 
+  it("на кадре жеста двигает только вьюпорт, а огоньки не пересобирает", () => {
+    const { container } = render(<EsdMap lights={lights} size={SIZE} />);
+    const svg = container.querySelector("svg") as SVGSVGElement;
+    const core = container.querySelector(".light-core") as SVGCircleElement;
+    const radiusBefore = core.getAttribute("r");
+
+    fireEvent.wheel(svg, { deltaY: -240, ctrlKey: true, clientX: 600, clientY: 350 });
+
+    const viewport = container.querySelector("g.map-viewport") as SVGGElement;
+    expect(viewport.getAttribute("transform")).toContain("scale(8)");
+    expect(viewport.style.getPropertyValue("--zoom-k")).toBe("8");
+    // Атрибут r у 942 кругов на кадрах жеста не переписывается: радиус считает CSS.
+    expect(core.getAttribute("r")).toBe(radiusBefore);
+  });
+
   it("оставляет странице вертикальный скролл одним пальцем", () => {
     const { container } = render(<EsdMap lights={lights} size={SIZE} />);
     const svg = container.querySelector("svg");
     expect(svg?.style.getPropertyValue("touch-action")).toBe("pan-y");
+  });
+
+  it("не улетает в NaN на стране вне дивизиона", () => {
+    // 840 это США: диплинк или параметр хеша могут привести любой номер страны.
+    const { container } = render(<EsdMap lights={lights} size={SIZE} selectedCountryId={840} />);
+
+    expect(readTransform(container)).toBe("translate(0,0) scale(1)");
+    expect(readTransform(container)).not.toContain("NaN");
+    // Карта остаётся на месте: полёт в пустые границы стирал её целиком.
+    expect(container.querySelectorAll("path.country")).toHaveLength(177);
+  });
+
+  it("держит камеру посетителя, когда меняется размер контейнера", () => {
+    const { container, rerender } = render(<EsdMap lights={lights} size={SIZE} />);
+    const svg = container.querySelector("svg") as SVGSVGElement;
+
+    fireEvent.wheel(svg, { deltaY: -240, ctrlKey: true, clientX: 600, clientY: 350 });
+    const byHand = readTransform(container);
+    expect(byHand).not.toBe("translate(0,0) scale(1)");
+
+    rerender(<EsdMap lights={lights} size={{ width: 900, height: 520 }} />);
+    expect(readTransform(container)).toBe(byHand);
   });
 
   it("не сбрасывает выбор во время программного полёта", () => {
@@ -224,6 +282,51 @@ describe("зум карты", () => {
     expect(() => render(<EsdMap lights={lights} size={SIZE} />)).not.toThrow();
   });
 
+  it("держит программный полёт в разрешённой области", () => {
+    const extent: [[number, number], [number, number]] = [
+      [0, 0],
+      [SIZE.width, SIZE.height],
+    ];
+    const translateExtent: [[number, number], [number, number]] = [
+      [-ZOOM_PAD, -ZOOM_PAD],
+      [SIZE.width + ZOOM_PAD, SIZE.height + ZOOM_PAD],
+    ];
+
+    // Внутри границ трансформ остаётся как есть.
+    const inside = new ZoomTransform(2, -100, -80);
+    const kept = constrainTransform(inside, extent, translateExtent);
+    expect([kept.k, kept.x, kept.y]).toEqual([inside.k, inside.x, inside.y]);
+
+    // Камера за левым краем возвращается ровно на границу запаса.
+    const outside = new ZoomTransform(1, 500, 0);
+    const pulled = constrainTransform(outside, extent, translateExtent);
+    expect(pulled.k).toBe(1);
+    expect(pulled.invertX(0)).toBe(-ZOOM_PAD);
+  });
+
+  it("считает уходом камеры и масштаб, и сдвиг", () => {
+    const { width, height } = SIZE;
+    const base = new ZoomTransform(4, 100, 100);
+
+    /** Масштаб вокруг центра вьюбокса: точка в центре остаётся на месте. */
+    function zoomAtCenter(k: number): ZoomTransform {
+      return new ZoomTransform(
+        k,
+        width / 2 - (k * (width / 2 - base.x)) / base.k,
+        height / 2 - (k * (height / 2 - base.y)) / base.k,
+      );
+    }
+
+    expect(movedAway(base, base, width, height)).toBe(false);
+    // Мелкий сдвиг и мелкий доворот масштаба выбор не снимают.
+    expect(movedAway(base, new ZoomTransform(4, 130, 100), width, height)).toBe(false);
+    expect(movedAway(base, zoomAtCenter(4.4), width, height)).toBe(false);
+    // Панорама идёт с тем же k: по одному масштабу такой уход не виден.
+    expect(movedAway(base, new ZoomTransform(4, 400, 100), width, height)).toBe(true);
+    expect(movedAway(base, new ZoomTransform(4, 100, 400), width, height)).toBe(true);
+    expect(movedAway(base, zoomAtCenter(6), width, height)).toBe(true);
+  });
+
   it("пропускает колесо только с Ctrl или ⌘, а touch только двумя пальцами", () => {
     expect(zoomEventFilter(fakeEvent({ type: "wheel", ctrlKey: false, metaKey: false }))).toBe(false);
     expect(zoomEventFilter(fakeEvent({ type: "wheel", ctrlKey: true, metaKey: false }))).toBe(true);
@@ -232,5 +335,7 @@ describe("зум карты", () => {
     expect(zoomEventFilter(fakeEvent({ type: "touchmove", touches: { length: 2 } }))).toBe(true);
     expect(zoomEventFilter(fakeEvent({ type: "mousedown", button: 0 }))).toBe(true);
     expect(zoomEventFilter(fakeEvent({ type: "mousedown", button: 2 }))).toBe(false);
+    // На macOS ctrl+click приходит как mousedown с button 0 и открывает контекстное меню.
+    expect(zoomEventFilter(fakeEvent({ type: "mousedown", button: 0, ctrlKey: true }))).toBe(false);
   });
 });

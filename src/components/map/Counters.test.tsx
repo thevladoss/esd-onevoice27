@@ -91,7 +91,7 @@ function visibleValue(container: HTMLElement, card: string): string | null {
 }
 
 function liveValue(container: HTMLElement, card: string): string | null {
-  const node = container.querySelector(`.${card} .counter__value [aria-live="polite"]`);
+  const node = container.querySelector(`.${card} .counter__value .sr-only`);
 
   return node?.textContent ?? null;
 }
@@ -119,7 +119,7 @@ describe("Counters", () => {
     const { container } = renderCounters();
 
     expect(visibleValue(container, "counter--people")).toBe("0");
-    expect(liveValue(container, "counter--people")).toBe("1\u202F150");
+    expect(liveValue(container, "counter--people")).toBe("Людей: 1\u202F150");
   });
 
   it("досчитывает до цели за 1600ms после появления в вьюпорте", () => {
@@ -136,14 +136,20 @@ describe("Counters", () => {
     expect(visibleValue(container, "counter--groups")).toBe("12");
   });
 
-  it("сохраняет подписи, классы карточек и два объявления для скринридера", () => {
+  it("сохраняет подписи, классы карточек и один живой регион с подписью", () => {
     const { container } = renderCounters();
 
     expect(screen.getByText("ЧЕЛОВЕК")).toBeInTheDocument();
     expect(screen.getByText("ГРУПП")).toBeInTheDocument();
     expect(container.querySelectorAll(".counter--people")).toHaveLength(1);
     expect(container.querySelectorAll(".counter--groups")).toHaveLength(1);
-    expect(container.querySelectorAll('[aria-live="polite"]')).toHaveLength(2);
+
+    const live = container.querySelectorAll('[aria-live="polite"]');
+    expect(live).toHaveLength(1);
+    expect(live[0]).toHaveClass("counters");
+    // Скринридер получает подпись вместе с числом, а не голое число.
+    expect(liveValue(container, "counter--people")).toBe("Людей: 1\u202F150");
+    expect(liveValue(container, "counter--groups")).toBe("Групп: 12");
   });
 
   it("показывает новый огонёк сразу после добавления", () => {

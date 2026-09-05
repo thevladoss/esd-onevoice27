@@ -3,6 +3,10 @@
 export const GLOBE_POINTS = 1800;
 export const GLOBE_TILT = (23 * Math.PI) / 180;
 export const GLOBE_SPEED = 0.0008;
+/** Опорный кадр 60Hz: скорость вращения задана на него. */
+export const FRAME_MS = 1000 / 60;
+/** Потолок дельты: после свёрнутой вкладки глобус не должен прыгать на накопленное время. */
+export const MAX_STEP_MS = 100;
 
 const TAU = Math.PI * 2;
 const GOLDEN_ANGLE = Math.PI * (3 - Math.sqrt(5));
@@ -50,6 +54,15 @@ function mix(from: RGB, to: RGB, t: number): string {
 export function latitudeColor(y: number): string {
   const clamped = Math.max(-1, Math.min(1, y));
   return clamped >= 0 ? mix(EQUATOR, NORTH, clamped) : mix(EQUATOR, SOUTH, -clamped);
+}
+
+/**
+ * Приращение угла за кадр. Скорость задана на 60Hz, поэтому на 120Hz шаг вдвое
+ * меньше, а на просевших кадрах — больше: глобус крутится одинаково на любом дисплее.
+ */
+export function angleStep(dtMs: number): number {
+  const clamped = Math.min(Math.max(dtMs, 0), MAX_STEP_MS);
+  return GLOBE_SPEED * (clamped / FRAME_MS);
 }
 
 /** Глобус крутится только во вьюпорте, на видимой вкладке и без reduced motion. */

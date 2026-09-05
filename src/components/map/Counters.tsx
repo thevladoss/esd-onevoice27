@@ -20,7 +20,9 @@ export function Counters() {
   const groups = useCountUp(counts.groups, { active: inView, reduced });
 
   return (
-    <div className="counters" ref={rootRef}>
+    // Живой регион один на обе карточки: два polite-региона ставили два объявления
+    // в очередь на одно действие. Анимация счёта скрыта от него через aria-hidden.
+    <div className="counters" ref={rootRef} aria-live="polite">
       <article className="counter counter--people">
         <p className="counter__label">
           <span className="counter__dot" aria-hidden="true" />
@@ -28,9 +30,7 @@ export function Counters() {
         </p>
         <p className="counter__value">
           <span aria-hidden="true">{formatCount(people)}</span>
-          <span className="sr-only" aria-live="polite">
-            {formatCount(counts.people)}
-          </span>
+          <span className="sr-only">{mapCopy.counters.peopleLive(formatCount(counts.people))}</span>
         </p>
       </article>
       <article className="counter counter--groups">
@@ -40,9 +40,7 @@ export function Counters() {
         </p>
         <p className="counter__value">
           <span aria-hidden="true">{formatCount(groups)}</span>
-          <span className="sr-only" aria-live="polite">
-            {formatCount(counts.groups)}
-          </span>
+          <span className="sr-only">{mapCopy.counters.groupsLive(formatCount(counts.groups))}</span>
         </p>
       </article>
     </div>
