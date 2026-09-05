@@ -1,5 +1,8 @@
 const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
 
+/** Зазор между нижней границей плавающего header и верхом секции. */
+export const SECTION_GAP = 16;
+
 function prefersReducedMotion(): boolean {
   return window.matchMedia?.(REDUCED_MOTION_QUERY).matches === true;
 }
@@ -7,12 +10,19 @@ function prefersReducedMotion(): boolean {
 /**
  * Прокручивает страницу к секции по её якорю.
  *
- * Целевая позиция считается как `offsetTop` секции минус высота плавающего
- * header и минус зазор 16px, чтобы заголовок секции не прятался под пилюлю.
+ * Позиция секции берётся из `getBoundingClientRect().top` и переводится в
+ * координаты документа прибавлением `window.scrollY`. `offsetTop` для этого не
+ * годится: он меряет смещение от ближайшего позиционированного предка, и любой
+ * `position: relative` на обёртке молча увёл бы все переходы по меню.
+ *
+ * Из позиции вычитается `headerBottom` — нижняя граница пилюли вместе с её
+ * отступом сверху, а не только высота, — и зазор `SECTION_GAP`, чтобы заголовок
+ * секции не прижимался к шапке.
+ *
  * Якорь `#top` возвращает страницу в самый верх. Если секции нет в документе,
  * функция молча возвращает `false`: страница не дёргается, хеш не меняется.
  */
-export function scrollToSection(hash: string, headerHeight: number): boolean {
+export function scrollToSection(hash: string, headerBottom: number): boolean {
   const behavior: ScrollBehavior = prefersReducedMotion() ? "auto" : "smooth";
 
   if (hash === "#top" || hash === "top") {
@@ -25,7 +35,8 @@ export function scrollToSection(hash: string, headerHeight: number): boolean {
     return false;
   }
 
-  const top = Math.max(0, target.offsetTop - headerHeight - 16);
+  const documentTop = target.getBoundingClientRect().top + window.scrollY;
+  const top = Math.max(0, documentTop - headerBottom - SECTION_GAP);
   window.scrollTo({ top, behavior });
   return true;
 }

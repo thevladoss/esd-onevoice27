@@ -1,9 +1,15 @@
 import { scrollToSection } from "./scrollToSection";
 
-function addSection(id: string, offsetTop: number) {
+function setScrollY(value: number) {
+  Object.defineProperty(window, "scrollY", { value, writable: true, configurable: true });
+}
+
+/** `documentTop` — позиция секции в координатах документа: rect.top + scrollY. */
+function addSection(id: string, documentTop: number) {
   const section = document.createElement("section");
   section.id = id;
-  Object.defineProperty(section, "offsetTop", { value: offsetTop, configurable: true });
+  section.getBoundingClientRect = () =>
+    ({ top: documentTop - window.scrollY, bottom: 0, left: 0, right: 0, width: 0, height: 0, x: 0, y: 0, toJSON: () => ({}) }) as DOMRect;
   document.body.appendChild(section);
   return section;
 }
@@ -14,6 +20,7 @@ describe("scrollToSection", () => {
 
   beforeEach(() => {
     scrollTo.mockClear();
+    setScrollY(0);
   });
 
   afterEach(() => {
@@ -22,12 +29,20 @@ describe("scrollToSection", () => {
     window.matchMedia = defaultMatchMedia;
   });
 
-  it("прокручивает к секции по формуле offsetTop минус высота header минус 16", () => {
+  it("прокручивает к секции по формуле позиция минус нижняя граница header минус 16", () => {
     addSection("about", 1200);
 
     expect(scrollToSection("#about", 88)).toBe(true);
     expect(scrollTo).toHaveBeenCalledTimes(1);
     expect(scrollTo).toHaveBeenCalledWith({ top: 1096, behavior: "smooth" });
+  });
+
+  it("считает позицию от документа, а не от вьюпорта: учитывает текущий scrollY", () => {
+    setScrollY(2000);
+    addSection("about", 3000);
+
+    expect(scrollToSection("#about", 88)).toBe(true);
+    expect(scrollTo).toHaveBeenCalledWith({ top: 2896, behavior: "smooth" });
   });
 
   it("обрезает отрицательный результат до нуля", () => {

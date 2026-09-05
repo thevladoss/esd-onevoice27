@@ -2,10 +2,12 @@ import { act, fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Header } from "./Header";
 
-function addSection(id: string, offsetTop: number) {
+/** `documentTop` — позиция секции в координатах документа: rect.top + scrollY. */
+function addSection(id: string, documentTop: number) {
   const section = document.createElement("section");
   section.id = id;
-  Object.defineProperty(section, "offsetTop", { value: offsetTop, configurable: true });
+  section.getBoundingClientRect = () =>
+    ({ top: documentTop - window.scrollY, bottom: 0, left: 0, right: 0, width: 0, height: 0, x: 0, y: 0, toJSON: () => ({}) }) as DOMRect;
   document.body.appendChild(section);
   return section;
 }

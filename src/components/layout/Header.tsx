@@ -51,7 +51,9 @@ export function Header() {
 
   const navigate = useCallback((href: string) => {
     setMenuOpen(false);
-    scrollToSection(href, headerRef.current?.getBoundingClientRect().height ?? 0);
+    // Нижняя граница пилюли, а не её высота: header зафиксирован с отступом
+    // сверху, и `bottom` учитывает этот отступ.
+    scrollToSection(href, headerRef.current?.getBoundingClientRect().bottom ?? 0);
   }, []);
 
   const handleClick = (event: MouseEvent<HTMLAnchorElement>, href: string) => {
