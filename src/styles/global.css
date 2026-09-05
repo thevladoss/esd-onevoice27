@@ -8,16 +8,14 @@
   --gradient-title: linear-gradient(104deg, #e3afd2 2%, #8f9dd6 52%, #7bc2c7 98%);
   --gradient-action: linear-gradient(125deg, #6c2c68 0%, #3b4da1 50%, #39727e 100%);
   /* Сколько плавающий header отъедает сверху вместе с зазором до заголовка
-     секции: отступ 12px + уплотнённая пилюля 72px (min-height 48px и padding
-     12px сверху и снизу) + зазор 16px. Единственный источник этой величины:
-     отсюда её берут scroll-padding-top ниже и src/lib/headerOffset.ts. */
-  --header-offset: 100px;
-  --header-skew-inset: 16px;
-  --header-skew-angle: 20deg;
+     секции: пилюля 72px впритык к краю плюс зазор 16px. Единственный источник
+     этой величины: отсюда её берут scroll-padding-top ниже и
+     src/lib/headerOffset.ts. */
+  --header-offset: 88px;
   --footer-wedge: clamp(24px, 3vw, 44px);
   --dur-ui: 240ms;
   --dur-header: 420ms;
-  --dur-underline: 360ms;
+  --dur-menu-hover: 360ms;
   /* Появление секций при скролле: длительность, кривая, шаг между соседями
      внутри группы и вертикальный сдвиг стартового кадра. Отсюда их читают
      обёртки Reveal. */
@@ -38,10 +36,17 @@ html {
   scroll-padding-top: var(--header-offset);
 }
 
-/* На десктопе header отступает от края не на 12px, а на 16px. */
+/* С 768px пилюля вырастает до 88px и отходит от края экрана на 16px. */
 @media (width >= theme(--breakpoint-desktop)) {
   :root {
-    --header-offset: 104px;
+    --header-offset: 120px;
+  }
+}
+
+/* Скошенная пилюля ниже прямой: 80px вместо 88px. */
+@media (width >= theme(--breakpoint-wide)) {
+  :root {
+    --header-offset: 112px;
   }
 }
 
@@ -349,6 +354,18 @@ main:focus-visible {
   button:hover,
   article:hover img {
     transform: none !important;
+  }
+
+  /* Шапка и мобильное меню перечислены отдельно от страховки выше: у них
+     переходов больше всего (скрытие при прокрутке, крест бургера, выезд
+     оверлея), и в оригинале этот блок выглядит так же. */
+  .site-header,
+  .site-header *,
+  .site-header ::before,
+  .site-header ::after,
+  .mobile-menu,
+  .mobile-menu * {
+    transition-duration: .01ms !important;
   }
 
   html {

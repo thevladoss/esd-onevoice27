@@ -1,0 +1,111 @@
+import { act, renderHook } from "@testing-library/react";
+import { useHeaderHide } from "./useHeaderHide";
+
+function setScrollY(value: number) {
+  Object.defineProperty(window, "scrollY", { value, writable: true, configurable: true });
+}
+
+/** Прокрутка до позиции с событием, которое хук обрабатывает в кадре анимации. */
+function scrollTo(value: number) {
+  act(() => {
+    setScrollY(value);
+    window.dispatchEvent(new Event("scroll"));
+  });
+}
+
+describe("useHeaderHide", () => {
+  beforeEach(() => {
+    setScrollY(0);
+    // Кадр анимации выполняется сразу: иначе результат скролла пришлось бы ждать
+    // отрисовки, которой в jsdom нет.
+    vi.stubGlobal("requestAnimationFrame", (callback: FrameRequestCallback) => {
+      callback(0);
+      return 1;
+    });
+    vi.stubGlobal("cancelAnimationFrame", vi.fn());
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+    setScrollY(0);
+  });
+
+  it("прячет шапку при прокрутке вниз дальше порога", () => {
+    const { result } = renderHook(() => useHeaderHide({ menuOpen: false }));
+
+    expect(result.current).toBe(false);
+
+    scrollTo(300);
+    expect(result.current).toBe(true);
+  });
+
+  it("возвращает шапку при прокрутке вверх", () => {
+    const { result } = renderHook(() => useHeaderHide({ menuOpen: false }));
+
+    scrollTo(300);
+    expect(result.current).toBe(true);
+
+    scrollTo(100);
+    expect(result.current).toBe(false);
+  });
+
+  it("держит шапку на первом экране, сколько бы ни листали вниз", () => {
+    const { result } = renderHook(() => useHeaderHide({ menuOpen: false }));
+
+    scrollTo(40);
+    expect(result.current).toBe(false);
+
+    scrollTo(70);
+    expect(result.current).toBe(false);
+  });
+
+  it("не реагирует на дрожание в пару пикселей", () => {
+    const { result } = renderHook(() => useHeaderHide({ menuOpen: false }));
+
+    scrollTo(300);
+    scrollTo(150);
+    expect(result.current).toBe(false);
+
+    scrollTo(152);
+    expect(result.current).toBe(false);
+  });
+
+  it("держит шапку на экране, пока открыто меню", () => {
+    const { result, rerender } = renderHook(
+      ({ menuOpen }: { menuOpen: boolean }) => useHeaderHide({ menuOpen }),
+      { initialProps: { menuOpen: false } },
+    );
+
+    scrollTo(300);
+    expect(result.current).toBe(true);
+
+    rerender({ menuOpen: true });
+    expect(result.current).toBe(false);
+
+    scrollTo(600);
+    expect(result.current).toBe(false);
+  });
+
+  it("после закрытия меню не прячет шапку задним числом", () => {
+    const { result, rerender } = renderHook(
+      ({ menuOpen }: { menuOpen: boolean }) => useHeaderHide({ menuOpen }),
+      { initialProps: { menuOpen: false } },
+    );
+
+    scrollTo(300);
+    rerender({ menuOpen: true });
+    rerender({ menuOpen: false });
+
+    expect(result.current).toBe(false);
+  });
+
+  it("снимает слушатель скролла при размонтировании", () => {
+    const remove = vi.spyOn(window, "removeEventListener");
+    const { unmount } = renderHook(() => useHeaderHide({ menuOpen: false }));
+
+    unmount();
+
+    expect(remove).toHaveBeenCalledWith("scroll", expect.any(Function));
+    remove.mockRestore();
+  });
+});

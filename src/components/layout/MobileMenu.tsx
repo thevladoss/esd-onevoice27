@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef } from "react";
 import type { MouseEvent, RefObject } from "react";
 import { copy } from "../../data/copy";
 import type { NavItem } from "../../data/copy";
-import { desktopQuery } from "../../lib/breakpoints";
+import { navQuery } from "../../lib/breakpoints";
 import { lockScroll, unlockScroll } from "../../lib/scrollLock";
 
 type MobileMenuProps = {
@@ -104,7 +104,7 @@ export function MobileMenu({ open, onClose, onNavigate, items, burgerRef }: Mobi
       return;
     }
 
-    const list = window.matchMedia?.(desktopQuery());
+    const list = window.matchMedia?.(navQuery());
     if (!list) {
       return;
     }
@@ -129,18 +129,17 @@ export function MobileMenu({ open, onClose, onNavigate, items, burgerRef }: Mobi
     <div
       ref={menuRef}
       id="mobile-menu"
-      className="mobile-menu"
+      className={open ? "mobile-menu is-open" : "mobile-menu"}
       role="dialog"
       aria-label={copy.shell.menuDialogLabel}
       aria-hidden={!open}
       inert={!open}
-      data-open={open}
       onClick={onBackdropClick}
     >
       <nav className="mobile-menu__nav">
         <ul className="mobile-menu__list">
           {items.map((item) => (
-            <li key={item.href} className="mobile-menu__item">
+            <li key={item.href}>
               <a
                 className="mobile-menu__link"
                 href={item.href}
