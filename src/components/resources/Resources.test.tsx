@@ -268,6 +268,26 @@ describe("панель: клавиатура и deep link", () => {
     expect(atmosphere).toHaveAttribute("data-kind", "none");
   });
 
+  it("держит три заголовка карточек в документе и даёт кнопке имя по заголовку", () => {
+    render(<Resources />);
+
+    for (const title of ["Пойте вместе", "Будьте готовы", "Смотрите и делитесь"]) {
+      const heading = screen.getByRole("heading", { level: 3, name: title });
+      expect(heading.closest("button")).toBeNull();
+    }
+
+    for (const card of cardButtons()) {
+      // Модель содержимого button — поточный контент: ни абзацев, ни заголовков, ни блоков.
+      expect(card.querySelector("p, div, h1, h2, h3, h4, h5, h6, ul, ol, section, article")).toBeNull();
+
+      const labelId = card.getAttribute("aria-labelledby");
+      expect(labelId).toBeTruthy();
+      const label = document.getElementById(labelId as string);
+      expect(label?.tagName).toBe("H3");
+      expect(card).toHaveAccessibleName(label?.textContent as string);
+    }
+  });
+
   it("именует секцию заголовком и не прячет заголовки внутрь кнопок", () => {
     render(<Resources />);
 

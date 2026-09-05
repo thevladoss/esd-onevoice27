@@ -102,6 +102,20 @@ describe("App: контракт оболочки", () => {
     expect(consoleWarn).not.toHaveBeenCalled();
   });
 
+  it("не кладёт поточный контент внутрь кнопок ни в одной секции", () => {
+    renderApp();
+
+    // React такую вложенность не проверяет, а браузер чинит разметку по-своему:
+    // <p> внутри <button> закрывает кнопку раньше времени.
+    const offenders = Array.from(document.querySelectorAll("button"))
+      .filter((button) =>
+        button.querySelector("p, div, h1, h2, h3, h4, h5, h6, ul, ol, li, section, article"),
+      )
+      .map((button) => button.outerHTML.slice(0, 120));
+
+    expect(offenders).toEqual([]);
+  });
+
   it("называет каждую секцию её заголовком через aria-labelledby", () => {
     renderApp();
 

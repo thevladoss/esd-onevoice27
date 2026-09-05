@@ -132,12 +132,13 @@
   transition: transform 420ms var(--ease-header);
 }
 
+/* Кнопка карточки — прозрачный слой внутри неё, поэтому фокус ловится через :has. */
 .resource-card:hover .resource-card__trigger::after,
-.resource-card:focus-visible .resource-card__trigger::after {
+.resource-card:has(:focus-visible) .resource-card__trigger::after {
   transform: scaleX(1);
 }
 
-.resource-card[aria-expanded="true"] .resource-card__dot {
+.resource-card[data-open="true"] .resource-card__dot {
   box-shadow: 0 0 0 6px color-mix(in oklab, var(--accent) 18%, transparent);
 }
 
