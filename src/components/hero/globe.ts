@@ -25,6 +25,16 @@ export const GLOBE_GLOW_SCALE = 1.06;
 export const GLOBE_GLOW_ALPHA = 0.78;
 /** Каждая шестая точка светится ореолом: сфера искрится, а не мерцает целиком. */
 export const GLOBE_HIGHLIGHT_EVERY = 6;
+/*
+ * Ореол — плоский круг двойного диаметра под самой точкой, без `shadowBlur`.
+ * Замер плана 05-08 на канвасе 1440×820 с синхронизацией `getImageData`:
+ * кадр с `shadowBlur: 12` на 367 точках стоил 533 мс на GPU (Chrome, ANGLE
+ * Metal), то есть 6–7 fps во всём hero; тот же кадр с плоскими ореолами 4,2 мс.
+ * В режиме `lighter` круг низкой непрозрачности читается как свечение.
+ */
+export const GLOBE_HALO_SCALE = 2;
+export const GLOBE_HALO_FRONT_ALPHA = 0.22;
+export const GLOBE_HALO_BACK_ALPHA = 0.08;
 /** Опорный кадр 60Hz: скорость вращения задана на него. */
 export const FRAME_MS = 1000 / 60;
 /** Потолок дельты: после свёрнутой вкладки глобус не должен прыгать на накопленное время. */
@@ -106,6 +116,19 @@ export function pointSize(depth: number): number {
   return GLOBE_POINT_MIN + ((clamped + 1) / 2) * (GLOBE_POINT_MAX - GLOBE_POINT_MIN);
 }
 
+/**
+ * Радиус ореола по диаметру точки. Ореол всегда крупнее любой точки
+ * (`GLOBE_POINT_MIN` ≥ `GLOBE_POINT_MAX / 2`), поэтому тесты различают их по радиусу.
+ */
+export function haloRadius(size: number): number {
+  return (size * GLOBE_HALO_SCALE) / 2;
+}
+
+/** Непрозрачность ореола по стороне сферы: сзади он лишь намекает на точку. */
+export function haloAlpha(depth: number): number {
+  return depth >= 0 ? GLOBE_HALO_FRONT_ALPHA : GLOBE_HALO_BACK_ALPHA;
+}
+
 /** До 768px глобус уходит в центр над текстом, дальше смещается вправо. */
 export function globeLayout(width: number, height: number): GlobeLayout {
   if (width < 768) {
@@ -177,23 +200,22 @@ export function drawGlobe(
     const sx = cx + rx * r;
     const sy = cy - ty * r;
     const size = pointSize(depth);
-    const color = latitudeColor(y);
+    ctx.fillStyle = latitudeColor(y);
 
-    ctx.globalAlpha = pointAlpha(depth);
-    ctx.fillStyle = color;
+    // Ореол ложится под точку: в режиме `lighter` они складываются в свечение.
     if (i % GLOBE_HIGHLIGHT_EVERY === 0) {
-      ctx.shadowBlur = 12;
-      ctx.shadowColor = color;
-    } else {
-      ctx.shadowBlur = 0;
+      ctx.globalAlpha = haloAlpha(depth);
+      ctx.beginPath();
+      ctx.arc(sx, sy, haloRadius(size), 0, TAU);
+      ctx.fill();
     }
 
+    ctx.globalAlpha = pointAlpha(depth);
     ctx.beginPath();
     ctx.arc(sx, sy, size / 2, 0, TAU);
     ctx.fill();
   }
 
   ctx.globalAlpha = 1;
-  ctx.shadowBlur = 0;
   ctx.globalCompositeOperation = "source-over";
 }

@@ -3,6 +3,9 @@ import {
   GLOBE_BACK_ALPHA,
   GLOBE_FRONT_ALPHA,
   GLOBE_GLOW_ALPHA,
+  GLOBE_HALO_BACK_ALPHA,
+  GLOBE_HALO_FRONT_ALPHA,
+  GLOBE_HIGHLIGHT_EVERY,
   GLOBE_POINTS,
   GLOBE_POINT_MAX,
   GLOBE_POINT_MIN,
@@ -12,11 +15,16 @@ import {
   drawGlobe,
   fibonacciSphere,
   globeLayout,
+  haloAlpha,
+  haloRadius,
   latitudeColor,
   pointAlpha,
   pointSize,
   shouldAnimate,
 } from "./globe";
+
+/** Число подсвеченных точек: индексы 0, 6, 12, … до GLOBE_POINTS. */
+const HIGHLIGHTS = Math.ceil(GLOBE_POINTS / GLOBE_HIGHLIGHT_EVERY);
 
 function createMockContext() {
   return {
@@ -119,10 +127,19 @@ describe("яркость сферы", () => {
     // Значения за пределами отрезка не раздувают точку.
     expect(pointSize(4)).toBeCloseTo(GLOBE_POINT_MAX, 6);
   });
+
+  it("делает ореол крупнее любой точки и тусклее на дальней стороне", () => {
+    // Порог, по которому тесты отличают ореол от точки: радиус ореола самой
+    // мелкой точки больше радиуса самой крупной.
+    expect(haloRadius(GLOBE_POINT_MIN)).toBeGreaterThan(GLOBE_POINT_MAX / 2);
+    expect(haloAlpha(0.3)).toBe(GLOBE_HALO_FRONT_ALPHA);
+    expect(haloAlpha(-0.3)).toBe(GLOBE_HALO_BACK_ALPHA);
+    expect(GLOBE_HALO_FRONT_ALPHA).toBeLessThan(GLOBE_FRONT_ALPHA);
+  });
 });
 
 describe("drawGlobe", () => {
-  it("рисует одну дугу на точку, свечение, лимб и три орбитальные дуги", () => {
+  it("рисует точку, ореол каждой шестой, свечение, лимб и три орбитальные дуги", () => {
     const ctx = createMockContext();
     drawGlobe(
       ctx as unknown as CanvasRenderingContext2D,
@@ -133,11 +150,36 @@ describe("drawGlobe", () => {
       600,
     );
 
-    // Точки плюс диск атмосферы и лимб по краю.
-    expect(ctx.arc).toHaveBeenCalledTimes(GLOBE_POINTS + 2);
+    // Точки, их ореолы, диск атмосферы и лимб по краю.
+    expect(ctx.arc).toHaveBeenCalledTimes(GLOBE_POINTS + HIGHLIGHTS + 2);
     expect(ctx.ellipse).toHaveBeenCalledTimes(3);
     expect(ctx.clearRect).toHaveBeenCalledWith(0, 0, 1200, 600);
     expect(ctx.globalAlpha).toBe(1);
+  });
+
+  it("рисует ореолы плоскими кругами без shadowBlur", () => {
+    const ctx = createMockContext();
+    const blurs: number[] = [];
+    ctx.fill.mockImplementation(() => blurs.push(ctx.shadowBlur));
+
+    drawGlobe(
+      ctx as unknown as CanvasRenderingContext2D,
+      fibonacciSphere(GLOBE_POINTS),
+      0,
+      globeLayout(1440, 820),
+      1440,
+      820,
+    );
+
+    // Замер 05-08: каждая размытая заливка стоит ~1,5 мс на GPU, кадр не влезает в 16 мс.
+    expect(blurs.length).toBeGreaterThan(0);
+    expect(new Set(blurs)).toEqual(new Set([0]));
+
+    const halos = ctx.arc.mock.calls.filter((call) => {
+      const radius = call[2] as number;
+      return radius > GLOBE_POINT_MAX / 2 && radius <= haloRadius(GLOBE_POINT_MAX);
+    });
+    expect(halos).toHaveLength(HIGHLIGHTS);
   });
 
   it("складывает свечение с точками вместо перекрытия", () => {

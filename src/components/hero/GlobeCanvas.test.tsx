@@ -112,11 +112,12 @@ describe("GlobeCanvas", () => {
       const before = ctx.arc.mock.calls.length;
       frames[next]!(now);
       next += 1;
-      // Кадр рисует ещё диск атмосферы и лимб: они отличаются радиусом на
-      // порядок, поэтому точки отбираются по нему, а не по позиции в вызовах.
+      // Кадр рисует ещё ореолы каждой шестой точки, диск атмосферы и лимб: все
+      // они крупнее радиуса самой большой точки, поэтому точки отбираются по
+      // радиусу, а не по позиции в вызовах.
       const dots = ctx.arc.mock.calls
         .slice(before)
-        .filter((call) => (call[2] as number) <= GLOBE_POINT_MAX);
+        .filter((call) => (call[2] as number) <= GLOBE_POINT_MAX / 2);
       return dots[probe][0] as number;
     };
 
