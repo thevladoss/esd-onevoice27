@@ -10,8 +10,11 @@ describe("Секция About", () => {
     expect(container.querySelector("section#about")).not.toBeNull();
     expect(screen.getByRole("heading", { level: 2, name: aboutCopy.title })).toBeInTheDocument();
     expect(screen.getByText(aboutCopy.eyebrow)).toBeInTheDocument();
-    expect(screen.getByText(/сентябре 2027 года/)).toBeInTheDocument();
-    expect(screen.getByText(/2000-летие крещения Иисуса/)).toBeInTheDocument();
+
+    const lead = screen.getByText(aboutCopy.lead);
+    expect(lead).toHaveClass("ab-lead");
+    expect(lead.textContent).toMatch(/сентябре 2027 года/);
+    expect(lead.textContent).toMatch(/2000-летие крещения Иисуса/);
   });
 
   it("держит видео за фасадом: кнопка есть, iframe нет", () => {
