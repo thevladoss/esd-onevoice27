@@ -42,6 +42,18 @@ describe("VideoFacade", () => {
     expect(screen.queryByRole("button")).toBeNull();
   });
 
+  it("после старта плеера отдаёт фокус iframe, а не роняет его в body", () => {
+    render(<VideoFacade videoId="qQsgK18gKCU" title={KAMINSKY} />);
+
+    const play = screen.getByRole("button", { name: `Смотреть видео: ${KAMINSKY}` });
+    play.focus();
+    fireEvent.click(play);
+
+    const iframe = document.querySelector("iframe");
+    expect(iframe).not.toBeNull();
+    expect(document.activeElement).toBe(iframe);
+  });
+
   it("при ошибке постера прячет картинку, но держит кнопку play и помечает фасад", () => {
     const title = "Единый голос-27: Эртон Келер";
     render(<VideoFacade videoId="dnQS3tFmCNU" title={title} />);

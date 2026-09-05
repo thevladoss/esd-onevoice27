@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { resourcesCopy } from "../../data/copy.resources";
 
 /**
@@ -16,6 +16,15 @@ export function VideoFacade({
 }) {
   const [playing, setPlaying] = useState(false);
   const [coverFailed, setCoverFailed] = useState(false);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+
+  /** Кнопка play исчезает вместе с фасадом. Без переноса фокуса браузер отдаёт его в `body`,
+   *  и следующий Tab уводит клавиатуру из сетки роликов в начало страницы. */
+  useEffect(() => {
+    if (playing) {
+      iframeRef.current?.focus();
+    }
+  }, [playing]);
 
   return (
     <div
@@ -27,6 +36,7 @@ export function VideoFacade({
     >
       {playing ? (
         <iframe
+          ref={iframeRef}
           className="absolute inset-0 h-full w-full"
           src={`https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0`}
           title={title}
