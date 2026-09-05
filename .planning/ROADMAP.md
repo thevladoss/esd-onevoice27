@@ -31,7 +31,14 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. Посетитель видит footer с дрейфующими волнами, подписью «Официальный сайт Церкви христиан адвентистов седьмого дня», строкой «© 2026 Евро-Азиатский дивизион» и ссылками на esd.adventist.org и onevoice27.org
   4. Вся страница оформлена токенами палитры оригинала, шрифтами Onest/Noto Sans и стеклянными карточками; index.html отдаёт lang="ru", корректный title, описание и Open Graph теги
   5. Сайт доступен по адресу https://thevladoss.github.io/esd-onevoice27/, а GitHub Actions прогоняет npm ci, npm test и npm run build перед каждым деплоем dist в main
-**Plans**: TBD
+**Plans**: 5 plans
+
+Plans:
+- [ ] 01-01-PLAN.md — Скаффолд Vite 8 + React 19 + Tailwind v4 + Vitest, контракты (tokens, global.css, copy.ts, Wordmark, SkipLink, App.tsx, setup.ts), workflow и первый живой деплой (wave 1)
+- [ ] 01-02-PLAN.md — Примитивы Section/Eyebrow/GradientTitle/Button/GlassCard и восемь секций-заглушек с h1 и CTA в hero (wave 2)
+- [ ] 01-03-PLAN.md — Header-пилюля: стекло, скос, четыре якоря, уплотнение, aria-current, бургер и оверлей с фокус-трапом, scrollToSection (wave 2)
+- [ ] 01-04-PLAN.md — Footer: клин, градиент, дрейф волн и гало, подпись, © строка, внешние ссылки с noopener noreferrer (wave 2)
+- [ ] 01-05-PLAN.md — Финальный пуш, прогон workflow, проверка живого URL и ассетов, браузерный smoke на 1440/390px (wave 3)
 **UI hint**: yes
 
 ### Phase 2: Hero и карта
@@ -106,7 +113,7 @@ Phase 3 и Phase 4 обе зависят только от Phase 2 и незав
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Каркас и деплой | 0/TBD | Not started | - |
+| 1. Каркас и деплой | 0/5 | Not started | - |
 | 2. Hero и карта | 0/TBD | Not started | - |
 | 3. Форма, О проекте, Участие | 0/4 | Not started | - |
 | 4. Новости, Ресурсы, Цитата | 0/4 | Planned | - |
