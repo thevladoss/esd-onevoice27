@@ -1,0 +1,146 @@
+import { useCallback, useEffect, useRef } from "react";
+import type { MouseEvent, RefObject } from "react";
+import { copy } from "../../data/copy";
+import type { NavItem } from "../../data/copy";
+
+const DESKTOP_QUERY = "(min-width: 768px)";
+
+type MobileMenuProps = {
+  open: boolean;
+  onClose: () => void;
+  onNavigate: (href: string) => void;
+  items: readonly NavItem[];
+  burgerRef: RefObject<HTMLButtonElement | null>;
+};
+
+export function MobileMenu({ open, onClose, onNavigate, items, burgerRef }: MobileMenuProps) {
+  const menuRef = useRef<HTMLDivElement>(null);
+  const wasOpen = useRef(false);
+
+  const focusables = useCallback((): HTMLElement[] => {
+    const links = Array.from(menuRef.current?.querySelectorAll<HTMLElement>("a[href]") ?? []);
+    return burgerRef.current ? [burgerRef.current, ...links] : links;
+  }, [burgerRef]);
+
+  // Скролл страницы блокируется на время показа оверлея и возвращается к тому
+  // значению, которое было до открытия.
+  useEffect(() => {
+    if (!open) {
+      return;
+    }
+
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previous;
+    };
+  }, [open]);
+
+  useEffect(() => {
+    if (open) {
+      menuRef.current?.querySelector<HTMLElement>("a[href]")?.focus();
+    } else if (wasOpen.current) {
+      burgerRef.current?.focus();
+    }
+
+    wasOpen.current = open;
+  }, [open, burgerRef]);
+
+  useEffect(() => {
+    if (!open) {
+      return;
+    }
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        onClose();
+        return;
+      }
+
+      if (event.key !== "Tab") {
+        return;
+      }
+
+      const stops = focusables();
+      if (stops.length === 0) {
+        return;
+      }
+
+      const current = stops.indexOf(document.activeElement as HTMLElement);
+      const step = event.shiftKey ? -1 : 1;
+      const next =
+        current === -1
+          ? (event.shiftKey ? stops.length - 1 : 0)
+          : (current + step + stops.length) % stops.length;
+
+      event.preventDefault();
+      stops[next].focus();
+    };
+
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [open, onClose, focusables]);
+
+  // Меню живёт только на узком экране: как только места хватает под горизонтальную
+  // навигацию, оверлей закрывается и разблокирует скролл.
+  useEffect(() => {
+    if (!open) {
+      return;
+    }
+
+    const list = window.matchMedia?.(DESKTOP_QUERY);
+    if (!list) {
+      return;
+    }
+
+    const onChange = (event: MediaQueryListEvent) => {
+      if (event.matches) {
+        onClose();
+      }
+    };
+
+    list.addEventListener("change", onChange);
+    return () => list.removeEventListener("change", onChange);
+  }, [open, onClose]);
+
+  const onBackdropClick = (event: MouseEvent<HTMLDivElement>) => {
+    if (event.target === event.currentTarget) {
+      onClose();
+    }
+  };
+
+  return (
+    <div
+      ref={menuRef}
+      id="mobile-menu"
+      className="mobile-menu"
+      role="dialog"
+      aria-modal="true"
+      aria-label={copy.shell.menuDialogLabel}
+      aria-hidden={!open}
+      inert={!open}
+      data-open={open}
+      onClick={onBackdropClick}
+    >
+      <nav className="mobile-menu__nav">
+        <ul className="mobile-menu__list">
+          {items.map((item) => (
+            <li key={item.href} className="mobile-menu__item">
+              <a
+                className="mobile-menu__link"
+                href={item.href}
+                onClick={(event) => {
+                  event.preventDefault();
+                  onNavigate(item.href);
+                }}
+              >
+                {item.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    </div>
+  );
+}

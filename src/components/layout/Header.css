@@ -159,6 +159,66 @@
   transform: translateY(-5.5px) rotate(-45deg);
 }
 
+/* Оверлей лежит внутри ландмарки header и делит с пилюлей её стековый контекст:
+   z-index 50 у header поднимает оба слоя над контентом страницы, оставляя
+   ссылку пропуска (60) выше всего. */
+.mobile-menu {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  padding: calc(88px + 16px) clamp(24px, 7vw, 56px) clamp(24px, 7vw, 56px);
+  background:
+    radial-gradient(circle at 14% 18%, rgb(158 67 154 / .22), transparent 38%),
+    radial-gradient(circle at 88% 78%, rgb(84 164 172 / .18), transparent 42%),
+    linear-gradient(145deg, rgb(7 2 16 / .98), rgb(20 24 51 / .97));
+  -webkit-backdrop-filter: blur(24px) saturate(125%);
+  backdrop-filter: blur(24px) saturate(125%);
+  opacity: 0;
+  transform: translateY(-8px);
+  visibility: hidden;
+  transition:
+    opacity var(--dur-ui) var(--ease-ui),
+    transform var(--dur-ui) var(--ease-ui),
+    visibility 0s linear var(--dur-ui);
+}
+
+.mobile-menu[data-open="true"] {
+  opacity: 1;
+  transform: none;
+  visibility: visible;
+  transition-delay: 0s;
+}
+
+.mobile-menu__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.mobile-menu__item + .mobile-menu__item {
+  border-top: 1px solid rgb(248 247 251 / .12);
+}
+
+.mobile-menu__link {
+  display: flex;
+  align-items: center;
+  min-height: 48px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(1.25rem, 6vw, 1.75rem);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  line-height: 1.2;
+  color: rgb(248 247 251 / .9);
+  text-decoration: none;
+  transition: color var(--dur-ui) var(--ease-ui);
+}
+
+.mobile-menu__link:hover,
+.mobile-menu__link:focus-visible {
+  color: var(--color-horizon-200);
+}
+
 .site-header[data-scrolled="true"] .site-header__pill {
   padding-block: 12px;
 }
@@ -186,6 +246,10 @@
   }
 
   .burger {
+    display: none;
+  }
+
+  .mobile-menu {
     display: none;
   }
 }

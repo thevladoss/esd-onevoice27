@@ -4,6 +4,7 @@ import { copy, sectionIds } from "../../data/copy";
 import { scrollToSection } from "../../lib/scrollToSection";
 import { useActiveSection } from "../../lib/useActiveSection";
 import { BurgerButton } from "./BurgerButton";
+import { MobileMenu } from "./MobileMenu";
 import { Wordmark } from "./Wordmark";
 import "./Header.css";
 
@@ -45,6 +46,8 @@ export function Header() {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  const closeMenu = useCallback(() => setMenuOpen(false), []);
 
   const navigate = useCallback((href: string) => {
     setMenuOpen(false);
@@ -92,6 +95,14 @@ export function Header() {
           controls={MENU_ID}
         />
       </div>
+
+      <MobileMenu
+        open={menuOpen}
+        onClose={closeMenu}
+        onNavigate={navigate}
+        items={copy.shell.nav}
+        burgerRef={burgerRef}
+      />
     </header>
   );
 }
