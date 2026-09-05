@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: executing
-stopped_at: Completed 01-05-PLAN.md
-last_updated: "2026-09-05T15:55:34.173Z"
+status: ready_to_plan
+stopped_at: Phase 01 complete (5/5) — ready to discuss Phase 02
+last_updated: 2026-09-05T16:08:16.379Z
 last_activity: 2026-09-05 -- Phase 01 plan 05 deployed and verified
 progress:
   total_phases: 5
   completed_phases: 1
   total_plans: 25
-  completed_plans: 6
+  completed_plans: 14
   percent: 20
 ---
 
@@ -21,14 +21,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-09-05)
 
 **Core value:** Посетитель открывает страницу и видит красивый, живой лендинг уровня оригинала onevoice27.org, но про ЕАД: узнаёт, что такое «Единый голос 27», видит карту движения по дивизиону и может «зажечь свой свет».
-**Current focus:** Phase 01 — scaffold-and-deploy
+**Current focus:** Phase 02 — hero and map
 
 ## Current Position
 
-Phase: 01 (scaffold-and-deploy) — EXECUTING
-Plan: 5 of 5 (все планы фазы 01 выполнены)
-Status: Фаза 01 выполнена, ждёт verify
-Last activity: 2026-09-05 -- живой деплой фазы 01 подтверждён (прогон 33975939373)
+Phase: 02
+Plan: Not started
+Status: Ready to plan
+Last activity: 2026-09-05
 
 Progress: [██░░░░░░░░] 24%
 
@@ -36,7 +36,7 @@ Progress: [██░░░░░░░░] 24%
 
 **Velocity:**
 
-- Total plans completed: 0
+- Total plans completed: 5
 - Average duration: - min
 - Total execution time: 0 hours
 
@@ -44,7 +44,7 @@ Progress: [██░░░░░░░░] 24%
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| - | - | - | - |
+| 01 | 5 | - | - |
 
 **Recent Trend:**
 
