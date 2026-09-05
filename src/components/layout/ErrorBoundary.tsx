@@ -1,4 +1,4 @@
-import type { ErrorInfo, ReactNode } from "react";
+import type { ReactNode } from "react";
 import { Component } from "react";
 import "./ErrorBoundary.css";
 
@@ -25,10 +25,6 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
 
   static getDerivedStateFromError(): ErrorBoundaryState {
     return { failed: true };
-  }
-
-  componentDidCatch(error: Error, info: ErrorInfo): void {
-    console.error("Рендер упал:", error, info.componentStack);
   }
 
   render(): ReactNode {

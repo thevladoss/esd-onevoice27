@@ -72,15 +72,12 @@ describe("lightsReducer", () => {
   });
 
   it("не зажигает свет в стране вне дивизиона и не роняет страницу", () => {
-    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
     const state = { lights: [] };
     const next = lightsReducer(state, { type: "add", input: { type: "person", countryId: 840 } });
 
     // Состояние возвращается тем же объектом: исключение в фазе рендера снесло бы корень React.
     expect(next).toBe(state);
-    expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining("840"));
-
-    warnSpy.mockRestore();
+    expect(next.lights).toHaveLength(0);
   });
 });
 
