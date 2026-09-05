@@ -90,7 +90,7 @@ created: 2026-09-05
 | Роль | letter-spacing |
 |------|----------------|
 | Display | -0.055em |
-| Heading (H2) | -0.03em |
+| Heading (H2) | -0.035em |
 | Heading (число счётчика) | -0.02em, `font-variant-numeric: tabular-nums` |
 | Body | 0 |
 | Label / eyebrow | 0.10em, uppercase |
