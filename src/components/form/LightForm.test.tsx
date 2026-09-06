@@ -253,6 +253,26 @@ describe("LightForm: структура секции", () => {
     expect(document.querySelector(".lf-check-box")).toBeNull();
   });
 
+  it("переключает согласие по нажатию на текст label", () => {
+    renderForm();
+
+    const text = document.querySelector<HTMLElement>(".lf-check-text");
+    if (!text) {
+      throw new Error("Нет текста согласия");
+    }
+
+    // Цель касания 44px — вся label целиком, поэтому связь идёт через for, а не через обработчик.
+    const label = text.closest("label");
+    expect(label).toHaveClass("lf-check");
+    expect(label).toHaveAttribute("for", control("consent").id);
+
+    expect(control("consent")).not.toBeChecked();
+    fireEvent.click(text);
+    expect(control("consent")).toBeChecked();
+    fireEvent.click(text);
+    expect(control("consent")).not.toBeChecked();
+  });
+
   it("ставит поля в сетку шести колонок", () => {
     renderForm();
 
@@ -750,6 +770,35 @@ describe("light-form.css: значения оригинала", () => {
     ]) {
       expect(CSS, `в CSS нет значения ${value}`).toContain(value);
     }
+  });
+
+  it("даёт согласию цель касания 44px", () => {
+    const check = CSS.match(/\.lf-check \{([^}]*)\}/)?.[1];
+    expect(check).toBeDefined();
+    for (const declaration of [
+      "min-height: 44px",
+      "display: flex",
+      "align-items: center",
+      "gap: 12px",
+      "cursor: pointer",
+    ]) {
+      expect(check, `в .lf-check нет ${declaration}`).toContain(declaration);
+    }
+    // flex-start прижимал бы чекбокс к первой строке и оставлял низ label пустым.
+    expect(check).not.toContain("flex-start");
+
+    const checkbox = CSS.match(/\.lf-checkbox \{([^}]*)\}/)?.[1];
+    expect(checkbox).toBeDefined();
+    for (const declaration of [
+      "flex: 0 0 20px",
+      "width: 20px",
+      "height: 20px",
+      "margin: 0;",
+      "accent-color: rgb(170 217 220)",
+    ]) {
+      expect(checkbox, `в .lf-checkbox нет ${declaration}`).toContain(declaration);
+    }
+    expect(checkbox).not.toContain("18px");
   });
 
   it("оставляет ширину кнопки примитиву и добавляет только отступ сверху", () => {

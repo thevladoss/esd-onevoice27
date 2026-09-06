@@ -126,8 +126,10 @@
   font-size: 1.0625rem;
 }
 
+/* Подпись одного кегля на всех ширинах: на 390px прежние 9px читались хуже порога
+   аудита в 12px, а десктоп и раньше стоял на 10px. */
 .site-header .wordmark__tagline {
-  font-size: .5625rem;
+  font-size: .625rem;
   letter-spacing: .16em;
 }
 
@@ -182,10 +184,6 @@
 
   .site-header .wordmark__title {
     font-size: 1.1875rem;
-  }
-
-  .site-header .wordmark__tagline {
-    font-size: .625rem;
   }
 }
 

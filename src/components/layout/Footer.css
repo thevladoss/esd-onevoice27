@@ -106,19 +106,26 @@
   }
 }
 
-/* Ссылки столбиком по центру: интервал держит gap, а не padding у ссылки. */
+/* Ссылки столбиком по центру. Шаг столбца поднялся с 30,4px (строка 22,4px плюс gap 8px)
+   до 44px: бокс ссылки вырос до цели касания 44px, и удержать прежний шаг можно было бы
+   только перекрытием соседних боксов на 13,6px, а тогда касание по краю бокса уходит
+   в соседнюю ссылку. Интервал между боксами нулевой, боксы стоят встык, просвет между
+   строками даёт центрирование текста внутри бокса. */
 .site-footer__links ul {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: 0;
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
 .site-footer__links a {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding-inline: 8px;
   font-size: .875rem;
   font-weight: 700;
   line-height: 1.6;

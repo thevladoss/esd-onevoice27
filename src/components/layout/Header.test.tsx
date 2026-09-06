@@ -720,4 +720,14 @@ describe("Header: контракт стилей пилюли", () => {
     // отрицательный z-index.
     expect(HEADER_CSS).toMatch(/\.site-header__content::after \{\s*z-index: -1;/);
   });
+
+  it("держит подпись логотипа на .625rem с прежним трекингом на любой ширине", () => {
+    const rules = HEADER_CSS.match(/\.site-header \.wordmark__tagline \{[^}]*\}/g) ?? [];
+
+    // Одно правило вместо базового и десктопного: значения совпали, переопределять нечего.
+    expect(rules).toHaveLength(1);
+    expect(rules[0]).toContain("font-size: .625rem;");
+    expect(rules[0]).toContain("letter-spacing: .16em;");
+    expect(HEADER_CSS).not.toContain(".5625rem");
+  });
 });
