@@ -456,14 +456,16 @@ describe("map.css: дыхание огоньков", () => {
     const block = /@property --halo-k \{([\s\S]*?)\}/.exec(MAP_CSS)?.[1] ?? "";
     expect(block).toContain('syntax: "<number>";');
     expect(block).toContain("inherits: true;");
-    expect(block).toContain("initial-value: 1;");
+    expect(block).toContain("initial-value: 1.5;");
   });
 
-  it("дышит радиусом и прозрачностью в одном кейфрейме", () => {
-    // Радиус 6px → 12px и opacity корзины .30 → .60 за период 2.6s.
-    expect(MAP_CSS).toMatch(
-      /@keyframes light-breathe \{[\s\S]*?--halo-k: 1;\s*opacity: \.3;[\s\S]*?--halo-k: 2;\s*opacity: \.6;/,
-    );
+  it("дышит только прозрачностью: fallback MAP-06 после замера fps", () => {
+    // Opacity корзины .30 → .60 за период 2.6s; радиус статичный 6px × 1.5,
+    // потому что дыхание радиуса держало 50,9 fps при пороге 50.
+    const frames = /@keyframes light-breathe \{([\s\S]*?)\n\}/.exec(MAP_CSS)?.[1] ?? "";
+    expect(frames).toMatch(/0%,\s*100% \{\s*opacity: \.3;\s*\}/);
+    expect(frames).toMatch(/50% \{\s*opacity: \.6;\s*\}/);
+    expect(frames).not.toContain("--halo-k");
   });
 
   it("сдвигает фазу корзин отрицательной задержкой", () => {

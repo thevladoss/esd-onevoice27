@@ -496,15 +496,15 @@ async function runLights(context, opts) {
     checks.animationOff = styles.animationNames.every((name) => name === "none");
     checks.bucketOpaque = before.bucketOpacity === "1";
     checks.haloStaticOpacity = before.haloOpacity === "0.22";
-    checks.haloStaticRadius = before.haloR === "6px";
+    checks.haloStaticRadius = before.haloR === "9px";
     checks.haloStill = before.haloR === after.haloR;
   } else {
     checks.animationName = styles.animationNames.every((name) => name === "light-breathe");
     checks.animationDuration = styles.animationDuration === "2.6s";
     checks.animationDelay3 = styles.animationDelay3 === "-1.56s";
     checks.supportsProperty = styles.supportsProperty;
-    // Радиус дышит только с зарегистрированным --halo-k; opacity — в любом движке.
-    checks.radiusBreathes = before.haloR !== after.haloR;
+    // Fallback MAP-06: радиус статичный (9px), дышит только opacity корзины.
+    checks.radiusStatic = before.haloR === after.haloR && before.haloR === "9px";
     checks.opacityBreathes = before.bucketOpacity !== after.bucketOpacity;
   }
 
