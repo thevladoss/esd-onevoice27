@@ -2,15 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Дизайн-правки по оригиналу
-status: ready
-last_updated: "2026-09-06T07:30:00.000Z"
+status: ready_to_plan
+last_updated: 2026-09-06T08:11:14.465Z
 last_activity: 2026-09-06
 progress:
   total_phases: 7
   completed_phases: 0
   total_plans: 0
-  completed_plans: 0
+  completed_plans: 1
   percent: 0
+stopped_at: Phase 12 complete (1/1) — ready to discuss Phase 13
 ---
 
 # Project State
@@ -20,14 +21,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-09-06)
 
 **Core value:** Посетитель открывает страницу и видит красивый, живой лендинг уровня оригинала onevoice27.org, но про ЕАД: узнаёт, что такое «Единый голос 27», видит карту движения по дивизиону и может «зажечь свой свет».
-**Current focus:** Milestone v1.1 «Дизайн-правки по оригиналу»: roadmap на фазы 7–13 готов; фазы 7–12 планируются и исполняются параллельно в отдельных worktree, фаза 13 сливает и принимает.
+**Current focus:** Phase 13 — integration qa
 
 ## Current Position
 
-Phase: 7 (Стекло и заголовки) — Not started
-Plan: —
-Status: Roadmap created, ready to plan
-Last activity: 2026-09-06 — Roadmap v1.1 записан (фазы 7–13, 32/32 требований)
+Phase: 13
+Plan: Not started
+Status: Ready to plan
+Last activity: 2026-09-06
 
 Параллельные фазы: 7, 8, 9, 10, 11, 12 стартуют от main одновременно; 13 после слияния всех шести.
 
@@ -35,7 +36,7 @@ Last activity: 2026-09-06 — Roadmap v1.1 записан (фазы 7–13, 32/3
 
 **Velocity:**
 
-- Total plans completed: 34
+- Total plans completed: 35
 - Average duration: - min
 - Total execution time: 0 hours
 
@@ -49,6 +50,7 @@ Last activity: 2026-09-06 — Roadmap v1.1 записан (фазы 7–13, 32/3
 | 04 | 4 | - | - |
 | 05 | 8 | - | - |
 | 06 | 4 | - | - |
+| 12 | 1 | - | - |
 
 **Recent Trend:**
 

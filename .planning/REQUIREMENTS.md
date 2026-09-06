@@ -53,8 +53,8 @@
 
 ### Футер (FOOT)
 
-- [ ] **FOOT-01**: Футер в одну колонку по центру: `width: min(100% - 32px, 1152px)`, gap `clamp(20px, 3vw, 34px)`, padding-block `clamp(72px, 10vw, 124px)`; порядок: логотип `clamp(190px, 26vw, 300px)` с `drop-shadow(0 0 22px rgb(91 90 214 / .13))`, подпись `min(100%, 680px)`, ссылки, юридический текст `.75rem` `rgb(239 237 245 / .66)`; скос, волны и гало сохранены
-- [ ] **FOOT-02**: Ссылки столбиком по центру (gap 8px, 700 14px, ховер `rgb(170 217 220)`) без разделительной линии над юридическим текстом
+- [x] **FOOT-01**: Футер в одну колонку по центру: `width: min(100% - 32px, 1152px)`, gap `clamp(20px, 3vw, 34px)`, padding-block `clamp(72px, 10vw, 124px)`; порядок: логотип `clamp(190px, 26vw, 300px)` с `drop-shadow(0 0 22px rgb(91 90 214 / .13))`, подпись `min(100%, 680px)`, ссылки, юридический текст `.75rem` `rgb(239 237 245 / .66)`; скос, волны и гало сохранены
+- [x] **FOOT-02**: Ссылки столбиком по центру (gap 8px, 700 14px, ховер `rgb(170 217 220)`) без разделительной линии над юридическим текстом
 
 ### Приёмка (QA)
 
@@ -112,8 +112,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | RES-04 | Phase 11 | Pending |
 | RES-05 | Phase 11 | Pending |
 | RES-06 | Phase 11 | Pending |
-| FOOT-01 | Phase 12 | Pending |
-| FOOT-02 | Phase 12 | Pending |
+| FOOT-01 | Phase 12 | Complete |
+| FOOT-02 | Phase 12 | Complete |
 | QA-01 | Phase 13 | Pending |
 | QA-02 | Phase 13 | Pending |
 | QA-03 | Phase 13 | Pending |
