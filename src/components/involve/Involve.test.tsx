@@ -59,6 +59,16 @@ describe("Секция «От убеждения к действию»", () => {
     expect(levels).toEqual(["H2", "H3", "H3", "H3"]);
   });
 
+  /* Заголовок участия плоский, как у карты, формы, новостей и ресурсов (GLASS-06):
+     вызов GradientTitle в Involve.tsx не менялся, плоский вид даёт CSS-класс. */
+  it("несёт плоский заголовок секции, а не градиент About", () => {
+    render(<Involve />);
+
+    const heading = screen.getByRole("heading", { level: 2, name: involveCopy.title });
+    expect(heading).toHaveClass("gradient-title", "gradient-title--section");
+    expect(heading).not.toHaveClass("gradient-title--section-gradient");
+  });
+
   it("рендерит триптих из трёх карточек с заголовками в порядке из copy", () => {
     const { container } = render(<Involve />);
 

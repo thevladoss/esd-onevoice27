@@ -55,6 +55,15 @@ describe("Секция About", () => {
     expect(levels).toEqual(["H2", "H3", "H3", "H3"]);
   });
 
+  // Единственный градиентный заголовок секции по GLASS-06: у остальных секций он плоский.
+  it("несёт градиентный заголовок, а не плоский вариант остальных секций", () => {
+    render(<About />);
+
+    const heading = screen.getByRole("heading", { level: 2, name: aboutCopy.title });
+    expect(heading).toHaveClass("gradient-title", "gradient-title--section-gradient");
+    expect(heading).not.toHaveClass("gradient-title--section");
+  });
+
   it("держит видео за фасадом: кнопка есть, iframe нет", () => {
     const { container } = render(<About />);
 

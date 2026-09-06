@@ -13,7 +13,7 @@ export function About() {
     <Section id="about" titleId="about-title" className="ab-section">
       <Reveal className="ab-head">
         <Eyebrow>{aboutCopy.eyebrow}</Eyebrow>
-        <GradientTitle as="h2" variant="section" className="mt-2" id="about-title">
+        <GradientTitle as="h2" variant="section-gradient" className="mt-2" id="about-title">
           {aboutCopy.title}
         </GradientTitle>
         <p className="ab-lead mt-6">{aboutCopy.lead}</p>
