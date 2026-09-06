@@ -1,0 +1,85 @@
+{
+  "meta": {
+    "site": "orig",
+    "url": "https://onevoice27.org/",
+    "width": 390,
+    "height": 844,
+    "cpu": 4,
+    "dpr": 1,
+    "reduced": false,
+    "runs": 3,
+    "sampleMs": 2000,
+    "playwright": "1.63.0-alpha-2026-08-31",
+    "takenAt": "2026-09-06T17:10:13.350Z"
+  },
+  "sections": {
+    "hero": {
+      "runs": [
+        {
+          "fps": 85.9,
+          "maxGapMs": 18.6,
+          "slowShare": 0,
+          "frames": 172,
+          "starsDraws": 49,
+          "lightsDraws": null
+        },
+        {
+          "fps": 95.8,
+          "maxGapMs": 18.7,
+          "slowShare": 0,
+          "frames": 192,
+          "starsDraws": 52,
+          "lightsDraws": null
+        },
+        {
+          "fps": 118.9,
+          "maxGapMs": 18.2,
+          "slowShare": 0,
+          "frames": 238,
+          "starsDraws": 52,
+          "lightsDraws": null
+        }
+      ],
+      "median": 95.8,
+      "floor": 55,
+      "pass": true,
+      "mapIntersects": true,
+      "scrollY": 0
+    },
+    "map": {
+      "runs": [
+        {
+          "fps": 120.6,
+          "maxGapMs": 10.4,
+          "slowShare": 0,
+          "frames": 242,
+          "starsDraws": 54,
+          "lightsDraws": null
+        },
+        {
+          "fps": 120.4,
+          "maxGapMs": 10.3,
+          "slowShare": 0,
+          "frames": 241,
+          "starsDraws": 52,
+          "lightsDraws": null
+        },
+        {
+          "fps": 119.8,
+          "maxGapMs": 15,
+          "slowShare": 0,
+          "frames": 240,
+          "starsDraws": 53,
+          "lightsDraws": null
+        }
+      ],
+      "median": 120.4,
+      "floor": 55,
+      "pass": true,
+      "mapIntersects": true,
+      "scrollY": 811
+    }
+  },
+  "ceiling": null,
+  "passAll": true
+}

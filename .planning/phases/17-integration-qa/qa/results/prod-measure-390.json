@@ -1,0 +1,228 @@
+{
+  "meta": {
+    "site": "prod",
+    "href": "https://thevladoss.github.io/esd-onevoice27/",
+    "innerWidth": 390,
+    "innerHeight": 844,
+    "devicePixelRatio": 1,
+    "scrollWidth": 390,
+    "documentHeight": 11387,
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+    "nodes": 689,
+    "anchorFound": true,
+    "takenAt": "2026-09-06T17:01:39.787Z"
+  },
+  "globe": {
+    "found": true,
+    "paused": false,
+    "ended": false,
+    "muted": true,
+    "autoplay": true,
+    "loop": true,
+    "playsInline": true,
+    "preload": "auto",
+    "readyState": 4,
+    "videoWidth": 1920,
+    "videoHeight": 1080,
+    "duration": 12.79,
+    "currentSrc": "hero-globe.webm",
+    "currentTime0": 4.63,
+    "currentTime1": 6.13,
+    "delta": 1.5,
+    "playing": true,
+    "rect": {
+      "x": 0,
+      "y": 0,
+      "width": 390,
+      "height": 844
+    },
+    "heroRect": {
+      "x": 0,
+      "y": 0,
+      "width": 390,
+      "height": 844
+    },
+    "rightGap": 0,
+    "topInHero": 0,
+    "aspect": 0.4621,
+    "objectFit": "cover",
+    "objectPosition": "50% 50%",
+    "mixBlendMode": "normal",
+    "filter": "saturate(1.18) contrast(1.28) brightness(0.96)",
+    "transformOrigin": "195px 422px",
+    "hasMask": false,
+    "maskLayers": 0,
+    "sourceCount": 2,
+    "attributes": {
+      "disablepictureinpicture": "",
+      "disableremoteplayback": "",
+      "tabindex": "-1",
+      "ariaHidden": "true",
+      "dataAnim": "globe"
+    }
+  },
+  "particles": {
+    "found": true,
+    "rect": {
+      "x": 0,
+      "y": 0,
+      "width": 390,
+      "height": 844
+    },
+    "bitmap": {
+      "width": 390,
+      "height": 844
+    },
+    "expectedBitmap": {
+      "width": 390,
+      "height": 844
+    },
+    "opacity": "0.72",
+    "mixBlendMode": "screen",
+    "position": "absolute",
+    "zIndex": "1",
+    "inset": "0px",
+    "dataAnim": "stars",
+    "drawsPerSecond": 26,
+    "contextType": "2d"
+  },
+  "lights": {
+    "found": true,
+    "dataset": {
+      "lightCount": "942",
+      "people": "694",
+      "groups": "248",
+      "fresh": "0"
+    },
+    "anim": "pulse",
+    "ariaHidden": "true",
+    "position": "absolute",
+    "pointerEvents": "none",
+    "inset": "0px",
+    "rect": {
+      "x": 0,
+      "y": 170.39,
+      "width": 390,
+      "height": 590.8
+    },
+    "bitmap": {
+      "width": 390,
+      "height": 591
+    },
+    "expectedBitmap": {
+      "width": 390,
+      "height": 591
+    },
+    "previousIsSvg": true,
+    "mapCircles": 0,
+    "legacyNodes": 0,
+    "countries": 177,
+    "drawsPerSecond": 29.5,
+    "contextType": "2d"
+  },
+  "svg": {
+    "nodes": 282,
+    "roots": 13
+  },
+  "anim": {
+    "globe": 1,
+    "stars": 1,
+    "beam": 2,
+    "pulse": 1,
+    "atmosphere": 1,
+    "particles": 1,
+    "wave": 1,
+    "halo": 1
+  },
+  "touch": {
+    "checked": 47,
+    "small": [],
+    "hidden": [
+      {
+        "tag": "input",
+        "id": "_r_2_-type-individual",
+        "className": "sr-only",
+        "text": "",
+        "w": 1,
+        "h": 1
+      },
+      {
+        "tag": "input",
+        "id": "_r_2_-type-group",
+        "className": "sr-only",
+        "text": "",
+        "w": 1,
+        "h": 1
+      }
+    ],
+    "viaLabel": [
+      {
+        "tag": "input",
+        "id": "_r_2_-consent",
+        "className": "lf-checkbox",
+        "text": "",
+        "w": 20,
+        "h": 20,
+        "labelH": 58.78
+      }
+    ],
+    "footerLinks": [
+      {
+        "w": 204.85,
+        "h": 44
+      },
+      {
+        "w": 235.13,
+        "h": 44
+      }
+    ],
+    "consentLabel": {
+      "w": 358,
+      "h": 58.78
+    },
+    "checkbox": {
+      "w": 20,
+      "h": 20
+    },
+    "brand": {
+      "w": 146,
+      "h": 44.34
+    },
+    "taglineFontSize": "10px",
+    "news": [
+      {
+        "width": "480",
+        "height": "360",
+        "loading": "eager",
+        "fetchpriority": "high",
+        "decoding": "async",
+        "src": "hqdefault.jpg"
+      },
+      {
+        "width": "480",
+        "height": "360",
+        "loading": "lazy",
+        "fetchpriority": null,
+        "decoding": "async",
+        "src": "hqdefault.jpg"
+      },
+      {
+        "width": "480",
+        "height": "360",
+        "loading": "lazy",
+        "fetchpriority": null,
+        "decoding": "async",
+        "src": "hqdefault.jpg"
+      }
+    ]
+  },
+  "probe": {
+    "playwright": "1.63.0-alpha-2026-08-31",
+    "channel": "chrome",
+    "url": "https://thevladoss.github.io/esd-onevoice27/",
+    "attempt": 1,
+    "consent": "нет баннера",
+    "reduced": false,
+    "takenAt": "2026-09-06T17:01:39.791Z"
+  }
+}

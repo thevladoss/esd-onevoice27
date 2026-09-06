@@ -1,0 +1,184 @@
+{
+  "meta": {
+    "site": "prod",
+    "url": "https://thevladoss.github.io/esd-onevoice27/",
+    "width": 390,
+    "height": 844,
+    "cpu": 4,
+    "dpr": 1,
+    "reduced": false,
+    "runs": 3,
+    "sampleMs": 2000,
+    "playwright": "1.63.0-alpha-2026-08-31",
+    "takenAt": "2026-09-06T17:03:49.857Z"
+  },
+  "sections": {
+    "hero": {
+      "runs": [
+        {
+          "fps": 120.1,
+          "maxGapMs": 10.4,
+          "slowShare": 0,
+          "frames": 241,
+          "starsDraws": 53,
+          "lightsDraws": 0
+        },
+        {
+          "fps": 120.3,
+          "maxGapMs": 10.4,
+          "slowShare": 0,
+          "frames": 241,
+          "starsDraws": 52,
+          "lightsDraws": 0
+        },
+        {
+          "fps": 120.2,
+          "maxGapMs": 10.4,
+          "slowShare": 0,
+          "frames": 241,
+          "starsDraws": 52,
+          "lightsDraws": 0
+        }
+      ],
+      "median": 120.2,
+      "floor": 55,
+      "pass": true,
+      "mapIntersects": false,
+      "scrollY": 0
+    },
+    "map": {
+      "runs": [
+        {
+          "fps": 120.4,
+          "maxGapMs": 10.4,
+          "slowShare": 0,
+          "frames": 241,
+          "starsDraws": 0,
+          "lightsDraws": 56
+        },
+        {
+          "fps": 120.3,
+          "maxGapMs": 10.4,
+          "slowShare": 0,
+          "frames": 241,
+          "starsDraws": 0,
+          "lightsDraws": 55
+        },
+        {
+          "fps": 120.3,
+          "maxGapMs": 10.3,
+          "slowShare": 0,
+          "frames": 241,
+          "starsDraws": 0,
+          "lightsDraws": 55
+        }
+      ],
+      "median": 120.3,
+      "floor": 55,
+      "pass": true,
+      "mapIntersects": true,
+      "scrollY": 1346
+    },
+    "light-form": {
+      "runs": [
+        {
+          "fps": 120.1,
+          "maxGapMs": 10.3,
+          "slowShare": 0,
+          "frames": 241,
+          "starsDraws": 0,
+          "lightsDraws": 0
+        },
+        {
+          "fps": 120.3,
+          "maxGapMs": 10.3,
+          "slowShare": 0,
+          "frames": 241,
+          "starsDraws": 0,
+          "lightsDraws": 0
+        },
+        {
+          "fps": 120.4,
+          "maxGapMs": 10.4,
+          "slowShare": 0,
+          "frames": 241,
+          "starsDraws": 0,
+          "lightsDraws": 0
+        }
+      ],
+      "median": 120.3,
+      "floor": 55,
+      "pass": true,
+      "mapIntersects": false,
+      "scrollY": 2373
+    },
+    "about": {
+      "runs": [
+        {
+          "fps": 120.5,
+          "maxGapMs": 10.3,
+          "slowShare": 0,
+          "frames": 241,
+          "starsDraws": 0,
+          "lightsDraws": 0
+        },
+        {
+          "fps": 120.2,
+          "maxGapMs": 10.4,
+          "slowShare": 0,
+          "frames": 241,
+          "starsDraws": 0,
+          "lightsDraws": 0
+        },
+        {
+          "fps": 120.3,
+          "maxGapMs": 10.4,
+          "slowShare": 0,
+          "frames": 241,
+          "starsDraws": 0,
+          "lightsDraws": 0
+        }
+      ],
+      "median": 120.3,
+      "floor": null,
+      "pass": null,
+      "mapIntersects": false,
+      "scrollY": 4085
+    },
+    "quote": {
+      "runs": [
+        {
+          "fps": 120.1,
+          "maxGapMs": 10.4,
+          "slowShare": 0,
+          "frames": 241,
+          "starsDraws": 0,
+          "lightsDraws": 0
+        },
+        {
+          "fps": 120.3,
+          "maxGapMs": 10.4,
+          "slowShare": 0,
+          "frames": 241,
+          "starsDraws": 0,
+          "lightsDraws": 0
+        },
+        {
+          "fps": 120.2,
+          "maxGapMs": 10.3,
+          "slowShare": 0,
+          "frames": 241,
+          "starsDraws": 0,
+          "lightsDraws": 0
+        }
+      ],
+      "median": 120.2,
+      "floor": null,
+      "pass": null,
+      "mapIntersects": false,
+      "scrollY": 10111
+    }
+  },
+  "ceiling": 120.2,
+  "passAll": true
+}

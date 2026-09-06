@@ -44,7 +44,7 @@ npm run build
 npm run check:dist
 ```
 
-Запускается после `npm run build`, читает только `dist` и ничего не пересобирает. Одиннадцать проверок: `lang="ru"`, заголовок вкладки, `description` и og-теги, ссылки на ассеты под `/esd-onevoice27/assets/` и наличие самих файлов, отсутствие ссылок от корня, чанк `vendor-map`, потолок 500 КБ на каждый JS-чанк, id восьми секций в бандле, `<noscript>` и белый список внешних хостов. Ожидание: код выхода 0 и последняя строка `OK: 11 проверок`.
+Запускается после `npm run build`, читает только `dist` и ничего не пересобирает. Двенадцать проверок: `lang="ru"`, заголовок вкладки, `description` и og-теги, ссылки на ассеты под `/esd-onevoice27/assets/` и наличие самих файлов, отсутствие ссылок от корня, чанк `vendor-map`, потолок 500 КБ на каждый JS-чанк, id восьми секций в бандле, `<noscript>`, белый список внешних хостов и видео глобуса (`hero-globe.webm` и `hero-globe.mp4` лежат в `dist`, бандл на них ссылается). Ожидание: код выхода 0 и последняя строка `OK: 12 проверок`.
 
 ### Локальный просмотр
 
@@ -63,14 +63,29 @@ npx vite preview --port 4173 --strictPort
 полноэкранными панелями, футер — на вьюпортах 1440×900 и 390×844. Скриншоты приёмки лежат рядом:
 `docs/qa/v11-desktop.jpeg`, `v11-mobile.jpeg`, `v11-full.jpeg`, `v11-form-group.jpeg`,
 `v11-panel-materials.jpeg`, `v11-map-bottom.jpeg`, `v11-footer.jpeg`. Скрипты замеров лежат в
-`.planning/phases/13-integration-qa/qa/` и запускаются против прода:
+`.planning/milestones/v1.1-phases/13-integration-qa/qa/` (каталог переехал при закрытии milestone) и
+запускаются против прода:
 
 ```bash
-QA=.planning/phases/13-integration-qa/qa
+QA=.planning/milestones/v1.1-phases/13-integration-qa/qa
 node $QA/v11-run.mjs --site prod --width 1440 --height 900 --out $QA/results/prod-1440.json
 node $QA/v11-interactive.mjs --site prod --out $QA/results/prod-interactive-1440.json
 node $QA/pixel-probe.mjs --cover .news-card__cover --cover-index 1
 node $QA/v11-shots.mjs --out docs/qa
+```
+
+Раздел «Фаза 17 / v1.2» сравнивает прод с оригиналом по видео-глобусу и частицам в hero, огонькам на
+canvas с бюджетом fps при CPU×4 и мобильным целям касания на 1440×900 и 390×844. Скриншоты:
+`docs/qa/v12-hero-1440.jpeg`, `v12-hero-390.jpeg`, `v12-map-1440.jpeg`, `v12-map-390.jpeg`, рядом
+карта оригинала `v12-orig-map-1440.jpeg` и `v12-orig-map-390.jpeg`. Скрипты лежат в
+`.planning/phases/17-integration-qa/qa/`:
+
+```bash
+QA=.planning/phases/17-integration-qa/qa
+node $QA/v12-run.mjs measure --site prod --width 390 --height 844 --out $QA/results/prod-measure-390.json
+node $QA/v12-run.mjs fps --site prod --width 390 --height 844 --cpu 4 --out $QA/results/prod-fps-390-cpu4.json
+node $QA/v12-run.mjs shots --site prod --width 1440 --height 900 --out-dir docs/qa
+node $QA/prod-hashes.mjs
 ```
 
 `playwright` берётся из кэша npx или из каталога в `PW_ROOT`; в зависимости репозитория он не добавляется.

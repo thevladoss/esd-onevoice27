@@ -1,0 +1,189 @@
+{
+  "meta": {
+    "site": "orig",
+    "href": "https://onevoice27.org/",
+    "innerWidth": 390,
+    "innerHeight": 844,
+    "devicePixelRatio": 1,
+    "scrollWidth": 390,
+    "documentHeight": 11093,
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+    "nodes": 757,
+    "anchorFound": true,
+    "takenAt": "2026-09-06T17:09:30.745Z"
+  },
+  "globe": {
+    "found": true,
+    "paused": false,
+    "ended": false,
+    "muted": true,
+    "autoplay": true,
+    "loop": true,
+    "playsInline": true,
+    "preload": "auto",
+    "readyState": 4,
+    "videoWidth": 1920,
+    "videoHeight": 1080,
+    "duration": 12.79,
+    "currentSrc": "Vml1788567268773.webm",
+    "currentTime0": 2.34,
+    "currentTime1": 3.84,
+    "delta": 1.5,
+    "playing": true,
+    "rect": {
+      "x": 0,
+      "y": -16.5,
+      "width": 390,
+      "height": 844
+    },
+    "heroRect": {
+      "x": 0,
+      "y": -16.5,
+      "width": 390,
+      "height": 844
+    },
+    "rightGap": 0,
+    "topInHero": 0,
+    "aspect": 0.4621,
+    "objectFit": "cover",
+    "objectPosition": "50% 50%",
+    "mixBlendMode": "normal",
+    "filter": "saturate(1.18) contrast(1.28) brightness(0.96)",
+    "transformOrigin": "195px 422px",
+    "hasMask": false,
+    "maskLayers": 0,
+    "sourceCount": 2,
+    "attributes": {
+      "disablepictureinpicture": "",
+      "disableremoteplayback": "",
+      "tabindex": "-1",
+      "ariaHidden": "true",
+      "dataAnim": null
+    }
+  },
+  "particles": {
+    "found": true,
+    "rect": {
+      "x": 0,
+      "y": 0,
+      "width": 390,
+      "height": 844
+    },
+    "bitmap": {
+      "width": 390,
+      "height": 844
+    },
+    "expectedBitmap": {
+      "width": 390,
+      "height": 844
+    },
+    "opacity": "0.72",
+    "mixBlendMode": "screen",
+    "position": "absolute",
+    "zIndex": "auto",
+    "inset": "0px",
+    "dataAnim": null,
+    "drawsPerSecond": 25.5,
+    "contextType": "2d"
+  },
+  "lights": null,
+  "svg": {
+    "nodes": 96,
+    "roots": 21
+  },
+  "anim": {},
+  "touch": {
+    "checked": 35,
+    "small": [
+      {
+        "tag": "a",
+        "id": null,
+        "className": "absolute inset-0",
+        "text": "",
+        "w": 146,
+        "h": 29.93
+      },
+      {
+        "tag": "input",
+        "id": "LIGHT_TYPE-individual",
+        "className": "sr-only",
+        "text": "",
+        "w": 18,
+        "h": 18
+      },
+      {
+        "tag": "input",
+        "id": "LIGHT_TYPE-group",
+        "className": "sr-only",
+        "text": "",
+        "w": 18,
+        "h": 18
+      },
+      {
+        "tag": "input",
+        "id": "terms",
+        "className": "form-checkbox mt-1 focus:outline-none focus:ring-2 focus:ring-offset-1 h-4 w-4 border-2 bg-transparent border-theme-900 dark:border-theme-100 text-theme-900 dark:text-theme-100 focus:ring-theme-100 dark:focus:ring-theme-700 indeterminate:text-theme-400 dark:indeterminate:text-theme-500",
+        "text": "",
+        "w": 18,
+        "h": 18
+      },
+      {
+        "tag": "a",
+        "id": null,
+        "className": "whitespace-no-wrap inline-flex shrink-0 grow-0 select-none items-center justify-center font-sans font-bold uppercase cursor-pointer transition-all duration-500 text-[--btn-label] hover:text-[--btn-label-hover] dark:text-[--btn-dark-label] dark:hover:text-[--btn-dark-label-hover] outline-none gap-1 text-xs ov-involve-action",
+        "text": "Begin the journey",
+        "w": 153.79,
+        "h": 36
+      },
+      {
+        "tag": "a",
+        "id": null,
+        "className": "whitespace-no-wrap inline-flex shrink-0 grow-0 select-none items-center justify-center font-sans font-bold uppercase cursor-pointer transition-all duration-500 text-[--btn-label] hover:text-[--btn-label-hover] dark:text-[--btn-dark-label] dark:hover:text-[--btn-dark-label-hover] outline-none gap-1 text-xs ov-involve-action",
+        "text": "Get the toolkit",
+        "w": 134.02,
+        "h": 36
+      },
+      {
+        "tag": "a",
+        "id": null,
+        "className": "whitespace-no-wrap inline-flex shrink-0 grow-0 select-none items-center justify-center font-sans font-bold uppercase cursor-pointer transition-all duration-500 text-[--btn-label] hover:text-[--btn-label-hover] dark:text-[--btn-dark-label] dark:hover:text-[--btn-dark-label-hover] outline-none gap-1 text-xs ov-involve-action",
+        "text": "Explore ways to share",
+        "w": 186.27,
+        "h": 36
+      },
+      {
+        "tag": "a",
+        "id": null,
+        "className": "hyphens-auto break-words transition-colors dark:hover:text-theme-300 dark:text-theme-100 hover:text-theme-500 text-theme-900",
+        "text": "Inter-America’s digital creators mobiliz",
+        "w": 312,
+        "h": 43.19
+      },
+      {
+        "tag": "a",
+        "id": null,
+        "className": "hyphens-auto break-words transition-colors dark:hover:text-theme-300 dark:text-theme-100 hover:text-theme-500 text-theme-900",
+        "text": "French Polynesia invests in young digita",
+        "w": 312,
+        "h": 43.19
+      }
+    ],
+    "hidden": [],
+    "viaLabel": [],
+    "footerLinks": [],
+    "consentLabel": null,
+    "checkbox": null,
+    "brand": null,
+    "taglineFontSize": null,
+    "news": []
+  },
+  "probe": {
+    "playwright": "1.63.0-alpha-2026-08-31",
+    "channel": "chrome",
+    "url": "https://onevoice27.org/",
+    "attempt": 1,
+    "consent": "нет баннера",
+    "reduced": false,
+    "takenAt": "2026-09-06T17:09:30.748Z"
+  }
+}

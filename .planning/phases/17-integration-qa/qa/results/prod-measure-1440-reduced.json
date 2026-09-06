@@ -1,0 +1,333 @@
+{
+  "meta": {
+    "site": "prod",
+    "href": "https://thevladoss.github.io/esd-onevoice27/",
+    "innerWidth": 1440,
+    "innerHeight": 900,
+    "devicePixelRatio": 1,
+    "scrollWidth": 1440,
+    "documentHeight": 8214,
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+    "nodes": 688,
+    "anchorFound": true,
+    "takenAt": "2026-09-06T17:02:24.888Z"
+  },
+  "globe": {
+    "found": true,
+    "paused": true,
+    "ended": false,
+    "muted": true,
+    "autoplay": true,
+    "loop": true,
+    "playsInline": true,
+    "preload": "auto",
+    "readyState": 4,
+    "videoWidth": 1920,
+    "videoHeight": 1080,
+    "duration": 12.79,
+    "currentSrc": "hero-globe.webm",
+    "currentTime0": 0,
+    "currentTime1": 0,
+    "delta": 0,
+    "playing": false,
+    "rect": {
+      "x": 373.34,
+      "y": 0,
+      "width": 1066.66,
+      "height": 600
+    },
+    "heroRect": {
+      "x": 0,
+      "y": 0,
+      "width": 1440,
+      "height": 600
+    },
+    "rightGap": 0,
+    "topInHero": 0,
+    "aspect": 1.7778,
+    "objectFit": "contain",
+    "objectPosition": "100% 0%",
+    "mixBlendMode": "screen",
+    "filter": "saturate(1.18) contrast(1.28) brightness(0.96)",
+    "transformOrigin": "767.998px 276px",
+    "hasMask": true,
+    "maskLayers": 2,
+    "sourceCount": 2,
+    "attributes": {
+      "disablepictureinpicture": "",
+      "disableremoteplayback": "",
+      "tabindex": "-1",
+      "ariaHidden": "true",
+      "dataAnim": "globe"
+    }
+  },
+  "particles": {
+    "found": true,
+    "rect": {
+      "x": 0,
+      "y": 0,
+      "width": 1440,
+      "height": 600
+    },
+    "bitmap": {
+      "width": 1440,
+      "height": 600
+    },
+    "expectedBitmap": {
+      "width": 1440,
+      "height": 600
+    },
+    "opacity": "0.72",
+    "mixBlendMode": "screen",
+    "position": "absolute",
+    "zIndex": "1",
+    "inset": "0px",
+    "dataAnim": "stars",
+    "drawsPerSecond": 0,
+    "contextType": "2d"
+  },
+  "lights": {
+    "found": true,
+    "dataset": {
+      "lightCount": "942",
+      "people": "694",
+      "groups": "248",
+      "fresh": "0"
+    },
+    "anim": "pulse",
+    "ariaHidden": "true",
+    "position": "absolute",
+    "pointerEvents": "none",
+    "inset": "0px",
+    "rect": {
+      "x": 0,
+      "y": 191.09,
+      "width": 1440,
+      "height": 630
+    },
+    "bitmap": {
+      "width": 1440,
+      "height": 630
+    },
+    "expectedBitmap": {
+      "width": 1440,
+      "height": 630
+    },
+    "previousIsSvg": true,
+    "mapCircles": 0,
+    "legacyNodes": 0,
+    "countries": 177,
+    "drawsPerSecond": 0,
+    "contextType": "2d"
+  },
+  "svg": {
+    "nodes": 282,
+    "roots": 13
+  },
+  "anim": {
+    "globe": 1,
+    "stars": 1,
+    "beam": 2,
+    "pulse": 1,
+    "atmosphere": 1,
+    "particles": 1,
+    "wave": 1,
+    "halo": 1
+  },
+  "touch": {
+    "checked": 50,
+    "small": [
+      {
+        "tag": "button",
+        "id": null,
+        "className": "chip",
+        "text": "Весь дивизион",
+        "w": 151.18,
+        "h": 40
+      },
+      {
+        "tag": "button",
+        "id": null,
+        "className": "chip",
+        "text": "Россия",
+        "w": 89.48,
+        "h": 40
+      },
+      {
+        "tag": "button",
+        "id": null,
+        "className": "chip",
+        "text": "Казахстан",
+        "w": 113.8,
+        "h": 40
+      },
+      {
+        "tag": "button",
+        "id": null,
+        "className": "chip",
+        "text": "Беларусь",
+        "w": 103.28,
+        "h": 40
+      },
+      {
+        "tag": "button",
+        "id": null,
+        "className": "chip",
+        "text": "Молдова",
+        "w": 104.94,
+        "h": 40
+      },
+      {
+        "tag": "button",
+        "id": null,
+        "className": "chip",
+        "text": "Узбекистан",
+        "w": 122.16,
+        "h": 40
+      },
+      {
+        "tag": "button",
+        "id": null,
+        "className": "chip",
+        "text": "Кыргызстан",
+        "w": 126.72,
+        "h": 40
+      },
+      {
+        "tag": "button",
+        "id": null,
+        "className": "chip",
+        "text": "Таджикистан",
+        "w": 138.9,
+        "h": 40
+      },
+      {
+        "tag": "button",
+        "id": null,
+        "className": "chip",
+        "text": "Грузия",
+        "w": 86.28,
+        "h": 40
+      },
+      {
+        "tag": "button",
+        "id": null,
+        "className": "chip",
+        "text": "Армения",
+        "w": 101.45,
+        "h": 40
+      },
+      {
+        "tag": "button",
+        "id": null,
+        "className": "chip",
+        "text": "Азербайджан",
+        "w": 138.59,
+        "h": 40
+      },
+      {
+        "tag": "button",
+        "id": null,
+        "className": "chip",
+        "text": "Туркменистан",
+        "w": 144.13,
+        "h": 40
+      },
+      {
+        "tag": "button",
+        "id": null,
+        "className": "chip",
+        "text": "Афганистан",
+        "w": 126.63,
+        "h": 40
+      }
+    ],
+    "hidden": [
+      {
+        "tag": "input",
+        "id": "_r_2_-type-individual",
+        "className": "sr-only",
+        "text": "",
+        "w": 1,
+        "h": 1
+      },
+      {
+        "tag": "input",
+        "id": "_r_2_-type-group",
+        "className": "sr-only",
+        "text": "",
+        "w": 1,
+        "h": 1
+      }
+    ],
+    "viaLabel": [
+      {
+        "tag": "input",
+        "id": "_r_2_-consent",
+        "className": "lf-checkbox",
+        "text": "",
+        "w": 20,
+        "h": 20,
+        "labelH": 44
+      }
+    ],
+    "footerLinks": [
+      {
+        "w": 204.85,
+        "h": 44
+      },
+      {
+        "w": 235.13,
+        "h": 44
+      }
+    ],
+    "consentLabel": {
+      "w": 672,
+      "h": 44
+    },
+    "checkbox": {
+      "w": 20,
+      "h": 20
+    },
+    "brand": {
+      "w": 159,
+      "h": 44.9
+    },
+    "taglineFontSize": "10px",
+    "news": [
+      {
+        "width": "480",
+        "height": "360",
+        "loading": "eager",
+        "fetchpriority": "high",
+        "decoding": "async",
+        "src": "hqdefault.jpg"
+      },
+      {
+        "width": "480",
+        "height": "360",
+        "loading": "lazy",
+        "fetchpriority": null,
+        "decoding": "async",
+        "src": "hqdefault.jpg"
+      },
+      {
+        "width": "480",
+        "height": "360",
+        "loading": "lazy",
+        "fetchpriority": null,
+        "decoding": "async",
+        "src": "hqdefault.jpg"
+      }
+    ]
+  },
+  "probe": {
+    "playwright": "1.63.0-alpha-2026-08-31",
+    "channel": "chrome",
+    "url": "https://thevladoss.github.io/esd-onevoice27/",
+    "attempt": 1,
+    "consent": "нет баннера",
+    "reduced": true,
+    "takenAt": "2026-09-06T17:02:24.895Z"
+  }
+}
