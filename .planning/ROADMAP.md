@@ -92,7 +92,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - `public/hero-globe.webm`, `public/hero-globe.mp4` уже на месте, не меняются
 
 **Не трогать**: `src/styles/global.css`, `src/styles/motionPolicy.test.ts`, `src/test/setup.ts`, `src/App.tsx`, `src/components/map/*`, `src/components/layout/*`, `src/lib/useReducedMotion.ts` (вызывать как есть).
-**Plans**: TBD
+**Plans**: 2 plans — 14-01-PLAN.md (порт частиц оригинала: heroParticles.ts + HeroParticles.tsx), 14-02-PLAN.md (видео, стили, высота hero, удаление GlobeCanvas/Starfield, check-dist)
 **UI hint**: yes
 
 ### Phase 15: Огоньки карты на canvas
@@ -141,7 +141,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - `src/components/news/NewsCard.tsx` (атрибуты `<img>`, проп приоритета), `src/components/news/News.tsx` (только передача приоритета первой карточке), `src/components/news/NewsCard.test.tsx`, `src/components/news/News.test.tsx`
 
 **Не трогать**: `Footer.tsx`, `Header.tsx`, `Wordmark.tsx`, `LightForm.tsx`, `FormField.tsx`, `news.css`, `src/styles/global.css`, `src/components/map/*`, `src/components/hero/*`, `src/App.seams.test.tsx`; в `light-form.css` не добавлять `background` в блок `.lf-section` и `.lf-section::before` (это проверяет `App.seams.test.tsx`).
-**Plans**: TBD
+**Plans**: 1 plan — 16-01-PLAN.md (ссылки футера, чекбокс согласия, превью новостей, подпись логотипа)
 **UI hint**: yes
 
 ### Phase 17: Интеграция, гейт и приёмка
