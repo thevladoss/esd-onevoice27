@@ -58,6 +58,23 @@ npx vite preview --port 4173 --strictPort
 
 Чеклист приёмки лежит в `docs/qa/SMOKE.md`: восемь секций, консоль, сеть, горизонтальный скролл на пяти ширинах, reveal, reduced motion, якоря меню, обход табом, контраст и четыре скриншота. Прогоняется по preview, затем по проду, через Playwright MCP или вручную в DevTools. Результаты вписываются в тот же файл.
 
+Раздел «Фаза 13 / v1.1» в том же файле сравнивает прод с оригиналом onevoice27.org по шести правкам
+редизайна — стекло карточек, лента карты и огоньки, форма, превью новостей и видео, ресурсы с
+полноэкранными панелями, футер — на вьюпортах 1440×900 и 390×844. Скриншоты приёмки лежат рядом:
+`docs/qa/v11-desktop.jpeg`, `v11-mobile.jpeg`, `v11-full.jpeg`, `v11-form-group.jpeg`,
+`v11-panel-materials.jpeg`, `v11-map-bottom.jpeg`, `v11-footer.jpeg`. Скрипты замеров лежат в
+`.planning/phases/13-integration-qa/qa/` и запускаются против прода:
+
+```bash
+QA=.planning/phases/13-integration-qa/qa
+node $QA/v11-run.mjs --site prod --width 1440 --height 900 --out $QA/results/prod-1440.json
+node $QA/v11-interactive.mjs --site prod --out $QA/results/prod-interactive-1440.json
+node $QA/pixel-probe.mjs --cover .news-card__cover --cover-index 1
+node $QA/v11-shots.mjs --out docs/qa
+```
+
+`playwright` берётся из кэша npx или из каталога в `PW_ROOT`; в зависимости репозитория он не добавляется.
+
 ### Деплой и живой сайт
 
 После пуша в `main` проверьте прогон и живой сайт:
@@ -87,12 +104,12 @@ src/main.tsx               монтирование React и импорт гло
 src/App.tsx                композиция страницы: SkipLink, Header, main#main, Footer
 src/components/layout/     оболочка и примитивы: SkipLink, Wordmark, Header, Footer
 src/components/hero/       первый экран
-src/components/map/        карта дивизиона
+src/components/map/        карта дивизиона, лента `MapBand` с формой и огоньки
 src/components/form/       форма «Зажгите свет»
 src/components/about/      рассказ о проекте
 src/components/involve/    пути участия
 src/components/news/       лента новостей
-src/components/resources/  музыка, материалы, видео
+src/components/resources/  музыка, материалы, видео и полноэкранные панели
 src/components/quote/      цитата
 src/data/copy.ts           весь пользовательский текст
 src/styles/tokens.css      палитра, шрифты, размеры, радиусы и тени в @theme

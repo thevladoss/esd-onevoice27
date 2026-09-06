@@ -1,0 +1,100 @@
+{
+    "href": "https://thevladoss.github.io/esd-onevoice27/",
+    "viewport": {
+        "width": 1440,
+        "height": 900
+    },
+    "band": {
+        "present": true,
+        "childIds": [
+            "map",
+            "light-form"
+        ],
+        "formBackgroundColor": "rgba(0, 0, 0, 0)",
+        "formBeforeContent": "none"
+    },
+    "bandBefore": {
+        "backgroundColor": "rgb(18, 12, 52)",
+        "clipPath": "polygon(0px 46.08px, 100% 0px, 100% 100%, 0px 100%)"
+    },
+    "shellClip": "polygon(0px 46.08px, 100% 0px, 100% calc(100% - 46.08px), 0px 100%)",
+    "resourceCard": {
+        "backdropFilter": "blur(14px) saturate(1.25)",
+        "backgroundImage": "linear-gradient(rgba(255, 255, 255, 0.075), rgba(0, 0, 0, 0) 34%), linear-gradient(145deg, rgba(49, 41, 77, 0.44), rgba(18, 12, 52, 0.62))",
+        "borderTopColor": "rgba(239, 237, 245, 0.18)",
+        "borderRadius": "16px"
+    },
+    "titles": {
+        "about-title": {
+            "backgroundImage": "linear-gradient(104deg, rgb(227, 175, 210) 2%, rgb(143, 157, 214) 52%, rgb(123, 194, 199))",
+            "color": "rgb(248, 247, 251)",
+            "webkitTextFillColor": "rgba(0, 0, 0, 0)"
+        },
+        "form-title": {
+            "backgroundImage": "none",
+            "color": "rgb(239, 237, 245)",
+            "webkitTextFillColor": "rgb(239, 237, 245)"
+        },
+        "map-title": {
+            "backgroundImage": "none",
+            "color": "rgb(239, 237, 245)",
+            "webkitTextFillColor": "rgb(239, 237, 245)"
+        },
+        "involve-title": {
+            "backgroundImage": "none",
+            "color": "rgb(239, 237, 245)",
+            "webkitTextFillColor": "rgb(239, 237, 245)"
+        }
+    },
+    "buckets": {
+        "count": 5,
+        "order": [
+            "0",
+            "1",
+            "2",
+            "3",
+            "4"
+        ],
+        "animationName": "light-breathe",
+        "animationDuration": "2.6s"
+    },
+    "pulse": {
+        "count": 0,
+        "keyframes": [
+            "footer-wave-drift",
+            "footer-halo-drift",
+            "hero-beam",
+            "star-drift",
+            "star-drift-b",
+            "lf-toast-in",
+            "lf-toast-out",
+            "light-breathe",
+            "light-arrive",
+            "resources-zoom",
+            "resources-particles"
+        ],
+        "hasBreathe": true,
+        "hasPulse": false
+    },
+    "videoPanel": {
+        "zIndex": "10000",
+        "position": "fixed",
+        "veCount": 16,
+        "ratio": 1.7778,
+        "objectFit": "cover",
+        "objectPosition": "50% 50%"
+    },
+    "deepLink": {
+        "kind": "materials",
+        "ariaExpanded": "true",
+        "groups": 5,
+        "esdOpen": true
+    },
+    "probe": {
+        "playwright": "1.63.0-alpha-2026-08-31",
+        "from": "/Users/thevladoss/.npm/_npx/9833c18b2d85bc59/node_modules/playwright/index.js",
+        "channel": "chrome",
+        "headless": true,
+        "url": "https://thevladoss.github.io/esd-onevoice27/"
+    }
+}
