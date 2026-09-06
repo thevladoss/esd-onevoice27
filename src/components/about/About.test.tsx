@@ -1,7 +1,30 @@
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 import { render, screen } from "@testing-library/react";
 import { aboutSteps } from "../../data/about";
 import { aboutCopy } from "../../data/copy.about";
 import { About } from "./About";
+
+/* vitest настроен с css: false, поэтому значения свойств проверяются по тексту
+   исходника с диска — тем же приёмом, что в src/styles/motionPolicy.test.ts. */
+const ABOUT_CSS = readFileSync(resolve(process.cwd(), "src/components/about/about.css"), "utf8");
+
+/** Схлопывает любые пробельные последовательности в один пробел. */
+const flat = (css: string) => css.replace(/\s+/g, " ");
+
+/** Тело первого правила, чей заголовок с открывающей скобкой равен head. */
+function block(css: string, head: string): string {
+  const source = flat(css);
+  const start = source.indexOf(head);
+  if (start === -1) {
+    throw new Error(`Правило ${head} в CSS не найдено`);
+  }
+  const end = source.indexOf("}", start + head.length);
+  if (end === -1) {
+    throw new Error(`У правила ${head} нет закрывающей скобки`);
+  }
+  return source.slice(start + head.length, end);
+}
 
 describe("Секция About", () => {
   it("рендерит секцию #about с надзаголовком, H2 и лидом", () => {
@@ -59,5 +82,38 @@ describe("Секция About", () => {
       (node) => node.textContent,
     );
     expect(numbers).toEqual(["1", "2", "3"]);
+  });
+});
+
+describe("стекло карточек шагов (GLASS-02)", () => {
+  it("ставит все три карточки на общую стеклянную поверхность", () => {
+    const { container } = render(<About />);
+
+    const steps = container.querySelectorAll(".ab-step");
+    expect(steps).toHaveLength(3);
+    for (const step of Array.from(steps)) {
+      expect(step).toHaveClass("glass-card", "glass");
+    }
+  });
+
+  it("не перекрывает поверхность утилиты собственным фоном", () => {
+    expect(block(ABOUT_CSS, ".ab-step {")).not.toContain("background");
+  });
+
+  it("светлит рамку и добавляет тень при наведении за 420ms", () => {
+    expect(block(ABOUT_CSS, ".ab-step {")).toContain(
+      "border-color 420ms cubic-bezier(0.22, 1, 0.36, 1)",
+    );
+
+    const hover = block(ABOUT_CSS, ".ab-step:hover {");
+    expect(hover).toContain("border-color: rgb(143 157 214 / .34);");
+    expect(hover).toContain("0 24px 52px rgb(3 2 18 / .30)");
+  });
+
+  it("сохраняет акцентную линию и разделитель карточки", () => {
+    const rules = flat(ABOUT_CSS);
+    expect(rules).toContain(".ab-step::after {");
+    expect(rules).toContain(".ab-step-rule {");
+    expect(ABOUT_CSS).not.toContain("rgb(184 192 230 / .34)");
   });
 });

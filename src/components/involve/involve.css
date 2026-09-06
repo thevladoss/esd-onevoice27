@@ -1,9 +1,7 @@
 /* Секция «От убеждения к действию»: триптих в общей стеклянной рамке */
 
 .inv-section {
-  --triptych-radius: 24px;
-  --triptych-seam: rgb(248 247 251 / .12);
-  --triptych-surface: linear-gradient(180deg, rgb(33 26 62 / .82), rgb(18 12 52 / .9));
+  --triptych-radius: 18px;
   --triptych-media-saturation: .85;
   --focus-ring: #aad9dc;
   --ui-transition: 420ms cubic-bezier(0.32, 0.72, 0, 1);
@@ -114,17 +112,31 @@
   filter: blur(28px);
 }
 
-/* Рамка триптиха переопределяет отступы и радиус стеклянной карточки */
+/* Рамка триптиха переопределяет отступы и радиус стеклянной карточки. Размытие
+   ей не нужно: под ней лежат карточки со своей поверхностью. Кольцо рамки даёт
+   зазор 4px между её краем и карточками: рамка 18px, карточка 14px. */
 .inv-triptych {
   display: grid;
-  padding: 0;
+  padding: 4px;
+  gap: 4px;
   border-radius: var(--triptych-radius);
   overflow: hidden;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  box-shadow: 0 34px 76px rgb(2 2 12 / .58), 0 0 54px rgb(59 77 161 / .22);
 }
 
+/* Шов между частями триптиха несёт рамка каждой карточки, а не соседство слотов */
 .inv-card {
   position: relative;
   min-width: 0;
+  overflow: hidden;
+  border-radius: calc(var(--triptych-radius) - 4px);
+  border: 1px solid rgb(239 237 245 / .15);
+  background: rgb(33 26 62 / .48);
+  transition:
+    background-color var(--ui-transition),
+    border-color var(--ui-transition);
 }
 
 /* Обёртка появления между рамкой и карточкой: держит место карточки в сетке */
@@ -222,23 +234,15 @@
 @media (max-width: 767px) {
   .inv-triptych {
     gap: 16px;
+    padding: 0;
     background: none;
     border: 0;
     box-shadow: none;
     overflow: visible;
-    -webkit-backdrop-filter: none;
-    backdrop-filter: none;
   }
 
   .inv-triptych::before {
     display: none;
-  }
-
-  .inv-card {
-    background: var(--triptych-surface);
-    border: 1px solid var(--glass-border);
-    border-radius: var(--triptych-radius);
-    overflow: hidden;
   }
 }
 
@@ -257,10 +261,6 @@
     aspect-ratio: auto;
     min-height: 220px;
   }
-
-  .inv-slot + .inv-slot {
-    border-top: 1px solid var(--triptych-seam);
-  }
 }
 
 /* Три колонки в одной рамке без зазоров */
@@ -277,14 +277,13 @@
     display: flex;
     flex-direction: column;
   }
-
-  .inv-slot + .inv-slot {
-    border-left: 1px solid var(--triptych-seam);
-    border-top: 0;
-  }
 }
 
 @media (hover: hover) {
+  .inv-card:hover {
+    background: rgb(49 41 77 / .54);
+  }
+
   .inv-card:hover .inv-art {
     transform: scale(1.025);
     filter: saturate(1);

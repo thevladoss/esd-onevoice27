@@ -1,6 +1,29 @@
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 import { fireEvent, render, screen, within } from "@testing-library/react";
 import { involveCopy } from "../../data/copy.involve";
 import { Involve } from "./Involve";
+
+/* vitest настроен с css: false, поэтому значения свойств проверяются по тексту
+   исходника с диска — тем же приёмом, что в src/styles/motionPolicy.test.ts. */
+const INVOLVE_CSS = readFileSync(resolve(process.cwd(), "src/components/involve/involve.css"), "utf8");
+
+/** Схлопывает любые пробельные последовательности в один пробел. */
+const flat = (css: string) => css.replace(/\s+/g, " ");
+
+/** Тело первого правила, чей заголовок с открывающей скобкой равен head. */
+function block(css: string, head: string): string {
+  const source = flat(css);
+  const start = source.indexOf(head);
+  if (start === -1) {
+    throw new Error(`Правило ${head} в CSS не найдено`);
+  }
+  const end = source.indexOf("}", start + head.length);
+  if (end === -1) {
+    throw new Error(`У правила ${head} нет закрывающей скобки`);
+  }
+  return source.slice(start + head.length, end);
+}
 
 const expectedHrefs: Record<string, string> = {
   "Начать путь": "#about",
@@ -101,5 +124,42 @@ describe("Секция «От убеждения к действию»", () => {
     }
 
     expect(container.querySelectorAll('a span[aria-hidden="true"]')).toHaveLength(3);
+  });
+});
+
+describe("стекло триптиха (GLASS-04)", () => {
+  it("держит три карточки внутри одной стеклянной рамки", () => {
+    const { container } = render(<Involve />);
+
+    const frame = container.querySelector(".inv-triptych");
+    expect(frame).not.toBeNull();
+    expect(frame).toHaveClass("glass-card", "glass");
+    expect(frame?.querySelectorAll("article.inv-card")).toHaveLength(3);
+  });
+
+  it("снимает размытие с рамки и оставляет ей кольцо и тень", () => {
+    const frame = block(INVOLVE_CSS, ".inv-triptych {");
+    expect(frame).toContain("backdrop-filter: none;");
+    expect(frame).toContain("padding: 4px;");
+    expect(frame).toContain(
+      "box-shadow: 0 34px 76px rgb(2 2 12 / .58), 0 0 54px rgb(59 77 161 / .22);",
+    );
+    expect(block(INVOLVE_CSS, ".inv-section {")).toContain("--triptych-radius: 18px;");
+  });
+
+  it("даёт каждой карточке поверхность, шов и радиус на 4px меньше рамки", () => {
+    const card = block(INVOLVE_CSS, ".inv-card {");
+    expect(card).toContain("background: rgb(33 26 62 / .48);");
+    expect(card).toContain("border: 1px solid rgb(239 237 245 / .15);");
+    expect(card).toContain("border-radius: calc(var(--triptych-radius) - 4px);");
+    expect(block(INVOLVE_CSS, ".inv-card:hover {")).toContain(
+      "background: rgb(49 41 77 / .54);",
+    );
+  });
+
+  it("больше не рисует шов соседством слотов и не читает токен рамки стекла", () => {
+    expect(INVOLVE_CSS).not.toContain(".inv-slot + .inv-slot");
+    expect(INVOLVE_CSS).not.toContain("var(--glass-border)");
+    expect(INVOLVE_CSS).not.toContain("--triptych-surface");
   });
 });
