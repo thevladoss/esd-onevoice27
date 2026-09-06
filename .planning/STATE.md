@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Мобильная адаптация, глобус оригинала и производительность
 status: ready_to_plan
-last_updated: 2026-09-06T15:52:57.483Z
+last_updated: 2026-09-06T16:07:42.897Z
 last_activity: 2026-09-06
 progress:
   total_phases: 4
   completed_phases: 0
   total_plans: 0
-  completed_plans: 2
+  completed_plans: 4
   percent: 0
-stopped_at: Phase 16 complete (1/1) — ready to discuss Phase 17
+stopped_at: Phase 14 complete (2/2) — ready to discuss Phase 15
 ---
 
 # Project State
@@ -21,12 +21,12 @@ stopped_at: Phase 16 complete (1/1) — ready to discuss Phase 17
 See: .planning/PROJECT.md (updated 2026-09-06)
 
 **Core value:** Посетитель открывает страницу и видит красивый, живой лендинг уровня оригинала onevoice27.org, но про ЕАД: узнаёт, что такое «Единый голос 27», видит карту движения по дивизиону и может «зажечь свой свет».
-**Current focus:** Phase 17 — интеграция, гейт и приёмка
+**Current focus:** Phase 15 — lights canvas
 
 ## Current Position
 
-Phase: 14 и 15 исполняются параллельно в worktree (agent-14: план 14-02, agent-15: план 15-01); фаза 16 завершена и слита
-Plan: 14-02, 15-01
+Phase: 15 исполняется в worktree agent-15 (план 15-02); фазы 14 и 16 завершены и слиты в main
+Plan: 15-02
 Status: Executing
 Last activity: 2026-09-06
 
@@ -34,7 +34,7 @@ Last activity: 2026-09-06
 
 **Velocity:**
 
-- Total plans completed: 48
+- Total plans completed: 50
 - Average duration: - min
 - Total execution time: 0 hours
 
@@ -56,6 +56,7 @@ Last activity: 2026-09-06
 | 8 | 2 | - | - |
 | 13 | 2 | - | - |
 | 16 | 1 | - | - |
+| 14 | 2 | - | - |
 
 **Recent Trend:**
 

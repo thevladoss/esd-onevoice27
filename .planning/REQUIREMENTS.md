@@ -11,14 +11,14 @@
 
 ### Глобус hero (GLOBE)
 
-- [ ] **GLOBE-01**: Посетитель видит на первом экране видео глобуса оригинала: `<video autoPlay muted loop playsInline preload="auto" disablePictureInPicture disableRemotePlayback tabIndex={-1} aria-hidden data-anim="globe">` с источниками `hero-globe.webm` и `hero-globe.mp4` из `public/` по `import.meta.env.BASE_URL`; `muted` продублирован через ref до `play()`; `GlobeCanvas.tsx`, `globe.ts` и их тесты удалены
-- [ ] **GLOBE-02**: Видео стоит и выглядит как у оригинала на трёх брейкпоинтах: до 640px `object-fit: cover; object-position: center center; filter: saturate(1.18) contrast(1.28) brightness(0.96)`; от 640px `object-position: 72% center; transform-origin: 72% 46%`; от 1280px `width: auto; max-width: min(100%, 1920px); aspect-ratio: 16 / 9; margin-left: auto; object-fit: contain; object-position: right top; mix-blend-mode: screen` и двойная `mask-image` с `mask-composite: intersect` (плюс `-webkit-` варианты); обёртка `.hero__video` absolute inset 0, z 0, flex-колонка `align-items: flex-end`
-- [ ] **GLOBE-03**: Высота hero как у оригинала: `min-height: 100svh`, от 768px `max(600px, 65svh)`, от 1024px `max(600px, 64vh)`; колонка текста, отступы, кегли, градиент H1 и `.hero::after` не меняются
-- [ ] **GLOBE-04**: Поверх видео живут canvas-частицы, портированные один к одному из `docs/research/v1.2/orig-hero-motion.js` (`HeroParticles.tsx` + чистый `heroParticles.ts`): 30 fps, `elapsed` ≤ 40 мс, dpr ≤ 1,75, статичное поле с `seededRandom(270927)` на offscreen-canvas (dpr ≤ 1,25, счёт `min(max, max(140, round(w·h/3600)))`, max 220/340/520), живые частицы `min(max, max(48, round(w·h/12000)))` (max 70/100/140, доля «справа» 0,58 и 0,62 на десктопе), три туманности, падающие звёзды каждые 4,2–9,2 с, `screen`, лучи при `flare > .34`; палитра литералами light `248 247 251`, signal `227 175 210`, unity `184 192 230`, horizon `170 217 220`; canvas `data-anim="stars"`, absolute inset 0, z 1, `opacity: .72; mix-blend-mode: screen`
-- [ ] **GLOBE-05**: Частицы и видео экономят ресурсы: `ResizeObserver` на canvas, `IntersectionObserver` на секции с `rootMargin: "100px"`, `visibilitychange`, слушатель `prefers-reduced-motion`; вне экрана, в скрытой вкладке и при reduce цикл остановлен и нарисован один статичный кадр; при reduce видео на паузе на первом кадре, при снятии reduce — `play()`
-- [ ] **GLOBE-06**: `Starfield.tsx`, слои `.starfield__*` и keyframes `star-drift*` удалены; значения реестра `stars` (canvas) и `globe` (видео) остаются в коде, `motionPolicy.test.ts` проходит без правок
-- [ ] **GLOBE-07**: Тесты и гейт: `Hero.test.tsx` проверяет видео с двумя источниками под `BASE_URL`, атрибуты автовоспроизведения и `data-anim`; `heroParticles.test.ts` проверяет чистые функции (счёт звёзд и частиц по ширине, воспроизводимость `seededRandom`, цвет из палитры, пропуск кадра раньше 33 мс); `HeroParticles.test.tsx` — без 2d-контекста компонент не падает и не запускает rAF; `scripts/check-dist.mjs` проверяет наличие `hero-globe.webm`/`.mp4` в `dist/` и ссылки на них в JS
-- [ ] **GLOBE-08**: При `navigator.connection.saveData === true` источники видео не подключаются, остаются фон `#070210` и частицы; иначе `preload="auto"` как у оригинала
+- [x] **GLOBE-01**: Посетитель видит на первом экране видео глобуса оригинала: `<video autoPlay muted loop playsInline preload="auto" disablePictureInPicture disableRemotePlayback tabIndex={-1} aria-hidden data-anim="globe">` с источниками `hero-globe.webm` и `hero-globe.mp4` из `public/` по `import.meta.env.BASE_URL`; `muted` продублирован через ref до `play()`; `GlobeCanvas.tsx`, `globe.ts` и их тесты удалены
+- [x] **GLOBE-02**: Видео стоит и выглядит как у оригинала на трёх брейкпоинтах: до 640px `object-fit: cover; object-position: center center; filter: saturate(1.18) contrast(1.28) brightness(0.96)`; от 640px `object-position: 72% center; transform-origin: 72% 46%`; от 1280px `width: auto; max-width: min(100%, 1920px); aspect-ratio: 16 / 9; margin-left: auto; object-fit: contain; object-position: right top; mix-blend-mode: screen` и двойная `mask-image` с `mask-composite: intersect` (плюс `-webkit-` варианты); обёртка `.hero__video` absolute inset 0, z 0, flex-колонка `align-items: flex-end`
+- [x] **GLOBE-03**: Высота hero как у оригинала: `min-height: 100svh`, от 768px `max(600px, 65svh)`, от 1024px `max(600px, 64vh)`; колонка текста, отступы, кегли, градиент H1 и `.hero::after` не меняются
+- [x] **GLOBE-04**: Поверх видео живут canvas-частицы, портированные один к одному из `docs/research/v1.2/orig-hero-motion.js` (`HeroParticles.tsx` + чистый `heroParticles.ts`): 30 fps, `elapsed` ≤ 40 мс, dpr ≤ 1,75, статичное поле с `seededRandom(270927)` на offscreen-canvas (dpr ≤ 1,25, счёт `min(max, max(140, round(w·h/3600)))`, max 220/340/520), живые частицы `min(max, max(48, round(w·h/12000)))` (max 70/100/140, доля «справа» 0,58 и 0,62 на десктопе), три туманности, падающие звёзды каждые 4,2–9,2 с, `screen`, лучи при `flare > .34`; палитра литералами light `248 247 251`, signal `227 175 210`, unity `184 192 230`, horizon `170 217 220`; canvas `data-anim="stars"`, absolute inset 0, z 1, `opacity: .72; mix-blend-mode: screen`
+- [x] **GLOBE-05**: Частицы и видео экономят ресурсы: `ResizeObserver` на canvas, `IntersectionObserver` на секции с `rootMargin: "100px"`, `visibilitychange`, слушатель `prefers-reduced-motion`; вне экрана, в скрытой вкладке и при reduce цикл остановлен и нарисован один статичный кадр; при reduce видео на паузе на первом кадре, при снятии reduce — `play()`
+- [x] **GLOBE-06**: `Starfield.tsx`, слои `.starfield__*` и keyframes `star-drift*` удалены; значения реестра `stars` (canvas) и `globe` (видео) остаются в коде, `motionPolicy.test.ts` проходит без правок
+- [x] **GLOBE-07**: Тесты и гейт: `Hero.test.tsx` проверяет видео с двумя источниками под `BASE_URL`, атрибуты автовоспроизведения и `data-anim`; `heroParticles.test.ts` проверяет чистые функции (счёт звёзд и частиц по ширине, воспроизводимость `seededRandom`, цвет из палитры, пропуск кадра раньше 33 мс); `HeroParticles.test.tsx` — без 2d-контекста компонент не падает и не запускает rAF; `scripts/check-dist.mjs` проверяет наличие `hero-globe.webm`/`.mp4` в `dist/` и ссылки на них в JS
+- [x] **GLOBE-08**: При `navigator.connection.saveData === true` источники видео не подключаются, остаются фон `#070210` и частицы; иначе `preload="auto"` как у оригинала
 
 ### Огоньки карты (LIGHT)
 
@@ -64,14 +64,14 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| GLOBE-01 | Phase 14 | Pending |
-| GLOBE-02 | Phase 14 | Pending |
-| GLOBE-03 | Phase 14 | Pending |
-| GLOBE-04 | Phase 14 | Pending |
-| GLOBE-05 | Phase 14 | Pending |
-| GLOBE-06 | Phase 14 | Pending |
-| GLOBE-07 | Phase 14 | Pending |
-| GLOBE-08 | Phase 14 | Pending |
+| GLOBE-01 | Phase 14 | Complete |
+| GLOBE-02 | Phase 14 | Complete |
+| GLOBE-03 | Phase 14 | Complete |
+| GLOBE-04 | Phase 14 | Complete |
+| GLOBE-05 | Phase 14 | Complete |
+| GLOBE-06 | Phase 14 | Complete |
+| GLOBE-07 | Phase 14 | Complete |
+| GLOBE-08 | Phase 14 | Complete |
 | LIGHT-01 | Phase 15 | Pending |
 | LIGHT-02 | Phase 15 | Pending |
 | LIGHT-03 | Phase 15 | Pending |
