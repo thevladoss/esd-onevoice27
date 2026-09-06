@@ -1,15 +1,3 @@
-/* Множитель радиуса ореола: наследуется кругами внутри корзин. Дыхание радиуса
-   (1 → 2) держало 50,9 fps на 942 огоньках при пороге 50, поэтому по MAP-06
-   включён fallback: радиус статичный (6px × 1.5 = 9px, середина диапазона
-   оригинала 7–12px), дышит только opacity корзины — 71 fps на том же стенде.
-   Свойство остаётся зарегистрированным, чтобы вернуть дыхание радиуса двумя
-   строками в keyframes, если появится запас по производительности. */
-@property --halo-k {
-  syntax: "<number>";
-  inherits: true;
-  initial-value: 1.5;
-}
-
 .esd-map {
   position: relative;
   width: 100%;
@@ -20,6 +8,18 @@
   display: block;
   width: 100%;
   height: 100%;
+}
+
+/* Огоньки рисует canvas поверх SVG: 942 огонька без единого узла DOM, дыхание
+   корзин и кольцо нового огонька считает lightsCanvas.ts. Слой кликов не ловит,
+   жесты уходят в SVG под ним. */
+.map-lights-canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
 }
 
 /* Страны */
@@ -37,109 +37,6 @@
   fill: rgb(59 77 161 / .78);
   stroke: rgb(170 217 220 / .55);
   stroke-width: 1px;
-}
-
-/* Огоньки: свечение рисуется отдельным кругом с радиальным градиентом, а не
-   тенью и не фильтром — сотни размытий не тянет ни один браузер. Дышит не
-   каждый двадцать четвёртый огонёк, как раньше, а пять корзин со сдвигом фазы. */
-.light--person {
-  color: var(--light-person);
-}
-
-.light--group {
-  color: var(--light-group);
-}
-
-/* Цвет градиента задаётся на самом узле градиента: stop-color: currentColor
-   внутри читает его по наследству. */
-.light-halo-def--person {
-  color: var(--light-person);
-}
-
-.light-halo-def--group {
-  color: var(--light-group);
-}
-
-/*
- * Радиус делится на масштаб вьюпорта прямо в CSS: во время жеста меняется одна
- * переменная на группе, а не атрибут r у 1884 кругов через рендер React.
- * Атрибут r остаётся запасным для движков без геометрических свойств в CSS.
- */
-.light-core {
-  fill: currentColor;
-  stroke: #fff;
-  stroke-width: .9px;
-  stroke-opacity: .5;
-  /* Обводка держит .9px на любом зуме: иначе на k = 8 она стала бы 7px. */
-  vector-effect: non-scaling-stroke;
-  r: calc(var(--light-core-r, 2.2px) / var(--zoom-k, 1));
-}
-
-/* Заливку даёт атрибут fill=url(#light-halo-…), любое правило fill перебило бы
-   его; прозрачностью управляет корзина. */
-.light-halo {
-  r: calc(var(--light-halo-r, 6px) * var(--halo-k, 1) / var(--zoom-k, 1));
-}
-
-.light-ring {
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1px;
-  opacity: .5;
-  r: calc(var(--light-halo-r, 6px) / var(--zoom-k, 1));
-}
-
-/* Корзина ореолов. Своего медиазапроса на бережное движение тут нет: корзина
-   помечена data-anim="pulse", и глобальный блок гасит её анимацию (--halo-k
-   остаётся initial-value 1.5, радиус 9px, opacity корзины 1), даёт ореолу
-   статичную opacity .22 и прячет кольцо нового огонька целиком. */
-.light-bucket {
-  animation: light-breathe 2.6s ease-in-out infinite;
-}
-
-/* Отрицательная задержка сдвигает фазу на n/5 периода: поле дышит волной,
-   а не мигает синхронно. */
-.light-bucket[data-bucket="1"] {
-  animation-delay: calc(-2.6s * 1 / 5);
-}
-
-.light-bucket[data-bucket="2"] {
-  animation-delay: calc(-2.6s * 2 / 5);
-}
-
-.light-bucket[data-bucket="3"] {
-  animation-delay: calc(-2.6s * 3 / 5);
-}
-
-.light-bucket[data-bucket="4"] {
-  animation-delay: calc(-2.6s * 4 / 5);
-}
-
-@keyframes light-breathe {
-  0%,
-  100% {
-    opacity: .3;
-  }
-  50% {
-    opacity: .6;
-  }
-}
-
-.light.is-new .light-ring {
-  transform-box: fill-box;
-  transform-origin: center;
-  animation: light-arrive 900ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-@keyframes light-arrive {
-  from {
-    transform: scale(1);
-    opacity: .5;
-  }
-  to {
-    transform: scale(3.4);
-    opacity: 0;
-  }
 }
 
 /* Пустое состояние */
@@ -331,9 +228,6 @@
   /* Полоса ореолов у верхней кромки и глубина затемнения над картой */
   --map-atmosphere: clamp(260px, 38vw, 560px);
   --map-transition: clamp(150px, 34vw, 340px);
-  /* Семантические алиасы цветов огоньков: палитра проекта их не знает. */
-  --light-person: rgb(158 67 154);
-  --light-group: rgb(84 164 172);
 
   position: relative;
   isolation: isolate;

@@ -7,8 +7,10 @@ import userEvent from "@testing-library/user-event";
 
 import { ESD_IDS } from "../../data/countries";
 import { generateLights } from "../../data/lights";
+import { makeProjection } from "../../lib/geo";
 import { LightsProvider, useLights } from "../../state/lights";
-import { EsdMap, LIGHT_BUCKETS, LIGHT_CORE_RADIUS, LIGHT_HALO_RADIUS } from "./EsdMap";
+import { EsdMap } from "./EsdMap";
+import { CORE_SPRITE_RADIUS, HALO_RADIUS_MAX, HALO_RADIUS_MIN } from "./lightsCanvas";
 import { ZoomTransform } from "d3-zoom";
 
 import {
@@ -29,19 +31,95 @@ function count(selector: string): number {
   return document.querySelectorAll(selector).length;
 }
 
-/** Сколько ореолов лежит в каждой из пяти корзин, по порядку data-bucket. */
-function haloPerBucket(): number[] {
-  return Array.from(document.querySelectorAll(".light-bucket")).map(
-    (bucket) => bucket.querySelectorAll(".light-halo").length,
-  );
+interface DrawSnapshot {
+  alpha: number;
+  args: unknown[];
 }
 
-/** Экранные координаты огоньков: по ним видно, как проекция легла в контейнер. */
-function lightXs(container: HTMLElement): number[] {
-  return Array.from(container.querySelectorAll<SVGCircleElement>(".light-core")).map((core) =>
-    Number(core.getAttribute("cx")),
-  );
+/**
+ * Мок 2d-контекста со снимками drawImage: по `mock.calls` прозрачность вызова не
+ * восстановить, `globalAlpha` меняется между ними. Обвязка продублирована из
+ * LightsCanvas.test.tsx намеренно, общего тестового модуля у фазы нет.
+ */
+function mockContext() {
+  const drawCalls: DrawSnapshot[] = [];
+  // Смещения начала кадров: кадр открывается clearRect, по ним берётся последний.
+  const frameStarts: number[] = [];
+  const ctx = {
+    clearRect: vi.fn(),
+    beginPath: vi.fn(),
+    arc: vi.fn(),
+    fill: vi.fn(),
+    stroke: vi.fn(),
+    scale: vi.fn(),
+    fillRect: vi.fn(),
+    setTransform: vi.fn(),
+    createRadialGradient: vi.fn(() => ({ addColorStop: vi.fn() })),
+    drawImage: vi.fn(),
+    globalAlpha: 1,
+    fillStyle: "" as unknown,
+    strokeStyle: "" as unknown,
+    lineWidth: 1,
+    drawCalls,
+    frameStarts,
+  };
+  ctx.clearRect = vi.fn(() => {
+    frameStarts.push(drawCalls.length);
+  });
+  ctx.drawImage = vi.fn((...args: unknown[]) => {
+    drawCalls.push({ alpha: ctx.globalAlpha, args });
+  });
+  return ctx;
 }
+
+type MockContext = ReturnType<typeof mockContext>;
+
+const contexts = new Map<HTMLCanvasElement, MockContext>();
+
+/** Свой контекст каждому холсту: в одном документе живут две карты и их спрайты. */
+function mockCanvasContexts() {
+  vi.spyOn(HTMLCanvasElement.prototype, "getContext").mockImplementation(function (
+    this: HTMLCanvasElement,
+  ) {
+    const existing = contexts.get(this);
+    if (existing) return existing as unknown as CanvasRenderingContext2D;
+    const created = mockContext();
+    contexts.set(this, created);
+    return created as unknown as CanvasRenderingContext2D;
+  } as unknown as HTMLCanvasElement["getContext"]);
+}
+
+function canvasOf(container: HTMLElement): HTMLCanvasElement {
+  const node = container.querySelector<HTMLCanvasElement>("canvas.map-lights-canvas");
+  if (!node) throw new Error("canvas огоньков не отрисован");
+  return node;
+}
+
+function contextOf(container: HTMLElement): MockContext {
+  const ctx = contexts.get(canvasOf(container));
+  if (!ctx) throw new Error("у canvas огоньков нет мок-контекста");
+  return ctx;
+}
+
+const isCore = (call: DrawSnapshot) => call.args[3] === CORE_SPRITE_RADIUS * 2;
+const spriteWidth = (call: DrawSnapshot) => call.args[3] as number;
+
+/** Вызовы последнего кадра. */
+function lastFrame(ctx: MockContext): DrawSnapshot[] {
+  return ctx.drawCalls.slice(ctx.frameStarts[ctx.frameStarts.length - 1] ?? 0);
+}
+
+/** Экранные координаты ядер: по ним видно, как проекция легла в контейнер. */
+function lightXs(container: HTMLElement): number[] {
+  return lastFrame(contextOf(container))
+    .filter(isCore)
+    .map((call) => (call.args[1] as number) + (call.args[3] as number) / 2);
+}
+
+afterEach(() => {
+  vi.restoreAllMocks();
+  contexts.clear();
+});
 
 function span(xs: number[]): number {
   return Math.max(...xs) - Math.min(...xs);
@@ -82,95 +160,75 @@ describe("EsdMap", () => {
     }
   });
 
-  it("рисует 694 огонька людей и 248 групповых с гало", () => {
-    render(<EsdMap lights={lights} size={SIZE} />);
-    expect(count(".light-core")).toBe(942);
-    expect(count(".light-halo")).toBe(942);
-    expect(count(".light--person")).toBe(694);
-    expect(count(".light--group")).toBe(248);
-  });
-
-  it("раскладывает ореолы по пяти фазовым корзинам", async () => {
-    render(
-      <LightsProvider initialLights={lights}>
-        <AddLightHarness />
-      </LightsProvider>,
-    );
-
-    expect(count(".light-bucket")).toBe(LIGHT_BUCKETS);
-    expect(count(".light-bucket")).toBe(5);
-    expect(
-      Array.from(document.querySelectorAll(".light-bucket")).map((bucket) =>
-        bucket.getAttribute("data-bucket"),
-      ),
-    ).toEqual(["0", "1", "2", "3", "4"]);
-    expect(count('.light-bucket[data-anim="pulse"]')).toBe(5);
-
-    // 942 = 5 × 188 + 2: первые две корзины получают по огоньку сверх ровной доли.
-    const perBucket = haloPerBucket();
-    expect(perBucket).toEqual([189, 189, 188, 188, 188]);
-    expect(perBucket.reduce((sum, value) => sum + value, 0)).toBe(942);
-    expect(count(".light-cores .light-core")).toBe(942);
-    // Старой пульсации каждого двадцать четвёртого огонька больше нет.
-    expect(count(".light.pulse")).toBe(0);
-
-    await userEvent.click(screen.getByRole("button", { name: "зажечь" }));
-    expect(count(".light-halo")).toBe(943);
-    expect(count(".light.is-new")).toBe(1);
-    expect(count('.light.is-new .light-ring[data-anim="new-light"]')).toBe(1);
-    // 942 % 5 = 2: новый огонёк попадает в третью корзину.
-    expect(haloPerBucket()).toEqual([189, 189, 189, 188, 188]);
-  });
-
-  it("держит data-anim только на корзинах и кольце нового огонька", async () => {
-    render(
-      <LightsProvider initialLights={lights}>
-        <AddLightHarness />
-      </LightsProvider>,
-    );
-
-    // Атрибут стоит на корзине, а не на каждом круге внутри неё: под reduce
-    // гаснут пять анимаций вместо 942.
-    expect(count('[data-anim="pulse"]')).toBe(5);
-    expect(count('g.light-bucket[data-anim="pulse"]')).toBe(5);
-    expect(count('circle[data-anim="pulse"]')).toBe(0);
-    expect(count(".light[data-anim]")).toBe(0);
-
-    await userEvent.click(screen.getByRole("button", { name: "зажечь" }));
-    expect(count('.light.is-new circle[data-anim="new-light"]')).toBe(1);
-  });
-
-  it("красит ореол радиальным градиентом типа, ядро оставляет на currentColor", () => {
+  it("рисует огоньки на canvas поверх SVG и считает их в атрибутах", () => {
     const { container } = render(<EsdMap lights={lights} size={SIZE} />);
 
-    for (const id of ["light-halo-person", "light-halo-group"]) {
-      const gradient = container.querySelector(`radialGradient#${id}`);
-      expect(gradient).not.toBeNull();
-      const stops = Array.from(gradient?.querySelectorAll("stop") ?? []);
-      expect(stops.map((stop) => stop.getAttribute("stop-opacity"))).toEqual(["0.9", "0"]);
-      expect(stops.every((stop) => stop.getAttribute("stop-color") === "currentColor")).toBe(true);
-    }
+    const canvas = canvasOf(container);
+    expect(canvas.parentElement).toHaveClass("esd-map");
+    expect(canvas.previousElementSibling?.tagName.toLowerCase()).toBe("svg");
+    expect(canvas).toHaveAttribute("data-anim", "pulse");
+    expect(canvas).toHaveAttribute("aria-hidden", "true");
+    expect(canvas).toHaveAttribute("data-light-count", "942");
+    expect(canvas).toHaveAttribute("data-people", "694");
+    expect(canvas).toHaveAttribute("data-groups", "248");
+    expect(canvas).toHaveAttribute("data-new", "0");
 
-    const halos = Array.from(container.querySelectorAll(".light-halo"));
-    expect(halos.every((halo) => halo.closest(".light-bucket") !== null)).toBe(true);
-    const fills = halos.map((halo) => halo.getAttribute("fill"));
-    expect(fills.filter((fill) => fill === "url(#light-halo-person)")).toHaveLength(694);
-    expect(fills.filter((fill) => fill === "url(#light-halo-group)")).toHaveLength(248);
-
-    // Ядро цвета не знает: его задаёт класс типа на родительской группе.
-    const cores = Array.from(container.querySelectorAll(".light-core"));
-    expect(cores.every((core) => !core.hasAttribute("fill"))).toBe(true);
-    expect(count(".light--person")).toBe(694);
-    expect(count(".light--group")).toBe(248);
+    // В SVG остались только страны: 1884 круга и градиенты уехали на холст.
+    expect(count("circle")).toBe(0);
+    expect(count(".map-lights")).toBe(0);
+    expect(count("defs")).toBe(0);
+    expect(count("radialGradient")).toBe(0);
+    expect(count(".light-core")).toBe(0);
+    expect(count(".light-bucket")).toBe(0);
   });
 
-  it("обходится без filter на огоньках", () => {
+  it("после зажигания нового огонька обновляет атрибуты и не трогает rAF", async () => {
+    const raf = vi.spyOn(window, "requestAnimationFrame");
+    const { container } = render(
+      <LightsProvider initialLights={lights}>
+        <AddLightHarness />
+      </LightsProvider>,
+    );
+
+    const canvas = canvasOf(container);
+    expect(canvas).toHaveAttribute("data-light-count", "942");
+
+    await userEvent.click(screen.getByRole("button", { name: "зажечь" }));
+
+    expect(canvas).toHaveAttribute("data-light-count", "943");
+    expect(canvas).toHaveAttribute("data-people", "695");
+    expect(canvas).toHaveAttribute("data-groups", "248");
+    expect(canvas).toHaveAttribute("data-new", "1");
+    // Кольцо нового огонька рисует холст: узла с ним в DOM больше нет.
+    expect(count('[data-anim="new-light"]')).toBe(0);
+    // getContext в jsdom отдаёт null: цикл кадров не запускается.
+    expect(raf).not.toHaveBeenCalled();
+  });
+
+  it("держит data-anim только на canvas огоньков", async () => {
+    const { container } = render(
+      <LightsProvider initialLights={lights}>
+        <AddLightHarness />
+      </LightsProvider>,
+    );
+
+    // Весь декоративный слой карты — один узел: под reduce гаснет одна запись
+    // реестра вместо пяти корзин и кольца.
+    const map = container.querySelector(".esd-map") as HTMLElement;
+    expect(count('[data-anim="pulse"]')).toBe(1);
+    expect(document.querySelector('[data-anim="pulse"]')).toBe(canvasOf(container));
+    expect(map.querySelectorAll("[data-anim]")).toHaveLength(1);
+
+    await userEvent.click(screen.getByRole("button", { name: "зажечь" }));
+    expect(count('[data-anim="pulse"]')).toBe(1);
+    expect(map.querySelectorAll("[data-anim]")).toHaveLength(1);
+  });
+
+  it("обходится без filter и без кругов SVG", () => {
     const { container } = render(<EsdMap lights={lights} size={SIZE} />);
     expect(container.querySelectorAll("[filter]")).toHaveLength(0);
-
-    const cores = Array.from(container.querySelectorAll<SVGCircleElement>(".light-core"));
-    expect(cores).toHaveLength(942);
-    expect(cores.every((core) => core.style.filter === "")).toBe(true);
+    expect(container.querySelectorAll("svg circle")).toHaveLength(0);
+    expect(container.querySelectorAll("svg path.country")).toHaveLength(177);
   });
 
   it("описывает карту скрытым абзацем с числами огоньков", () => {
@@ -184,11 +242,11 @@ describe("EsdMap", () => {
   });
 
   it("зовёт зажечь первый свет, когда огоньков нет", () => {
-    render(<EsdMap lights={[]} size={SIZE} />);
+    const { container } = render(<EsdMap lights={[]} size={SIZE} />);
     expect(screen.getByText("Пока ни одного огонька")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "форму ниже" })).toHaveAttribute("href", "#light-form");
     expect(count("path.country")).toBe(177);
-    expect(count(".light-core")).toBe(0);
+    expect(canvasOf(container)).toHaveAttribute("data-light-count", "0");
   });
 
   it("молчит про ошибку, пока контейнер не измерен", () => {
@@ -219,6 +277,9 @@ describe("EsdMap", () => {
   it("считает проекцию по фактической ширине контейнера", () => {
     // Контейнер карты идёт во всю ширину окна и шире колонки 72rem: вьюбокс
     // повторяет его размер, а дивизион остаётся по центру.
+    mockCanvasContexts();
+    vi.spyOn(window, "requestAnimationFrame").mockImplementation(() => 1);
+
     const narrow = render(<EsdMap lights={lights} size={{ width: 1200, height: 700 }} />);
     const wide = render(<EsdMap lights={lights} size={{ width: 1920, height: 700 }} />);
 
@@ -299,30 +360,74 @@ describe("зум карты", () => {
     expect(readScale(container)).toBe(ZOOM_MAX);
   });
 
-  it("делит радиусы огоньков на масштаб", () => {
-    const { container } = render(<EsdMap lights={lights} size={SIZE} selectedCountryId={51} />);
-    const k = readScale(container);
-    expect(k).toBeGreaterThan(1);
+  it("рисует огоньки в кадре жеста по новому трансформу, размер спрайта от масштаба не зависит", () => {
+    mockCanvasContexts();
+    vi.spyOn(window, "requestAnimationFrame").mockImplementation(() => 1);
 
-    const core = container.querySelector(".light-core");
-    const halo = container.querySelector(".light-halo");
-    expect(Number(core?.getAttribute("r"))).toBeCloseTo(LIGHT_CORE_RADIUS / k, 3);
-    expect(Number(halo?.getAttribute("r"))).toBeCloseTo(LIGHT_HALO_RADIUS / k, 3);
+    const { container } = render(<EsdMap lights={lights} size={SIZE} />);
+    const ctx = contextOf(container);
+    const drawnBefore = ctx.drawCalls.length;
+
+    const svg = container.querySelector("svg") as SVGSVGElement;
+    fireEvent.wheel(svg, { deltaY: -240, ctrlKey: true, clientX: 600, clientY: 350 });
+
+    // Кадр нарисован синхронно внутри события колеса, до любого rAF.
+    const frame = ctx.drawCalls.slice(drawnBefore);
+    expect(frame.length).toBeGreaterThan(0);
+
+    const moved = /translate\(([-\d.e]+),([-\d.e]+)\) scale\(([-\d.e]+)\)/.exec(
+      readTransform(container),
+    );
+    expect(moved).not.toBeNull();
+    const [tx, ty, k] = [Number(moved?.[1]), Number(moved?.[2]), Number(moved?.[3])];
+    expect(k).toBe(8);
+
+    // Опорный огонёк берётся тот же, что рисует карта: проекция из lib/geo,
+    // позиция на экране — k·x + tx, как её считает transform.apply.
+    const projection = makeProjection(SIZE.width, SIZE.height);
+    const probe = lights
+      .map((light) => projection([light.lon, light.lat]))
+      .find((xy): xy is [number, number] => {
+        if (!xy || !Number.isFinite(xy[0]) || !Number.isFinite(xy[1])) return false;
+        const sx = k * xy[0] + tx;
+        const sy = k * xy[1] + ty;
+        return sx > 20 && sx < SIZE.width - 20 && sy > 20 && sy < SIZE.height - 20;
+      });
+    expect(probe).toBeDefined();
+
+    const cores = frame.filter(isCore);
+    const core = cores.find(
+      (call) => Math.abs((call.args[1] as number) - (k * (probe?.[0] ?? 0) + tx - CORE_SPRITE_RADIUS)) < 1e-6,
+    );
+    expect(core).toBeDefined();
+    expect(core?.args[2]).toBeCloseTo(k * (probe?.[1] ?? 0) + ty - CORE_SPRITE_RADIUS, 3);
+    expect(core?.args[3]).toBeCloseTo(CORE_SPRITE_RADIUS * 2, 3);
+
+    // Ореолы держат экранный размер дыхания при любом масштабе карты.
+    const halos = frame.filter((call) => !isCore(call));
+    expect(halos.length).toBeGreaterThan(0);
+    expect(
+      halos.every(
+        (call) =>
+          spriteWidth(call) >= HALO_RADIUS_MIN * 2 && spriteWidth(call) <= HALO_RADIUS_MAX * 2,
+      ),
+    ).toBe(true);
   });
 
   it("на кадре жеста двигает только вьюпорт, а огоньки не пересобирает", () => {
     const { container } = render(<EsdMap lights={lights} size={SIZE} />);
     const svg = container.querySelector("svg") as SVGSVGElement;
-    const core = container.querySelector(".light-core") as SVGCircleElement;
-    const radiusBefore = core.getAttribute("r");
+    const canvas = canvasOf(container);
 
     fireEvent.wheel(svg, { deltaY: -240, ctrlKey: true, clientX: 600, clientY: 350 });
 
     const viewport = container.querySelector("g.map-viewport") as SVGGElement;
     expect(viewport.getAttribute("transform")).toContain("scale(8)");
-    expect(viewport.style.getPropertyValue("--zoom-k")).toBe("8");
-    // Атрибут r у 942 кругов на кадрах жеста не переписывается: радиус считает CSS.
-    expect(core.getAttribute("r")).toBe(radiusBefore);
+    // Переменных масштаба на вьюпорте больше нет: размер огоньков считает холст.
+    expect(viewport.getAttribute("style")).toBeNull();
+    // Холст остаётся тем же узлом, счётчики не пересобираются.
+    expect(canvasOf(container)).toBe(canvas);
+    expect(canvas).toHaveAttribute("data-light-count", "942");
   });
 
   it("оставляет странице вертикальный скролл одним пальцем", () => {
@@ -444,71 +549,49 @@ describe("зум карты", () => {
 });
 
 /*
- * Дыхание живёт в CSS целиком: jsdom анимаций не считает и `r` из calc не
- * разрешает, поэтому правила проверяются по тексту файла — тем же способом,
- * что и политика движения в src/styles/motionPolicy.test.ts.
+ * Правила огоньков из файла ушли вместе с кругами SVG: дыхание и кольцо считает
+ * lightsCanvas.ts. По тексту файла проверяется то, что осталось, — тем же
+ * способом, что и политика движения в src/styles/motionPolicy.test.ts, потому
+ * что vitest с css: false вычисленных стилей не даёт.
  */
 const MAP_CSS = readFileSync(resolve(process.cwd(), "src/components/map/map.css"), "utf8");
 
-describe("map.css: дыхание огоньков", () => {
-  it("регистрирует множитель радиуса как число", () => {
-    expect(MAP_CSS.match(/@property --halo-k \{/g)).toHaveLength(1);
-    const block = /@property --halo-k \{([\s\S]*?)\}/.exec(MAP_CSS)?.[1] ?? "";
-    expect(block).toContain('syntax: "<number>";');
-    expect(block).toContain("inherits: true;");
-    expect(block).toContain("initial-value: 1.5;");
+describe("map.css: canvas огоньков", () => {
+  it("кладёт холст поверх SVG и не даёт ему ловить жесты", () => {
+    const block = /\.map-lights-canvas \{([\s\S]*?)\}/.exec(MAP_CSS)?.[1] ?? "";
+    expect(block).toContain("position: absolute;");
+    expect(block).toContain("inset: 0;");
+    expect(block).toContain("width: 100%;");
+    expect(block).toContain("height: 100%;");
+    expect(block).toContain("pointer-events: none;");
   });
 
-  it("дышит только прозрачностью: fallback MAP-06 после замера fps", () => {
-    // Opacity корзины .30 → .60 за период 2.6s; радиус статичный 6px × 1.5,
-    // потому что дыхание радиуса держало 50,9 fps при пороге 50.
-    const frames = /@keyframes light-breathe \{([\s\S]*?)\n\}/.exec(MAP_CSS)?.[1] ?? "";
-    expect(frames).toMatch(/0%,\s*100% \{\s*opacity: \.3;\s*\}/);
-    expect(frames).toMatch(/50% \{\s*opacity: \.6;\s*\}/);
-    expect(frames).not.toContain("--halo-k");
-  });
-
-  it("сдвигает фазу корзин отрицательной задержкой", () => {
-    expect(MAP_CSS).toMatch(
-      /\.light-bucket \{\s*animation: light-breathe 2\.6s ease-in-out infinite;/,
-    );
-    expect(MAP_CSS).toContain("animation-delay: calc(-2.6s * 3 / 5);");
-    expect(MAP_CSS.match(/animation-delay: calc\(-2\.6s \* /g)).toHaveLength(4);
-  });
-
-  it("считает радиус ореола через множитель и не перебивает заливку градиента", () => {
-    const block = /\.light-halo \{([\s\S]*?)\}/.exec(MAP_CSS)?.[1] ?? "";
-    expect(block).toContain("var(--halo-k, 1)");
-    expect(block).not.toContain("fill:");
-  });
-
-  it("даёт ядру белую обводку постоянной толщины", () => {
-    const block = /\.light-core \{([\s\S]*?)\}/.exec(MAP_CSS)?.[1] ?? "";
-    expect(block).toContain("stroke: #fff;");
-    expect(block).toContain("stroke-width: .9px;");
-    expect(block).toContain("stroke-opacity: .5;");
-    expect(block).toContain("vector-effect: non-scaling-stroke;");
-  });
-
-  it("убрал старую пульсацию и сохранил кольцо нового огонька", () => {
-    expect(MAP_CSS).not.toContain("light-pulse");
-    expect(MAP_CSS).toContain("@keyframes light-arrive");
-  });
-
-  it("держит цвета огоньков и акценты счётчиков литералами", () => {
-    for (const literal of [
-      "--light-person: rgb(158 67 154);",
-      "--light-group: rgb(84 164 172);",
-      "--counter-accent: rgb(210 142 190);",
-      "--counter-accent: rgb(123 194 199);",
+  it("не держит ни одного правила огоньков SVG", () => {
+    for (const rule of [
+      "@property --halo-k",
+      "light-breathe",
+      "light-arrive",
+      "light-pulse",
+      ".light-core",
+      ".light-halo",
+      ".light-bucket",
+      ".light-ring",
+      "--light-person",
+      "--light-group",
+      "--zoom-k",
     ]) {
-      expect(MAP_CSS).toContain(literal);
+      expect(MAP_CSS).not.toContain(rule);
     }
   });
 
+  it("держит акценты счётчиков литералами", () => {
+    expect(MAP_CSS).toContain("--counter-accent: rgb(210 142 190);");
+    expect(MAP_CSS).toContain("--counter-accent: rgb(123 194 199);");
+  });
+
   it("отдаёт гашение под reduce глобальному файлу", () => {
-    // Единственный медиазапрос бережного движения живёт в global.css и находит
-    // корзины по data-anim="pulse".
+    // Единственный медиазапрос бережного движения живёт в global.css; цикл кадров
+    // холста снимает сам компонент по matchMedia.
     expect(MAP_CSS).not.toContain("prefers-reduced-motion");
   });
 });

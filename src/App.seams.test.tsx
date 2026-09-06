@@ -4,6 +4,14 @@ import { resolve } from "node:path";
 import { act, fireEvent, render } from "@testing-library/react";
 
 import App from "./App";
+import {
+  BREATH_PERIOD_MS,
+  HALO_ALPHA_MAX,
+  HALO_ALPHA_MIN,
+  HALO_RADIUS_MAX,
+  HALO_RADIUS_MIN,
+  LIGHT_BUCKETS,
+} from "./components/map/lightsCanvas";
 import { LightsProvider } from "./state/lights";
 
 /* Стыки шести фаз проверяются на рендере всего приложения: по отдельности каждая
@@ -141,7 +149,7 @@ describe("стыки фаз v1.1", () => {
     expect(poster).toContain("object-position: center");
   });
 
-  it("скос карты и дыхание огоньков на месте (8)", () => {
+  it("скос карты и canvas огоньков на месте (8 + 15)", () => {
     // Карта строит проекцию по измеренному контейнеру, а jsdom отдаёт нули: без
     // подменённого прямоугольника SVG вообще не рендерится и стык проверять не на чем.
     // Подмена узкая — только у div, canvas глобуса и прокрутка секций её не видят.
@@ -157,21 +165,33 @@ describe("стыки фаз v1.1", () => {
       HTMLDivElement.prototype.getBoundingClientRect = realRect;
     }
 
-    const buckets = document.querySelectorAll(".map-lights .light-bucket");
-    expect(buckets).toHaveLength(5);
-    expect(Array.from(buckets).map((node) => node.getAttribute("data-bucket"))).toEqual([
-      "0",
-      "1",
-      "2",
-      "3",
-      "4",
-    ]);
-    // Мигание каждого 24-го огонька снято фазой 8: дышат корзины, а не элементы.
-    expect(document.querySelectorAll(".light.pulse")).toHaveLength(0);
+    const canvas = document.querySelector(".esd-map > canvas.map-lights-canvas");
+    expect(canvas).not.toBeNull();
+    expect(canvas).toHaveAttribute("data-anim", "pulse");
+    expect(canvas).toHaveAttribute("aria-hidden", "true");
+    expect(canvas).toHaveAttribute("data-light-count", "942");
+    expect(canvas).toHaveAttribute("data-people", "694");
+    expect(canvas).toHaveAttribute("data-groups", "248");
+    expect(canvas).toHaveAttribute("data-new", "0");
+    // Огоньков в SVG не осталось: ни корзин, ни ядер, ни колец, ни градиентов.
+    expect(
+      document.querySelectorAll(
+        ".map-lights, .light-bucket, .light-core, .light-ring, .esd-map defs, .esd-map circle",
+      ),
+    ).toHaveLength(0);
 
     expect(block(MAP_CSS, ".map-shell {")).toContain("100% calc(100% - var(--map-wedge))");
     expect(block(MAP_CSS, ".map-band::before {")).toContain("rgb(18 12 52)");
+    expect(block(MAP_CSS, ".map-lights-canvas {")).toContain("pointer-events: none");
     expect(MAP_CSS).not.toContain("light-pulse");
-    expect(MAP_CSS).toContain("@keyframes light-breathe");
+    expect(MAP_CSS).not.toContain("light-breathe");
+    expect(MAP_CSS).not.toContain("@property --halo-k");
+    expect(MAP_CSS).not.toContain("light-arrive");
+
+    // Дыхание живёт в модуле холста, текст CSS его больше не описывает.
+    expect(BREATH_PERIOD_MS).toBe(2600);
+    expect(LIGHT_BUCKETS).toBe(5);
+    expect([HALO_RADIUS_MIN, HALO_RADIUS_MAX]).toEqual([7, 12]);
+    expect([HALO_ALPHA_MIN, HALO_ALPHA_MAX]).toEqual([0.3, 0.6]);
   });
 });
