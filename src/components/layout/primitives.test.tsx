@@ -1,9 +1,39 @@
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 import { render, screen } from "@testing-library/react";
 import { Section } from "./Section";
 import { Eyebrow } from "./Eyebrow";
 import { GradientTitle } from "./GradientTitle";
 import { Button } from "./Button";
 import { GlassCard } from "./GlassCard";
+
+/* vitest настроен с css: false и отдаёт содержимое стилей пустой строкой, поэтому
+   значения свойств проверяются по тексту исходника с диска — тем же приёмом, что
+   в src/styles/motionPolicy.test.ts. */
+const readSource = (path: string) => readFileSync(resolve(process.cwd(), path), "utf8");
+
+const GLOBAL_CSS = readSource("src/styles/global.css");
+const PRIMITIVES_CSS = readSource("src/components/layout/primitives.css");
+const HEADER_CSS = readSource("src/components/layout/Header.css");
+const MAP_CSS = readSource("src/components/map/map.css");
+const COUNTERS_TSX = readSource("src/components/map/Counters.tsx");
+
+/** Схлопывает любые пробельные последовательности в один пробел. */
+const flat = (css: string) => css.replace(/\s+/g, " ");
+
+/** Тело первого правила, чей заголовок с открывающей скобкой равен head. */
+function block(css: string, head: string): string {
+  const source = flat(css);
+  const start = source.indexOf(head);
+  if (start === -1) {
+    throw new Error(`Правило ${head} в CSS не найдено`);
+  }
+  const end = source.indexOf("}", start + head.length);
+  if (end === -1) {
+    throw new Error(`У правила ${head} нет закрывающей скобки`);
+  }
+  return source.slice(start + head.length, end);
+}
 
 describe("Section", () => {
   it("рендерит секцию с id, надзаголовком, заголовком и содержимым", () => {
@@ -90,6 +120,22 @@ describe("GradientTitle", () => {
     const heading = screen.getByRole("heading", { level: 2, name: "Зажгите свет" });
     expect(heading.tagName).toBe("H2");
     expect(heading).toHaveClass("gradient-title", "gradient-title--section");
+    expect(heading).not.toHaveClass("gradient-title--section-gradient");
+  });
+
+  it("вариант section-gradient рендерит h2 с классом градиентного заголовка", () => {
+    render(
+      <GradientTitle as="h2" variant="section-gradient">
+        Что такое Единый голос 27?
+      </GradientTitle>,
+    );
+    const heading = screen.getByRole("heading", {
+      level: 2,
+      name: "Что такое Единый голос 27?",
+    });
+    expect(heading.tagName).toBe("H2");
+    expect(heading).toHaveClass("gradient-title", "gradient-title--section-gradient");
+    expect(heading).not.toHaveClass("gradient-title--section");
   });
 });
 
@@ -173,5 +219,132 @@ describe("GlassCard", () => {
     const card = document.querySelector(".glass-card");
     expect(card?.tagName).toBe("ARTICLE");
     expect(card).toHaveClass("glass-card--interactive", "max-w-[60ch]");
+  });
+});
+
+describe("токены и утилиты стекла (GLASS-01, GLASS-03)", () => {
+  it("держит поверхность, рамку и тень карточки оригинала", () => {
+    const tokens = flat(GLOBAL_CSS);
+    expect(tokens).toContain("--glass-border: rgb(239 237 245 / .18);");
+    expect(tokens).toContain(
+      "--glass-surface: linear-gradient(180deg, rgb(49 41 77 / .44), rgb(18 12 52 / .62));",
+    );
+    expect(tokens).toContain(
+      "--shadow-card: inset 0 1px 0 rgb(255 255 255 / .035), 0 20px 46px rgb(3 2 18 / .24);",
+    );
+  });
+
+  it("собирает утилиту glass из блика и токенов", () => {
+    const glass = block(GLOBAL_CSS, "@utility glass {");
+    expect(glass).toContain(
+      "linear-gradient(145deg, rgb(255 255 255 / .045), transparent 30%), var(--glass-surface);",
+    );
+    expect(glass).toContain("border: 1px solid var(--glass-border);");
+    expect(glass).toContain("border-radius: var(--radius-card);");
+    expect(glass).toContain("box-shadow: var(--shadow-card);");
+    expect(glass).toContain("backdrop-filter: blur(14px) saturate(112%);");
+  });
+
+  it("даёт фазе 11 утилиту glass-resource с верхним бликом и своей насыщенностью", () => {
+    const resource = block(GLOBAL_CSS, "@utility glass-resource {");
+    expect(resource).toContain(
+      "linear-gradient(180deg, rgb(255 255 255 / .075), transparent 34%), " +
+        "linear-gradient(145deg, rgb(49 41 77 / .44), rgb(18 12 52 / .62));",
+    );
+    expect(resource).toContain("border: 1px solid var(--glass-border);");
+    expect(resource).toContain("border-radius: var(--radius-card);");
+    expect(resource).toContain("box-shadow: var(--shadow-card);");
+    expect(resource).toContain("backdrop-filter: blur(14px) saturate(125%);");
+  });
+
+  it("не оставляет непрозрачного индиго прошлой версии", () => {
+    expect(GLOBAL_CSS).not.toContain("rgb(48 63 131 / .86)");
+    expect(GLOBAL_CSS).not.toContain("rgb(184 192 230 / .22)");
+  });
+
+  it("рисует блик карточки светом сверху слева и тенью снизу справа", () => {
+    const highlight = block(PRIMITIVES_CSS, ".glass-card::before {");
+    expect(highlight).toContain(
+      "inset 1px 1px 0 rgb(255 255 255 / .075), inset -1px -1px 0 rgb(3 2 18 / .30);",
+    );
+    expect(highlight).toContain("opacity: .58;");
+  });
+
+  it("светлит рамку и смягчает тень при наведении за 420ms", () => {
+    expect(block(PRIMITIVES_CSS, ".glass-card--interactive {")).toContain(
+      "border-color 420ms cubic-bezier(0.22, 1, 0.36, 1)",
+    );
+
+    const hover = block(PRIMITIVES_CSS, ".glass-card--interactive:hover {");
+    expect(hover).toContain("border-color: rgb(143 157 214 / .34);");
+    expect(hover).toContain(
+      "inset 0 1px 0 rgb(255 255 255 / .055), 0 24px 52px rgb(3 2 18 / .30);",
+    );
+  });
+});
+
+/* Файлы шапки, карты и счётчиков читаются, но фазой 7 не правятся: шапка держит
+   собственные литералы стекла, а счётчики совпали с оригиналом ещё в v1.0. */
+describe("стекло не трогает шапку и счётчики (GLASS-05)", () => {
+  it("шапка не читает ни токенов стекла, ни радиуса карточки", () => {
+    expect(HEADER_CSS).not.toContain("var(--glass-");
+    expect(HEADER_CSS).not.toContain("var(--shadow-card)");
+    expect(HEADER_CSS).not.toContain("radius-card");
+  });
+
+  it("карта не читает токенов стекла и держит правило счётчика на месте", () => {
+    expect(MAP_CSS).not.toContain("var(--glass-");
+    expect(MAP_CSS).not.toContain("var(--shadow-card)");
+    expect(() => block(MAP_CSS, ".counter {")).not.toThrow();
+  });
+
+  it("счётчики не стоят на стеклянной поверхности", () => {
+    expect(COUNTERS_TSX).not.toContain("glass");
+  });
+});
+
+describe("плоские и градиентные заголовки (GLASS-06)", () => {
+  it("делает заголовок секции плоским белым, без всякого фона", () => {
+    const section = block(PRIMITIVES_CSS, ".gradient-title--section {");
+    expect(section).toContain("color: rgb(239 237 245);");
+    expect(section).toContain("font-size: var(--text-section);");
+    expect(section).toContain("letter-spacing: -0.035em;");
+    expect(section).not.toContain("background");
+  });
+
+  it("оставляет градиент оригинала заголовку About на том же кегле", () => {
+    const gradient = block(PRIMITIVES_CSS, ".gradient-title--section-gradient {");
+    expect(gradient).toContain(
+      "background-image: linear-gradient(104deg, rgb(227 175 210) 2%, " +
+        "rgb(143 157 214) 52%, rgb(123 194 199));",
+    );
+    expect(gradient).toContain("font-size: var(--text-section);");
+  });
+
+  it("заливает текст фоном только у hero и у заголовка About", () => {
+    const clip = block(
+      PRIMITIVES_CSS,
+      ".gradient-title--hero, .gradient-title--section-gradient {",
+    );
+    expect(clip).toContain("background-clip: text;");
+    expect(clip).toContain("-webkit-text-fill-color: transparent;");
+  });
+
+  it("держит в базовом классе только общую типографику", () => {
+    const base = block(PRIMITIVES_CSS, ".gradient-title {");
+    expect(base).toContain("font-weight: 900;");
+    expect(base).not.toContain("background-clip");
+    expect(base).not.toContain("text-fill-color");
+  });
+
+  it("не трогает кегль заголовка первого экрана", () => {
+    expect(block(PRIMITIVES_CSS, ".gradient-title--hero {")).toContain(
+      "font-size: clamp(2.75rem, 8vw, 4.5rem);",
+    );
+  });
+
+  it("убирает токен --gradient-title: у него не осталось потребителей", () => {
+    expect(GLOBAL_CSS).not.toContain("--gradient-title:");
+    expect(PRIMITIVES_CSS).not.toContain("var(--gradient-title)");
   });
 });

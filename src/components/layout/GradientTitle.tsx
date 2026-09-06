@@ -9,7 +9,11 @@ export function GradientTitle({
   id,
 }: {
   as: "h1" | "h2";
-  variant: "hero" | "section";
+  /**
+   * `section` — плоский белый заголовок секции, `section-gradient` — градиентный
+   * заголовок About, `hero` — градиент h1 первого экрана.
+   */
+  variant: "hero" | "section" | "section-gradient";
   children: ReactNode;
   className?: string;
   /** Якорь для `aria-labelledby` секции: скринридер называет секцию её заголовком. */

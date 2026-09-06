@@ -2,10 +2,14 @@
 @import "./tokens.css";
 
 :root {
-  --glass-border: rgb(184 192 230 / .22);
-  --glass-surface: linear-gradient(145deg, rgb(48 63 131 / .86), rgb(18 12 52 / .76));
+  --glass-border: rgb(239 237 245 / .18);
+  --glass-surface: linear-gradient(180deg, rgb(49 41 77 / .44), rgb(18 12 52 / .62));
+  /* Значение перебивает --shadow-card из @theme в tokens.css: сам tokens.css вне
+     списка файлов фазы 7, а этот :root идёт после импортов и вне слоёв Tailwind,
+     поэтому в каскаде побеждает он. Фаза 13 после слияния может перенести
+     значение в tokens.css. */
+  --shadow-card: inset 0 1px 0 rgb(255 255 255 / .035), 0 20px 46px rgb(3 2 18 / .24);
   --gradient-brand: linear-gradient(104deg, #d28ebe 0%, #3b4da1 52%, #7bc2c7 100%);
-  --gradient-title: linear-gradient(104deg, #e3afd2 2%, #8f9dd6 52%, #7bc2c7 98%);
   --gradient-action: linear-gradient(125deg, #6c2c68 0%, #3b4da1 50%, #39727e 100%);
   /* Сколько плавающий header отъедает сверху вместе с зазором до заголовка
      секции: пилюля 72px впритык к краю плюс зазор 16px. Единственный источник
@@ -79,6 +83,8 @@ main:focus-visible {
   outline-color: transparent;
 }
 
+/* Поверхность снята с карточки шага оригинала (#ov-about .ov-about-step-card):
+   полупрозрачный слой поверх фона секции, а не сплошная заливка. */
 @utility glass {
   background:
     linear-gradient(145deg, rgb(255 255 255 / .045), transparent 30%),
@@ -88,6 +94,21 @@ main:focus-visible {
   box-shadow: var(--shadow-card);
   -webkit-backdrop-filter: blur(14px) saturate(112%);
   backdrop-filter: blur(14px) saturate(112%);
+}
+
+/* Поверхность карточки ресурсов оригинала (#ov-resources .ov-resources-card):
+   блик идёт сверху вниз, насыщенность выше. Класс на .resource-card вешает
+   фаза 11; Tailwind добавит утилиту в бандл после первого использования класса
+   в исходниках, до слияния она живёт только здесь. */
+@utility glass-resource {
+  background:
+    linear-gradient(180deg, rgb(255 255 255 / .075), transparent 34%),
+    linear-gradient(145deg, rgb(49 41 77 / .44), rgb(18 12 52 / .62));
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  -webkit-backdrop-filter: blur(14px) saturate(125%);
+  backdrop-filter: blur(14px) saturate(125%);
 }
 
 @utility text-gradient-brand {
