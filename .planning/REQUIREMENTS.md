@@ -39,10 +39,10 @@
 
 ### Интеграция и приёмка (SHIP)
 
-- [ ] **SHIP-01**: После слияния фаз 14–16 проходит гейт: `npx tsc -b`, `npm test`, `npm run lint`, `npm run build`, `node scripts/check-dist.mjs`; единственный блок reduce в `global.css` и закрытый реестр `data-anim` не нарушены
-- [ ] **SHIP-02**: Сборка опубликована на GitHub Pages, sha256 файлов прода совпадает с `dist/`
-- [ ] **SHIP-03**: Playwright-приёмка на 1440×900 и 390×844: видео воспроизводится (`!paused`, `currentTime` растёт), размер и `object-fit` видео совпадают с оригиналом, canvas частиц держит 30 fps; таблица fps по секциям с CPU×4 против бюджета LIGHT-07; аудит целей касания без элементов ниже 44px (кроме визуально скрытых radio); скриншоты hero и карты рядом с оригиналом в `docs/qa/v12-*.jpeg`
-- [ ] **SHIP-04**: `docs/qa/SMOKE.md` получает раздел «Фаза 17 / v1.2» с таблицами «оригинал / прод» и принятыми отклонениями; milestone закрыт аудитом, архивом и тегом `v1.2`
+- [x] **SHIP-01**: После слияния фаз 14–16 проходит гейт: `npx tsc -b`, `npm test`, `npm run lint`, `npm run build`, `node scripts/check-dist.mjs`; единственный блок reduce в `global.css` и закрытый реестр `data-anim` не нарушены
+- [x] **SHIP-02**: Сборка опубликована на GitHub Pages, sha256 файлов прода совпадает с `dist/`
+- [x] **SHIP-03**: Playwright-приёмка на 1440×900 и 390×844: видео воспроизводится (`!paused`, `currentTime` растёт), размер и `object-fit` видео совпадают с оригиналом, canvas частиц держит 30 fps; таблица fps по секциям с CPU×4 против бюджета LIGHT-07; аудит целей касания без элементов ниже 44px (кроме визуально скрытых radio); скриншоты hero и карты рядом с оригиналом в `docs/qa/v12-*.jpeg`
+- [x] **SHIP-04**: `docs/qa/SMOKE.md` получает раздел «Фаза 17 / v1.2» с таблицами «оригинал / прод» и принятыми отклонениями; milestone закрыт аудитом, архивом и тегом `v1.2`
 
 ## v2 Requirements
 
@@ -83,10 +83,10 @@
 | MOB-02 | Phase 16 | Complete |
 | MOB-03 | Phase 16 | Complete |
 | MOB-04 | Phase 16 | Complete |
-| SHIP-01 | Phase 17 | Pending |
-| SHIP-02 | Phase 17 | Pending |
-| SHIP-03 | Phase 17 | Pending |
-| SHIP-04 | Phase 17 | Pending |
+| SHIP-01 | Phase 17 | Complete |
+| SHIP-02 | Phase 17 | Complete |
+| SHIP-03 | Phase 17 | Complete |
+| SHIP-04 | Phase 17 | Complete |
 
 **Coverage:**
 - v1 requirements: 23 total
