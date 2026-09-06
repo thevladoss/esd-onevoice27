@@ -1,0 +1,24 @@
+Побайтная сверка GitHub Pages с локальным dist (фаза 13, план 01, задача 3)
+
+Коммит (HEAD на момент push): 3d3169380ec46ffaf860368932bdfb96d69ef4e9
+Прогон workflow:              34024511478 — «Deploy to GitHub Pages», conclusion success
+URL прогона:                  https://github.com/thevladoss/esd-onevoice27/actions/runs/34024511478
+Живой сайт:                   https://thevladoss.github.io/esd-onevoice27/ — HTTP/2 200
+Локальная сборка:             npm run build на том же дереве, node scripts/check-dist.mjs → OK: 11 проверок
+Снято:                        2026-09-06T09:26Z (UTC), curl -H 'Cache-Control: no-cache' | shasum -a 256
+Список ассетов:               diff живого index.html и dist/index.html пуст, 3 файла
+
+| путь | код | sha256 живого (первые 12) | sha256 dist (первые 12) | равен |
+|---|---|---|---|---|
+| /esd-onevoice27/ (index.html) | 200 | 5f244dfe0260 | 5f244dfe0260 | да |
+| /esd-onevoice27/assets/index-BEFObVAO.js | 200 | 7ec892292a81 | 7ec892292a81 | да |
+| /esd-onevoice27/assets/index-2NnJ3z1D.css | 200 | 312241b95ca0 | 312241b95ca0 | да |
+| /esd-onevoice27/assets/vendor-map-BjCgd77U.js | 200 | ce8d2c48c97b | ce8d2c48c97b | да |
+
+Итог: 4 из 4 равны. Расхождений не было, повторные заходы с паузой не понадобились.
+
+Полные хэши:
+5f244dfe02602789388f6d4e898c9cd38c236019f34ea6d56f5d23ffda6eca83  index.html
+7ec892292a81360a7a22ba0371dc468345c83237f998f06aa45610379f0fc3f0  assets/index-BEFObVAO.js
+312241b95ca002f25a89841672b86ef84482c6c5767c054eff1a66ae20d6468d  assets/index-2NnJ3z1D.css
+ce8d2c48c97baffaf7e8d876a79df4d1996d618e663f3ab0ff499a176e262df2  assets/vendor-map-BjCgd77U.js
