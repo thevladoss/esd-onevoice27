@@ -64,35 +64,37 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| GLOBE-01 | — | Pending |
-| GLOBE-02 | — | Pending |
-| GLOBE-03 | — | Pending |
-| GLOBE-04 | — | Pending |
-| GLOBE-05 | — | Pending |
-| GLOBE-06 | — | Pending |
-| GLOBE-07 | — | Pending |
-| GLOBE-08 | — | Pending |
-| LIGHT-01 | — | Pending |
-| LIGHT-02 | — | Pending |
-| LIGHT-03 | — | Pending |
-| LIGHT-04 | — | Pending |
-| LIGHT-05 | — | Pending |
-| LIGHT-06 | — | Pending |
-| LIGHT-07 | — | Pending |
-| MOB-01 | — | Pending |
-| MOB-02 | — | Pending |
-| MOB-03 | — | Pending |
-| MOB-04 | — | Pending |
-| SHIP-01 | — | Pending |
-| SHIP-02 | — | Pending |
-| SHIP-03 | — | Pending |
-| SHIP-04 | — | Pending |
+| GLOBE-01 | Phase 14 | Pending |
+| GLOBE-02 | Phase 14 | Pending |
+| GLOBE-03 | Phase 14 | Pending |
+| GLOBE-04 | Phase 14 | Pending |
+| GLOBE-05 | Phase 14 | Pending |
+| GLOBE-06 | Phase 14 | Pending |
+| GLOBE-07 | Phase 14 | Pending |
+| GLOBE-08 | Phase 14 | Pending |
+| LIGHT-01 | Phase 15 | Pending |
+| LIGHT-02 | Phase 15 | Pending |
+| LIGHT-03 | Phase 15 | Pending |
+| LIGHT-04 | Phase 15 | Pending |
+| LIGHT-05 | Phase 15 | Pending |
+| LIGHT-06 | Phase 15 | Pending |
+| LIGHT-07 | Phase 15 | Pending |
+| MOB-01 | Phase 16 | Pending |
+| MOB-02 | Phase 16 | Pending |
+| MOB-03 | Phase 16 | Pending |
+| MOB-04 | Phase 16 | Pending |
+| SHIP-01 | Phase 17 | Pending |
+| SHIP-02 | Phase 17 | Pending |
+| SHIP-03 | Phase 17 | Pending |
+| SHIP-04 | Phase 17 | Pending |
 
 **Coverage:**
 - v1 requirements: 23 total
-- Mapped to phases: 0
-- Unmapped: 23 ⚠️ (заполняется при создании roadmap)
+- Mapped to phases: 23
+- Unmapped: 0 ✓
+
+Фазы: 14 (GLOBE-01…08), 15 (LIGHT-01…07), 16 (MOB-01…04), 17 (SHIP-01…04); roadmap `.planning/ROADMAP.md`.
 
 ---
 *Requirements defined: 2026-09-06*
-*Last updated: 2026-09-06 after initial definition*
+*Last updated: 2026-09-06 after roadmap v1.2 (phases 14–17)*

@@ -3,10 +3,10 @@ gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Мобильная адаптация, глобус оригинала и производительность
 status: planning
-last_updated: "2026-09-06T15:07:00.664Z"
+last_updated: "2026-09-06T15:30:00.000Z"
 last_activity: 2026-09-06
 progress:
-  total_phases: 0
+  total_phases: 4
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -20,14 +20,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-09-06)
 
 **Core value:** Посетитель открывает страницу и видит красивый, живой лендинг уровня оригинала onevoice27.org, но про ЕАД: узнаёт, что такое «Единый голос 27», видит карту движения по дивизиону и может «зажечь свой свет».
-**Current focus:** Milestone v1.2 — определение требований и roadmap
+**Current focus:** Milestone v1.2 — фазы 14–16 параллельно в worktree (hero, огоньки карты, мобильная адаптация), затем фаза 17 (интеграция и приёмка)
 
 ## Current Position
 
-Phase: Not started (defining requirements)
+Phase: 14 (Hero: видео-глобус и частицы оригинала) — not started
 Plan: —
-Status: Defining requirements
-Last activity: 2026-09-06 — Milestone v1.2 started
+Status: Roadmap v1.2 создан (фазы 14–17), планов нет; фазы 14, 15, 16 стартуют параллельно от `main`
+Last activity: 2026-09-06 — Roadmap v1.2 created
 
 ## Performance Metrics
 
@@ -74,22 +74,18 @@ Last activity: 2026-09-06 — Milestone v1.2 started
 Актуальные для текущей работы:
 
 - Инициализация: собственная SVG-карта на d3-geo вместо Mapbox (без токенов, полный контроль над стилем)
-- Инициализация: canvas-глобус из частиц вместо webm-видео (нет исходника, вес 0 байт)
 - Инициализация: Onest вместо Figtree для заголовков (кириллица)
 - Инициализация: GitHub Pages + Actions, gh уже авторизован
 - [Phase 01]: Vitest закреплён на 4.1.11 и jsdom на 29.1.1 — локальный Node 25.2.1 не входит в engines vitest 5
-- [Phase 01]: Vite 8.2.2 работает с @tailwindcss/vite 4.3.3 и Vitest, откат на Vite 7 не нужен — блокер фазы 1 снят проверкой билда и тестов
-- [Phase 01]: TypeScript закреплён на ^5.9.3 вместо шаблонного ~6.0.2 — шаблон Vite и tsc -b проверены на 5.x
-- [Phase 01]: деплой фазы 1 подтверждён сверкой sha256 локального dist и живых файлов Pages на одном коммите, а не только кодом 200
 - [Phase 01]: ожидание прогона Actions на macOS делается циклом gh run view --json status,conclusion с паузой: timeout для обёртки gh run watch недоступен
 - [Phase 05]: приём деплоя = код 200 + пустой diff списка ассетов + совпадение sha256 живых файлов и локального dist
-- [Phase 05]: права workflow разложены по джобам (build без OIDC-токена) — строже единого блока permissions, приводить к плану не стали
-- [Phase 05]: ореолы точек глобуса плоскими кругами без shadowBlur: тень стоила 533 мс на кадр на GPU, без неё 4 мс; FPS в Playwright-Chrome мерить при закрытых WebGL-вкладках
-- [Roadmap v1.1]: фазы 7–12 разведены по владению файлами и идут параллельно; правило для чужого селектора кладётся в свой CSS-файл, чужие файлы не редактируются
-- [Roadmap v1.1]: GLASS-06 через плоский `.gradient-title--section` по умолчанию и новый `section-gradient` только в About.tsx: вызовы GradientTitle в секциях других фаз не меняются
-- [Roadmap v1.1]: GLASS-03 отдаётся утилитой `glass-resource` в global.css (фаза 7), класс на `.resource-card` вешает фаза 11; до слияния карточки ресурсов остаются на текущем стекле
-- [Roadmap v1.1]: подложку и орб под формой даёт лента `.map-band` фазы 8; фаза 9 убирает фон и `::before` секции формы, до слияния секция прозрачна
-- [Roadmap v1.1]: scroll lock панели ресурсов без правок global.css: класс на html/body с правилом в resources.css или вызов существующего src/lib/scrollLock.ts
+- [Phase 05]: FPS в Playwright-Chrome мерить при закрытых WebGL-вкладках
+- [Roadmap v1.1]: фазы разводятся по владению файлами и идут параллельно; правило для чужого селектора кладётся в свой CSS-файл, чужие файлы не редактируются
+- [Roadmap v1.2]: глобус hero переезжает с canvas-частиц на `<video>` оригинала (webm 1,9 МБ, mp4 2,9 МБ уже в `public/`), поверх него порт `orig-hero-motion.js` на 30 fps; `GlobeCanvas`, `globe.ts` и `Starfield` удаляются (пересмотр решения v1.0 «canvas-глобус вместо webm»)
+- [Roadmap v1.2]: огоньки карты переезжают из SVG (1884 круга, 30 fps при CPU×4) на canvas-оверлей со спрайтами; дыхание радиуса 7→12px возвращается (пересмотр fallback MAP-06 из v1.1)
+- [Roadmap v1.2]: `global.css` не трогает ни одна из фаз 14–16; правила `[data-anim="pulse"] circle`, `.light-halo` и `[data-anim="new-light"]` в блоке reduce остаются как no-op, `motionPolicy.test.ts` правит только фаза 15 (`new-light` выходит из обязательных)
+- [Roadmap v1.2]: `News.tsx` принадлежит фазе 16 только для передачи приоритета первой карточке; `src/test/setup.ts` (`getContext` → `null`) не меняется, на него опираются jsdom-тесты обоих canvas
+- [Roadmap v1.2]: бюджет LIGHT-07 для hero (код фазы 14) подтверждается в фазе 17 после слияния; в ветке фазы 15 меряются карта и форма
 
 ### Pending Todos
 
@@ -97,7 +93,11 @@ Last activity: 2026-09-06 — Milestone v1.2 started
 
 ### Blockers/Concerns
 
-Нет открытых. Риск фазы 8: бюджет ≥ 50 fps на 942 огоньках с дыханием радиуса через `@property`; спецификация задаёт fallback на дыхание opacity (MAP-06).
+Нет открытых. Риски по фазам:
+
+- Фаза 14: автовоспроизведение на iOS без `muted` в DOM (дублируется через ref); поддержка `mask-composite: intersect` и `-webkit-mask-composite: source-in` в Safari; вес видео 1,9/2,9 МБ на мобильном (обход: `saveData`)
+- Фаза 15: бюджет ≥ 55 fps при CPU×4 на 942 огоньках с `drawImage` спрайтов; при недоборе первым делом снижать dpr canvas с 2 до 1,5, затем частоту цикла
+- Фаза 16: интервал списка футера должен компенсировать `min-height: 44px`, иначе столбец растянется
 
 ## Deferred Items
 
@@ -109,10 +109,11 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-09-06T07:30:00.000Z
-Stopped at: Roadmap v1.1 created (phases 7–13)
+Last session: 2026-09-06T15:30:00.000Z
+Stopped at: Roadmap v1.2 created (phases 14–17)
 Resume file: .planning/ROADMAP.md
 
 ## Operator Next Steps
 
-- Start the next milestone with /gsd-new-milestone
+- `/bm:plan-phase 14`, `/bm:plan-phase 15`, `/bm:plan-phase 16` (фазы независимы, исполняются в отдельных worktree)
+- После слияния 14–16: `/bm:plan-phase 17`
