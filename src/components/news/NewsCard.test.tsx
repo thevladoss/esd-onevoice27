@@ -44,8 +44,8 @@ describe("NewsCard", () => {
 
     const { unmount } = renderCard(wide);
     const zoomed = screen.getByRole("link").querySelector("img");
-    expect(zoomed?.style.transform).toBe("scale(1.5)");
-    expect(zoomed?.style.objectPosition).toBe("50% 55%");
+    expect(zoomed?.style.transform).toBe("scale(1.45)");
+    expect(zoomed?.style.objectPosition).toBe("50% 65%");
     unmount();
 
     renderCard(standard);
