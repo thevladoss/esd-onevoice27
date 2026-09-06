@@ -38,9 +38,9 @@
 
 ### Превью (MEDIA)
 
-- [ ] **MEDIA-01**: Карточки новостей 16:9 с `object-fit: cover`: чёрных полос YouTube-превью нет (средняя яркость 6px-полос у верхнего и нижнего края обложки > 12)
-- [ ] **MEDIA-02**: Панель заголовка как у оригинала (inset 4px, padding `clamp(18px, 2.4vw, 28px)`, radius 12px, заголовок 800 с `line-clamp: 3`, дата `rgb(170 217 220)`), оверлей обложки оригинала; ховер: картинка `scale(1.035)` 760ms, панель `rgb(247 239 232 / .96)` с текстом `rgb(18 12 52)`, рамка карточки `rgb(143 157 214 / .38)`; reduced motion без масштабирования
-- [ ] **MEDIA-03**: Превью роликов (`VideoEmbed` в About и в панели «Видео») — контейнер 16:9 с `object-fit: cover`, без полос и лишней обрезки
+- [x] **MEDIA-01**: Карточки новостей 16:9 с `object-fit: cover`: чёрных полос YouTube-превью нет (средняя яркость 6px-полос у верхнего и нижнего края обложки > 12)
+- [x] **MEDIA-02**: Панель заголовка как у оригинала (inset 4px, padding `clamp(18px, 2.4vw, 28px)`, radius 12px, заголовок 800 с `line-clamp: 3`, дата `rgb(170 217 220)`), оверлей обложки оригинала; ховер: картинка `scale(1.035)` 760ms, панель `rgb(247 239 232 / .96)` с текстом `rgb(18 12 52)`, рамка карточки `rgb(143 157 214 / .38)`; reduced motion без масштабирования
+- [x] **MEDIA-03**: Превью роликов (`VideoEmbed` в About и в панели «Видео») — контейнер 16:9 с `object-fit: cover`, без полос и лишней обрезки
 
 ### Ресурсы (RES)
 
@@ -103,9 +103,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | FORM-03 | Phase 9 | Pending |
 | FORM-04 | Phase 9 | Pending |
 | FORM-05 | Phase 9 | Pending |
-| MEDIA-01 | Phase 10 | Pending |
-| MEDIA-02 | Phase 10 | Pending |
-| MEDIA-03 | Phase 10 | Pending |
+| MEDIA-01 | Phase 10 | Complete |
+| MEDIA-02 | Phase 10 | Complete |
+| MEDIA-03 | Phase 10 | Complete |
 | RES-01 | Phase 11 | Pending |
 | RES-02 | Phase 11 | Pending |
 | RES-03 | Phase 11 | Pending |
