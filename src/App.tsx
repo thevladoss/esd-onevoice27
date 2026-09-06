@@ -2,8 +2,7 @@ import { SkipLink } from "./components/layout/SkipLink";
 import { Header } from "./components/layout/Header";
 import { Footer } from "./components/layout/Footer";
 import { Hero } from "./components/hero/Hero";
-import { MapSection } from "./components/map/MapSection";
-import { LightForm } from "./components/form/LightForm";
+import { MapBand } from "./components/map/MapBand";
 import { About } from "./components/about/About";
 import { Involve } from "./components/involve/Involve";
 import { News } from "./components/news/News";
@@ -19,8 +18,7 @@ function App() {
           ссылки пропуска, и следующий Tab уходит обратно в шапку. */}
       <main id="main" tabIndex={-1}>
         <Hero />
-        <MapSection />
-        <LightForm />
+        <MapBand />
         <About />
         <Involve />
         <News />

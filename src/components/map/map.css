@@ -240,9 +240,45 @@
   }
 }
 
-/* Секция карты: подложка, скос и переходы сняты с onevoice27.org */
-.map-section {
+/* Лента карты и формы: у оригинала обе секции живут внутри одного `#ov-map`
+   с единой скошенной подложкой, поэтому шва между ними нет.
+   Горизонталь клипует лента: орбы уезжают за края на 38% и иначе раздвигали бы
+   scrollWidth документа. Вертикаль открыта — нижний орб светит из края карты
+   в область формы. Лента заходит под hero на глубину скоса: в вырезе остаётся
+   фон hero, а не дырка. */
+.map-band {
   --map-wedge: clamp(32px, 3.2vw, 52px);
+
+  position: relative;
+  isolation: isolate;
+  overflow-x: clip;
+  margin-top: calc(0px - var(--map-wedge) - 1px);
+}
+
+/* Подложка ленты: одна на карту и форму, скос режет только её. */
+.map-band::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: rgb(18 12 52);
+  clip-path: polygon(0 var(--map-wedge), 100% 0, 100% 100%, 0 100%);
+  pointer-events: none;
+}
+
+/* Подложку и орб под формой даёт лента. Те же правила фаза 9 убирает из
+   light-form.css; после слияния эти две строки становятся no-op. */
+.map-band .lf-section {
+  background: transparent;
+}
+
+.map-band .lf-section::before {
+  content: none;
+}
+
+/* Секция карты стоит на ленте и своей подложки не имеет: переходы и ореолы
+   сняты с onevoice27.org */
+.map-section {
   /* Полоса ореолов у верхней кромки и глубина затемнения над картой */
   --map-atmosphere: clamp(260px, 38vw, 560px);
   --map-transition: clamp(150px, 34vw, 340px);
@@ -253,22 +289,6 @@
   position: relative;
   isolation: isolate;
   color: #f8f7fb;
-  /* Секция заходит под hero на глубину скоса: в вырезе остаётся его фон */
-  margin-top: calc(0px - var(--map-wedge) - 1px);
-  /* Ореолы границ выезжают далеко за свои якоря и светят в hero и в форму.
-     Горизонталь секция клипует (иначе нижний орб со сдвигом 38% раздвигает
-     scrollWidth документа на ≥768px), вертикаль остаётся открытой. */
-  overflow-x: clip;
-}
-
-/* Подложка секции: скос режет только её, поэтому в вырезе видно hero, а не дырку. */
-.map-section__skew {
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  background: rgb(18 12 52);
-  clip-path: polygon(0 var(--map-wedge), 100% 0, 100% 100%, 0 100%);
-  pointer-events: none;
 }
 
 /* Три ореола у верхней кромки: центры вынесены за границу, внутрь заходят края пятен. */
@@ -286,6 +306,10 @@
     radial-gradient(circle at 88% -22%, rgb(57 114 126 / .2) 0, transparent 40%);
 }
 
+/* Орбы лежат в изолированном контексте `.map-section`, поэтому `z-index: -1`
+   ставит их выше подложки ленты (она уходит под всех детей `.map-band`) и ниже
+   ореолов кромки (0), колонки заголовка (1) и сцены карты. Форма идёт в DOM
+   позже секции и рисуется поверх орба, а её прозрачный фон орб не закрывает. */
 .map-orb {
   position: absolute;
   z-index: -1;
@@ -305,8 +329,11 @@
   transform: translate(-38%, -72%);
 }
 
+/* Верхняя кромка орба стоит на нижнем крае секции карты (секция заканчивается
+   низом карты), сдвиг на −50% ставит центр ровно на кромку, и нижняя половина
+   орба светит в форму — как `.ov-map-skew-mask--bottom::after` у оригинала. */
 .map-orb--bottom {
-  bottom: 0;
+  top: 100%;
   right: 0;
   width: clamp(520px, 72vw, 1100px);
   background: radial-gradient(circle,
@@ -314,7 +341,7 @@
     rgb(39 52 102 / .22) 30%,
     rgb(22 29 61 / .34) 48%,
     transparent 70%);
-  transform: translate(38%, 50%);
+  transform: translate(38%, -50%);
 }
 
 /* На узком экране круг превращается в полосу во всю ширину: центр градиента
@@ -330,7 +357,7 @@
       rgb(39 52 102 / .22) 30%,
       rgb(22 29 61 / .34) 48%,
       transparent 70%);
-    transform: translateY(50%);
+    transform: translateY(-50%);
   }
 }
 
