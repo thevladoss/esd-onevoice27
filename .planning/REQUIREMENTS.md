@@ -58,9 +58,9 @@
 
 ### Приёмка (QA)
 
-- [ ] **QA-01**: Существующие тесты зелёные; новые тесты: состояния формы и `orgName`, открытие/закрытие панели ресурсов (фокус, Escape, scroll lock, deep link), пять корзин огоньков без `pulse`, карточка новости 16:9, порядок узлов футера
-- [ ] **QA-02**: Гейт перед деплоем: `npx tsc -b`, `npm test`, `npm run lint`, `npm run build`, `node scripts/check-dist.mjs`; деплой на GitHub Pages
-- [ ] **QA-03**: Playwright на проде 1440×900 и 390×844: таблица «оригинал / прод» в `docs/qa/SMOKE.md` по пунктам GLASS, MAP (полигон, отсутствие второй линии, fps), FORM (поля в двух состояниях), MEDIA (16:9, полосы), RES (прямоугольники блоков ±8px от пропорций оригинала на ширине 1152), FOOT (одна колонка); скриншоты в `docs/qa/`
+- [x] **QA-01**: Существующие тесты зелёные; новые тесты: состояния формы и `orgName`, открытие/закрытие панели ресурсов (фокус, Escape, scroll lock, deep link), пять корзин огоньков без `pulse`, карточка новости 16:9, порядок узлов футера
+- [x] **QA-02**: Гейт перед деплоем: `npx tsc -b`, `npm test`, `npm run lint`, `npm run build`, `node scripts/check-dist.mjs`; деплой на GitHub Pages
+- [x] **QA-03**: Playwright на проде 1440×900 и 390×844: таблица «оригинал / прод» в `docs/qa/SMOKE.md` по пунктам GLASS, MAP (полигон, отсутствие второй линии, fps), FORM (поля в двух состояниях), MEDIA (16:9, полосы), RES (прямоугольники блоков ±8px от пропорций оригинала на ширине 1152), FOOT (одна колонка); скриншоты в `docs/qa/`
 
 ## v2 Requirements
 
@@ -114,9 +114,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | RES-06 | Phase 11 | Complete |
 | FOOT-01 | Phase 12 | Complete |
 | FOOT-02 | Phase 12 | Complete |
-| QA-01 | Phase 13 | Pending |
-| QA-02 | Phase 13 | Pending |
-| QA-03 | Phase 13 | Pending |
+| QA-01 | Phase 13 | Complete |
+| QA-02 | Phase 13 | Complete |
+| QA-03 | Phase 13 | Complete |
 
 **Coverage:**
 - v1 requirements: 32 total
