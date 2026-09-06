@@ -1,13 +1,28 @@
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 import { fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Resources } from "./Resources";
 import { Involve } from "../involve/Involve";
 import { materials } from "../../data/materials";
+import type { ResourceKey } from "../../data/copy.resources";
+import { resourcesCopy } from "../../data/copy.resources";
 
 const CARD_MUSIC = /Пойте вместе/;
 const CARD_MATERIALS = /Будьте готовы/;
 const CARD_VIDEO = /Смотрите и делитесь/;
 const FACADE = /^Смотреть видео: /;
+
+/** Порядок блоков в сетке: он же порядок колонки на узком экране. */
+const CARD_ORDER: readonly ResourceKey[] = ["music", "materials", "video"];
+
+/* Размеры и тайминги секции — свойство CSS, а не разметки, поэтому файл читается
+   с диска: vitest настроен с css: false и отдаёт содержимое CSS-модуля пустой
+   строкой даже по запросу ?raw (тот же приём, что в src/styles/motionPolicy.test.ts). */
+const RESOURCES_CSS = readFileSync(
+  resolve(process.cwd(), "src/components/resources/resources.css"),
+  "utf8",
+);
 
 function cardButtons() {
   return Array.from(document.querySelectorAll<HTMLButtonElement>("button[data-kind]"));
@@ -343,5 +358,105 @@ describe("панель: клавиатура и deep link", () => {
     for (const card of cardButtons()) {
       expect(card.querySelector("h1, h2, h3, h4, h5, h6")).toBeNull();
     }
+  });
+});
+
+describe("сетка и карточки по оригиналу", () => {
+  it("держит порядок блоков copy → music → materials → video на обёртках сетки", () => {
+    render(<Resources />);
+
+    const grid = resourcesSection().querySelector<HTMLElement>(".resources-grid");
+    expect(grid).not.toBeNull();
+
+    const cells = Array.from((grid as HTMLElement).children) as HTMLElement[];
+    expect(cells).toHaveLength(4);
+    expect(cells[0].classList.contains("resources-copy")).toBe(true);
+
+    // Порядок в разметке и есть порядок колонки на узком экране; на широком блоки
+    // расставляет grid-area, поэтому классы ячеек проверяются по тому же порядку.
+    cells.slice(1).forEach((cell, index) => {
+      expect(cell.classList.contains("resources-cell")).toBe(true);
+      expect(cell.classList.contains(`resources-cell--${CARD_ORDER[index]}`)).toBe(true);
+    });
+  });
+
+  it("размечает карточку: индикатор с точкой, контент внизу, действие с подчёркиванием", () => {
+    render(<Resources />);
+
+    for (const kind of CARD_ORDER) {
+      const card = document.querySelector<HTMLElement>(`.resource-card[data-kind="${kind}"]`);
+      expect(card).not.toBeNull();
+
+      const element = card as HTMLElement;
+      const copy = resourcesCopy.cards[kind];
+
+      // Поверхность приходит из пары утилит, поэтому обе обязаны быть на карточке.
+      expect(element.classList.contains("glass")).toBe(true);
+      expect(element.classList.contains("glass-resource")).toBe(true);
+      expect(element.style.getPropertyValue("--accent")).toBe(copy.accent);
+
+      const indicator = element.firstElementChild as HTMLElement;
+      expect(indicator.classList.contains("resource-card__indicator")).toBe(true);
+      expect(indicator).toHaveTextContent(copy.label);
+
+      const dot = indicator.querySelector(".resource-card__dot");
+      expect(dot).not.toBeNull();
+      expect(dot).toHaveAttribute("aria-hidden", "true");
+
+      const content = element.querySelector<HTMLElement>(".resource-card__content");
+      expect(content).not.toBeNull();
+
+      const title = (content as HTMLElement).querySelector("h3.resource-card__title");
+      expect(title).toHaveTextContent(copy.title);
+      expect(title).toHaveAttribute("id", `resource-card-title-${kind}`);
+
+      const description = (content as HTMLElement).querySelector("p.resource-card__description");
+      expect(description).toHaveTextContent(copy.description);
+
+      const trigger = (content as HTMLElement).querySelector(
+        ".resource-card__actions .resource-card__trigger",
+      );
+      expect(trigger).toHaveTextContent(copy.cta);
+    }
+  });
+
+  it("задаёт сетку и пропорции оригинала в CSS", () => {
+    for (const value of [
+      "@media (min-width: 64rem)",
+      "grid-template-columns: minmax(0, 320fr) minmax(0, 528fr) minmax(0, 272fr)",
+      "padding-block: clamp(88px, 10vw, 144px) clamp(88px, 10vw, 152px)",
+      "aspect-ratio: 528 / 523",
+      "aspect-ratio: 320 / 296",
+      "aspect-ratio: 272 / 336",
+      "aspect-ratio: 368 / 256",
+      "width: min(69.697%, 368px)",
+      "width: min(100%, 328px)",
+      "height: 248px",
+      "border: 1px dotted rgb(84 164 172 / .25)",
+      "background: rgb(84 164 172 / .05)",
+      "transform: scaleX(.34)",
+      "transform: translateY(-4px)",
+      "420ms cubic-bezier(.22, 1, .36, 1)",
+      "padding: 24px",
+      "padding: 20px",
+    ]) {
+      expect(RESOURCES_CSS).toContain(value);
+    }
+  });
+
+  it("поднимает карточку и раскрывает подчёркивание на ховере и фокусе", () => {
+    // Кнопка карточки — прозрачный слой внутри неё, поэтому фокус ловится через :has.
+    expect(RESOURCES_CSS).toMatch(
+      /\.resource-card:hover,\s*\.resource-card:has\(:focus-visible\),\s*\.resource-card\[data-open="true"\] \{[^}]*border-color: var\(--accent\);[^}]*transform: translateY\(-4px\);/,
+    );
+    expect(RESOURCES_CSS).toMatch(
+      /\.resource-card:hover \.resource-card__trigger::before,\s*\.resource-card:has\(:focus-visible\) \.resource-card__trigger::before \{\s*transform: scaleX\(1\);/,
+    );
+  });
+
+  it("не рисует собственный фон карточки и не заводит reduce-блок", () => {
+    expect(RESOURCES_CSS).not.toMatch(/\.resource-card \{[^}]*background/);
+    expect(RESOURCES_CSS).not.toContain("prefers-reduced-motion");
+    expect(RESOURCES_CSS).not.toContain("var(--color-");
   });
 });

@@ -121,21 +121,21 @@ export function Resources() {
         <span aria-hidden="true" data-anim="particles" className="resources-particles" />
       </div>
 
-      <div className="mx-auto max-w-[72rem] px-4 py-16 md:px-8 md:py-24">
-        <RevealGroup className="flex flex-col gap-6 md:grid md:grid-cols-6 md:gap-6 lg:grid-cols-12 lg:gap-x-6 lg:gap-y-8">
-          <Reveal className="order-first rounded-card border border-dotted border-[rgb(84_164_172/.25)] bg-[rgb(84_164_172/.05)] p-8 text-center md:col-span-6 md:row-start-1 lg:col-start-5 lg:col-end-10 lg:row-start-1 lg:row-end-3 lg:mx-auto lg:max-w-[528px] lg:self-center">
+      <div className="resources-content">
+        {/* Порядок в разметке — текст, музыка, материалы, видео: он же порядок колонки
+            на узком экране, а с 64rem блоки расставляет grid-area в resources.css. */}
+        <RevealGroup className="resources-grid">
+          <Reveal className="resources-copy">
             <Eyebrow>{resourcesCopy.eyebrow}</Eyebrow>
-            <GradientTitle as="h2" variant="section" className="mt-2">
+            <GradientTitle as="h2" variant="section">
               {/* id живёт на внутреннем span: GradientTitle в этой волне правит план 05-03,
                   а имя секции считается по тексту элемента под aria-labelledby. */}
               <span id="resources-title">{resourcesCopy.title}</span>
             </GradientTitle>
-            <p className="mt-4 font-body text-base leading-[1.5] text-paper/78">
-              {resourcesCopy.body}
-            </p>
+            <p className="font-body text-base leading-[1.5] text-paper/78">{resourcesCopy.body}</p>
           </Reveal>
 
-          <RevealItem className="mx-auto w-full min-w-0 max-w-[360px] md:col-start-1 md:col-end-4 md:row-start-2 md:max-w-none lg:col-start-1 lg:col-end-5 lg:row-start-1 lg:row-end-3 lg:max-w-[320px] lg:self-start">
+          <RevealItem className="resources-cell resources-cell--music">
             <ResourceCard
               kind="music"
               isOpen={active === "music"}
@@ -146,7 +146,7 @@ export function Resources() {
             />
           </RevealItem>
 
-          <RevealItem className="mx-auto w-full min-w-0 max-w-[360px] md:col-start-4 md:col-end-7 md:row-start-2 md:mt-6 md:max-w-none lg:col-start-10 lg:col-end-13 lg:row-start-2 lg:row-end-4 lg:mt-0 lg:ml-auto lg:max-w-[272px] lg:self-end">
+          <RevealItem className="resources-cell resources-cell--materials">
             <ResourceCard
               kind="materials"
               isOpen={active === "materials"}
@@ -157,7 +157,7 @@ export function Resources() {
             />
           </RevealItem>
 
-          <RevealItem className="mx-auto w-full min-w-0 max-w-[360px] md:col-start-2 md:col-end-6 md:row-start-3 md:-mt-4 md:max-w-none lg:col-start-4 lg:col-end-8 lg:row-start-3 lg:row-end-4 lg:-mt-8 lg:max-w-[344px]">
+          <RevealItem className="resources-cell resources-cell--video">
             <ResourceCard
               kind="video"
               isOpen={active === "video"}

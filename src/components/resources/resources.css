@@ -1,6 +1,6 @@
-/* Секция ресурсов: подложка, атмосфера, дрейфующие частицы, поверхность карточек
-   и раскрытие панели. Файл живёт вне слоёв Tailwind, поэтому его правила
-   перекрывают утилиту .glass. */
+/* Секция ресурсов: подложка, атмосфера, дрейфующие частицы, сетка блоков,
+   карточка и раскрытие панели. Файл живёт вне слоёв Tailwind, поэтому его
+   правила перекрывают утилиты при равной специфичности. */
 
 /* Подложка во всю ширину окна. На раскрытой панели она уходит в цвет её карточки. */
 .resources {
@@ -107,40 +107,231 @@
   }
 }
 
-/* Поверхность карточки: собственный градиент поверх рамки и тени утилиты .glass. */
+/* Содержимое секции: вертикальные отступы оригинала и центрирование колонки. */
+.resources-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding-block: clamp(88px, 10vw, 144px) clamp(88px, 10vw, 152px);
+}
+
+/* Сетка блоков. До 64rem всё идёт колонкой по центру; с 64rem включаются три
+   дорожки оригинала: музыка, текст, материалы — и вторая строка под видео. */
+.resources-grid {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  width: calc(100% - 32px);
+  max-width: 72rem;
+  margin-inline: auto;
+}
+
+/* Текстовый блок: на узком экране первый в колонке, на широком — центральная
+   ячейка с пунктирной рамкой и пропорцией 528 × 523. */
+.resources-copy {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: min(100%, 528px);
+  margin: 0 0 28px;
+  padding: 0;
+  text-align: center;
+}
+
+/* Размеры карточек лежат на ячейке, а не на самой карточке: прямой ребёнок
+   сетки — обёртка RevealItem, и grid-area с aspect-ratio действуют только на
+   ней. Карточка внутри тянется на всю ячейку. */
+.resources-cell {
+  width: min(100%, 328px);
+  height: 248px;
+}
+
+/* Карточка ресурса. Фон, рамку, тень и размытие даёт пара утилит glass и
+   glass-resource: своей поверхности здесь нет, иначе правило файла перекрыло бы
+   утилиту и стекло фазы 7 до карточки не дошло бы. */
 .resource-card {
-  background:
-    linear-gradient(180deg, rgb(248 247 251 / .06), transparent 34%),
-    linear-gradient(145deg, rgb(48 63 131 / .86), rgb(18 12 52 / .76));
-  -webkit-backdrop-filter: blur(18px) saturate(125%);
-  backdrop-filter: blur(18px) saturate(125%);
-}
-
-.resource-card__trigger {
   position: relative;
-}
-
-.resource-card__trigger::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: -4px;
-  height: 1px;
-  background: linear-gradient(90deg, var(--accent), transparent);
-  transform: scaleX(.34);
-  transform-origin: left;
-  transition: transform 420ms var(--ease-header);
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  padding: 24px;
+  color: rgb(248 247 251 / .94);
+  transform: translateY(0);
+  transition:
+    border-color 420ms ease,
+    box-shadow 420ms ease,
+    transform 420ms cubic-bezier(.22, 1, .36, 1);
 }
 
 /* Кнопка карточки — прозрачный слой внутри неё, поэтому фокус ловится через :has. */
-.resource-card:hover .resource-card__trigger::after,
-.resource-card:has(:focus-visible) .resource-card__trigger::after {
-  transform: scaleX(1);
+.resource-card:hover,
+.resource-card:has(:focus-visible),
+.resource-card[data-open="true"] {
+  border-color: var(--accent);
+  transform: translateY(-4px);
+}
+
+.resource-card__indicator {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  color: rgb(239 237 245 / .76);
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.resource-card__dot {
+  flex: 0 0 16px;
+  width: 16px;
+  height: 16px;
+  margin-left: 16px;
+  border-radius: 50%;
+  background: var(--accent);
 }
 
 .resource-card[data-open="true"] .resource-card__dot {
   box-shadow: 0 0 0 6px color-mix(in oklab, var(--accent) 18%, transparent);
+}
+
+/* Контент прижат к низу карточки: между индикатором и заголовком остаётся
+   воздух, сколько бы ни было текста. */
+.resource-card__content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 7px;
+  width: 100%;
+  margin-top: auto;
+}
+
+.resource-card__title {
+  margin: 0;
+  color: rgb(248 247 251 / .94);
+  font-family: var(--font-display);
+  font-size: clamp(1.25rem, 6vw, 1.35rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+}
+
+.resource-card__description {
+  margin: 0;
+  color: rgb(239 237 245 / .76);
+  font-family: var(--font-body);
+  font-size: .875rem;
+  line-height: 1.45;
+}
+
+.resource-card__actions {
+  margin-top: 12px;
+}
+
+.resource-card__trigger {
+  position: relative;
+  display: inline-block;
+  padding: 10px 0;
+  color: rgb(248 247 251 / .94);
+  font-family: var(--font-body);
+  font-size: .875rem;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.resource-card__trigger::before {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: 5px;
+  left: 0;
+  height: 1px;
+  background: linear-gradient(90deg, var(--accent), transparent);
+  transform: scaleX(.34);
+  transform-origin: left center;
+  transition: transform 420ms cubic-bezier(.22, 1, .36, 1);
+}
+
+.resource-card:hover .resource-card__trigger::before,
+.resource-card:has(:focus-visible) .resource-card__trigger::before {
+  transform: scaleX(1);
+}
+
+/* Раскладка оригинала с 64rem: три дорожки 320fr / 528fr / 272fr, текст в
+   центре, материалы прижаты к низу первой строки, видео — под текстом.
+   Отдельного блока reduce в файле нет: подъём карточки и подчёркивание гасит
+   глобальное правило transition-duration в global.css. */
+@media (min-width: 64rem) {
+  .resources-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 320fr) minmax(0, 528fr) minmax(0, 272fr);
+    grid-template-rows: auto auto;
+    justify-content: center;
+    align-items: start;
+    column-gap: 16px;
+    row-gap: 16px;
+  }
+
+  .resources-copy {
+    grid-area: 1 / 2;
+    width: 100%;
+    max-width: 528px;
+    max-height: 523px;
+    margin: 0;
+    padding: 32px;
+    aspect-ratio: 528 / 523;
+    border: 1px dotted rgb(84 164 172 / .25);
+    border-radius: 16px;
+    background: rgb(84 164 172 / .05);
+  }
+
+  .resources-cell {
+    width: 100%;
+    height: auto;
+  }
+
+  .resources-cell--music {
+    grid-area: 1 / 1;
+    max-width: 320px;
+    max-height: 296px;
+    aspect-ratio: 320 / 296;
+  }
+
+  .resources-cell--materials {
+    grid-area: 1 / 3;
+    align-self: end;
+    max-width: 272px;
+    max-height: 336px;
+    aspect-ratio: 272 / 336;
+  }
+
+  .resources-cell--video {
+    grid-area: 2 / 2;
+    justify-self: start;
+    width: min(69.697%, 368px);
+    max-height: 256px;
+    aspect-ratio: 368 / 256;
+  }
+
+  .resource-card {
+    padding: 20px;
+  }
+
+  .resource-card__actions {
+    margin-top: 4px;
+  }
 }
 
 /* Раскрытие панели: обёртка тянет строку грида от 0fr к 1fr, внутренний блок режет перелив.
