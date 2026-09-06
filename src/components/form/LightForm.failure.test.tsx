@@ -29,6 +29,8 @@ function control(name: string): HTMLInputElement {
 }
 
 function fillValidForm() {
+  // Тип при загрузке не выбран: без клика по карточке форма не дойдёт до addLight.
+  fireEvent.click(screen.getByRole("radio", { name: /Личный свет/ }));
   fireEvent.change(control("firstName"), { target: { value: "Иван" } });
   fireEvent.change(control("lastName"), { target: { value: "Иванов" } });
   fireEvent.change(document.querySelector("select[name='countryId']") as HTMLSelectElement, {

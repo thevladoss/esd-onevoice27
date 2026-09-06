@@ -1,3 +1,6 @@
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
+
 import { act, fireEvent, render, screen } from "@testing-library/react";
 
 import { formCopy } from "../../data/copy.form";
@@ -85,6 +88,7 @@ function liveRegion(): HTMLElement {
 
 function fillValidForm() {
   fireEvent.click(screen.getByRole("radio", { name: /Групповой маяк/ }));
+  fireEvent.change(control("orgName"), { target: { value: "Община Твери" } });
   fireEvent.change(control("firstName"), { target: { value: "Иван" } });
   fireEvent.change(control("lastName"), { target: { value: "Иванов" } });
   fireEvent.change(countrySelect(), { target: { value: "643" } });
@@ -126,15 +130,20 @@ describe("LightForm: структура секции", () => {
     expect(screen.getByRole("heading", { level: 2, name: formCopy.title })).toBeInTheDocument();
     expect(screen.getByText(formCopy.eyebrow)).toBeInTheDocument();
 
-    const individual = screen.getByRole("radio", { name: /Индивидуальный свет/ });
+    expect(screen.getByRole("radiogroup", { name: "Тип света" })).toBeInTheDocument();
+
+    // При загрузке тип не выбран, как в оригинале: посетитель делает выбор сам.
+    const individual = screen.getByRole("radio", { name: /Личный свет/ });
     const group = screen.getByRole("radio", { name: /Групповой маяк/ });
-    expect(individual).toBeChecked();
+    expect(individual).not.toBeChecked();
     expect(group).not.toBeChecked();
     expect(
-      screen.getByText("Я лично посвящаю себя молитве, изучению и миссии там, где живу."),
+      screen.getByText("Я лично посвящаю себя молитве, изучению Библии и миссии там, где живу."),
     ).toBeInTheDocument();
     expect(
-      screen.getByText("Церковь, школа, малая группа, семья или коллектив, которые идут вместе."),
+      screen.getByText(
+        "Церковь, школа, малая группа, семья или коллектив, которые посвящают себя вместе.",
+      ),
     ).toBeInTheDocument();
   });
 
@@ -169,7 +178,7 @@ describe("LightForm: структура секции", () => {
     );
 
     // Подпись и описание ошибки должны вести к своему контролу, а не к первой форме.
-    const names = screen.getAllByLabelText(formCopy.fields.firstName.label);
+    const names = screen.getAllByLabelText(/^Имя/);
     expect(names).toHaveLength(2);
     expect(names[0].id).not.toBe(names[1].id);
 
@@ -177,24 +186,90 @@ describe("LightForm: структура секции", () => {
     const ids = Array.from(document.querySelectorAll("form")).flatMap((form) =>
       Array.from(form.querySelectorAll<HTMLElement>("[id]")).map((node) => node.id),
     );
-    // Девять на форму: две радио-карточки, пять полей, согласие и кнопка отправки.
-    expect(ids).toHaveLength(18);
+    // Одиннадцать на форму: группа типа и её подпись, две радио-карточки,
+    // пять полей, согласие и кнопка отправки.
+    expect(ids).toHaveLength(22);
     expect(new Set(ids).size).toBe(ids.length);
   });
 
   it("связывает каждый контрол с видимой подписью через htmlFor", () => {
     const { container } = renderForm();
 
-    const controls = Array.from(
-      container.querySelectorAll<HTMLInputElement>("form input, form select"),
-    );
-    expect(controls).toHaveLength(8);
+    function labelledControls() {
+      const controls = Array.from(
+        container.querySelectorAll<HTMLInputElement>("form input, form select"),
+      );
 
-    for (const control of controls) {
-      const label = container.querySelector(`label[for="${control.id}"]`);
-      expect(label, `нет подписи для контрола #${control.id}`).not.toBeNull();
-      expect(label?.textContent?.trim()).not.toBe("");
+      for (const node of controls) {
+        const label = container.querySelector(`label[for="${node.id}"]`);
+        expect(label, `нет подписи для контрола #${node.id}`).not.toBeNull();
+        expect(label?.textContent?.trim()).not.toBe("");
+      }
+
+      return controls;
     }
+
+    fireEvent.click(screen.getByRole("radio", { name: /Личный свет/ }));
+    expect(labelledControls()).toHaveLength(8);
+
+    fireEvent.click(screen.getByRole("radio", { name: /Групповой маяк/ }));
+    expect(labelledControls()).toHaveLength(9);
+
+    const orgLabel = container.querySelector(`label[for="${control("orgName").id}"]`);
+    expect(orgLabel?.textContent?.trim().startsWith("Название организации")).toBe(true);
+  });
+
+  it("стоит на секции без стеклянной карточки", () => {
+    renderForm();
+
+    expect(document.querySelector("#light-form .glass-card")).toBeNull();
+
+    const form = document.querySelector<HTMLFormElement>("#light-form form");
+    expect(form).not.toBeNull();
+    // Форма лежит прямо в обёртке появления: слоя карточки между ними больше нет.
+    expect(form?.parentElement?.className ?? "").not.toContain("glass");
+  });
+
+  it("несёт в карточке типа строку «название + точка»", () => {
+    renderForm();
+
+    const rows = Array.from(document.querySelectorAll(".lf-type .lf-type-row"));
+    expect(rows).toHaveLength(2);
+    for (const row of rows) {
+      expect(row.querySelector(".lf-type-title")).not.toBeNull();
+      expect(row.querySelector('.lf-type-dot[aria-hidden="true"]')).not.toBeNull();
+    }
+
+    const cards = Array.from(document.querySelectorAll<HTMLElement>(".lf-type"));
+    expect(cards.map((card) => card.dataset.type)).toEqual(["individual", "group"]);
+  });
+
+  it("даёт согласию нативный видимый чекбокс", () => {
+    renderForm();
+
+    const consent = control("consent");
+    expect(consent.classList.contains("lf-checkbox")).toBe(true);
+    expect(consent.classList.contains("sr-only")).toBe(false);
+    expect(document.querySelector(".lf-check-box")).toBeNull();
+  });
+
+  it("ставит поля в сетку шести колонок", () => {
+    renderForm();
+
+    const halves = [control("firstName"), control("lastName"), countrySelect(), control("city")];
+    for (const node of halves) {
+      expect(node.closest(".lf-field")).toHaveClass("lf-col-3");
+    }
+    expect(control("email").closest(".lf-field")).toHaveClass("lf-span");
+
+    fireEvent.click(screen.getByRole("radio", { name: /Групповой маяк/ }));
+
+    const orgField = control("orgName").closest(".lf-field");
+    const nameField = control("firstName").closest(".lf-field");
+    expect(orgField).toHaveClass("lf-span");
+    // Организация стоит в разметке раньше имени, как в оригинале.
+    const position = orgField?.compareDocumentPosition(nameField as Node) ?? 0;
+    expect(position & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   });
 
   it("не отправляет форму по сети: без action и method", () => {
@@ -208,15 +283,15 @@ describe("LightForm: структура секции", () => {
 });
 
 describe("LightForm: валидация", () => {
-  it("на пустой отправке показывает шесть ошибок и уводит фокус на имя", () => {
+  it("на пустой отправке показывает шесть ошибок и уводит фокус на группу типа", () => {
     renderForm();
     clickSubmit();
 
     expect(errorNodes().map((node) => node.textContent)).toEqual([
+      "Выберите тип света",
       "Введите имя",
       "Введите фамилию",
       "Выберите страну",
-      "Укажите город",
       "Введите корректный email",
       "Нужно согласие на обработку данных",
     ]);
@@ -227,8 +302,65 @@ describe("LightForm: валидация", () => {
       expect(node.getAttribute("aria-describedby")).toBe(`${node.id}-error`);
     }
 
-    expect(document.activeElement).toBe(control("firstName"));
+    expect(document.activeElement).toBe(screen.getByRole("radiogroup"));
     expect(screen.getByTestId("probe-groups")).toHaveTextContent("248");
+  });
+
+  it("выбор типа гасит ошибку группы и не приносит поле организации", () => {
+    renderForm();
+    clickSubmit();
+    expect(errorNodes()).toHaveLength(6);
+
+    fireEvent.click(screen.getByRole("radio", { name: /Личный свет/ }));
+
+    expect(screen.queryByText("Выберите тип света")).toBeNull();
+    expect(errorNodes()).toHaveLength(5);
+    expect(document.querySelector('[name="orgName"]')).toBeNull();
+  });
+
+  it("групповой маяк требует название организации", () => {
+    renderForm();
+
+    fireEvent.click(screen.getByRole("radio", { name: /Групповой маяк/ }));
+    expect(control("orgName")).toHaveAttribute("placeholder", "Например, община в Твери");
+
+    clickSubmit();
+
+    expect(errorNodes().map((node) => node.textContent)).toEqual([
+      "Укажите название организации",
+      "Введите имя",
+      "Введите фамилию",
+      "Выберите страну",
+      "Введите корректный email",
+      "Нужно согласие на обработку данных",
+    ]);
+    expect(document.activeElement).toBe(control("orgName"));
+  });
+
+  it("возврат к личному свету убирает поле организации вместе с ошибкой", () => {
+    renderForm();
+
+    fireEvent.click(screen.getByRole("radio", { name: /Групповой маяк/ }));
+    clickSubmit();
+    expect(errorFor("orgName")).toHaveTextContent("Укажите название организации");
+
+    fireEvent.click(screen.getByRole("radio", { name: /Личный свет/ }));
+
+    expect(document.querySelector('[name="orgName"]')).toBeNull();
+    expect(screen.queryByText("Укажите название организации")).toBeNull();
+  });
+
+  it("повторный выбор группы даёт пустое поле организации", () => {
+    renderForm();
+
+    fireEvent.click(screen.getByRole("radio", { name: /Групповой маяк/ }));
+    fireEvent.change(control("orgName"), { target: { value: "Община" } });
+    expect(control("orgName").value).toBe("Община");
+
+    fireEvent.click(screen.getByRole("radio", { name: /Личный свет/ }));
+    fireEvent.click(screen.getByRole("radio", { name: /Групповой маяк/ }));
+
+    expect(control("orgName").value).toBe("");
   });
 
   it("уводит фокус на согласие, когда всё остальное заполнено", () => {
@@ -289,6 +421,7 @@ describe("LightForm: успешная отправка", () => {
     expect(liveRegion()).toHaveTextContent("Ваш свет зажжён! Огонёк уже на карте.");
     expect(toastCard()).toHaveTextContent("Ваш свет зажжён! Огонёк уже на карте.");
 
+    expect(control("orgName").value).toBe("");
     expect(control("firstName").value).toBe("");
     expect(control("lastName").value).toBe("");
     expect(control("city").value).toBe("");
@@ -464,8 +597,9 @@ describe("LightForm: подсказка ошибки и счётчики кар�
     );
   }
 
-  /** Индивидуальный свет: тип по умолчанию, поэтому радио не трогаем. */
+  /** Личный свет: тип при загрузке не выбран, поэтому карточку жмём первым делом. */
   function fillIndividual() {
+    fireEvent.click(screen.getByRole("radio", { name: /Личный свет/ }));
     fireEvent.change(control("firstName"), { target: { value: "Анна" } });
     fireEvent.change(control("lastName"), { target: { value: "Петрова" } });
     fireEvent.change(countrySelect(), { target: { value: "398" } });
@@ -476,6 +610,8 @@ describe("LightForm: подсказка ошибки и счётчики кар�
 
   it("ведёт от невалидного поля к тексту ошибки и держит на нём фокус", () => {
     renderForm();
+    // Тип выбран, поэтому первым невалидным полем оказывается имя, а не группа карточек.
+    fireEvent.click(screen.getByRole("radio", { name: /Личный свет/ }));
     clickSubmit();
 
     const firstName = control("firstName");
@@ -504,5 +640,125 @@ describe("LightForm: подсказка ошибки и счётчики кар�
     expect(screen.getByText("Людей: 695")).toBeInTheDocument();
     expect(screen.getByText("Групп: 248")).toBeInTheDocument();
     expect(liveRegion().textContent).toMatch(/^Ваш свет зажжён/);
+  });
+});
+
+describe("LightForm: пометка обязательных полей", () => {
+  function labelFor(name: string): HTMLElement {
+    const label = document.querySelector<HTMLElement>(`label[for="${control(name).id}"]`);
+    if (!label) {
+      throw new Error(`Нет подписи для контрола ${name}`);
+    }
+
+    return label;
+  }
+
+  function expectRequired(name: string) {
+    const label = labelFor(name);
+    const mark = label.querySelector<HTMLElement>(".lf-required");
+
+    expect(mark, `нет звёздочки у поля ${name}`).not.toBeNull();
+    expect(mark).toHaveAttribute("title", "Обязательно");
+    expect(mark).toHaveAttribute("aria-hidden", "true");
+    expect(mark?.querySelector("svg")).not.toBeNull();
+    // Слово для скринридера стоит сразу за значком, через пробел.
+    expect(label.querySelector(".lf-required + .sr-only")).toHaveTextContent("обязательно");
+    expect(control(name)).toHaveAttribute("aria-required", "true");
+  }
+
+  it("ставит звёздочку у каждого обязательного поля и у согласия", () => {
+    renderForm();
+    fireEvent.click(screen.getByRole("radio", { name: /Групповой маяк/ }));
+
+    for (const name of ["orgName", "firstName", "lastName", "countryId", "email", "consent"]) {
+      expectRequired(name);
+    }
+  });
+
+  it("оставляет город без пометки", () => {
+    renderForm();
+
+    expect(labelFor("city").querySelector(".lf-required")).toBeNull();
+    expect(control("city")).not.toHaveAttribute("aria-required");
+  });
+
+  it("добавляет «обязательно» в доступное имя поля", () => {
+    renderForm();
+
+    expect(screen.getByRole("textbox", { name: "Имя обязательно" })).toBe(control("firstName"));
+    expect(screen.getByRole("combobox", { name: "Страна обязательно" })).toBe(countrySelect());
+  });
+});
+
+/*
+ * Значения оригинала — свойство самого CSS, а не отрендеренного дерева: vitest настроен
+ * с css: false, поэтому в jsdom правил формы нет. Файл читается с диска тем же приёмом,
+ * что и в motionPolicy.test.ts.
+ */
+describe("light-form.css: значения оригинала", () => {
+  const CSS = readFileSync(resolve(process.cwd(), "src/components/form/light-form.css"), "utf8");
+
+  it("не держит ни политики движения, ни следов стеклянной карточки", () => {
+    for (const forbidden of [
+      "prefers-reduced-motion",
+      ".lf-section::before",
+      ".lf-card",
+      ".lf-check-box",
+      ".lf-legend",
+      "data-anim",
+      "--color-signal-400",
+      "--color-horizon-400",
+    ]) {
+      expect(CSS, `в CSS остался ${forbidden}`).not.toContain(forbidden);
+    }
+  });
+
+  it("оставляет секцию прозрачной: подложку кладёт лента карты", () => {
+    const section = CSS.match(/\.lf-section \{([^}]*)\}/);
+    expect(section).not.toBeNull();
+    expect(section?.[1]).not.toContain("background");
+  });
+
+  it("переносит значения полей, карточек и шапки из спецификации", () => {
+    for (const value of [
+      "--field-height: 54px",
+      "--field-radius: 16px",
+      "rgb(33 26 62 / .58)",
+      "rgb(239 237 245 / .18)",
+      "rgb(49 41 77 / .7)",
+      "0 0 0 3px rgb(123 194 199 / .12)",
+      "--field-border-focus: rgb(170 217 220)",
+      "rgb(33 26 62 / .42)",
+      "rgb(123 194 199 / .72)",
+      "0 0 24px var(--halo)",
+      "translateY(-2px)",
+      "width: 40px",
+      "radial-gradient(circle, var(--beacon) 0 2px, transparent 3px)",
+      "--beacon: rgb(170 217 220)",
+      "--beacon: rgb(227 175 210)",
+      "0 0 10px var(--beacon)",
+      "accent-color: rgb(170 217 220)",
+      "--form-width: 42rem",
+      "padding-block: 64px",
+      "margin-bottom: 48px",
+      "18px/1.65",
+      "rgb(219 215 232)",
+      "repeat(6, minmax(0, 1fr))",
+      "grid-column: span 3",
+      "rgb(252 165 165)",
+      "min-height: 190px",
+    ]) {
+      expect(CSS, `в CSS нет значения ${value}`).toContain(value);
+    }
+  });
+
+  it("оставляет ширину кнопки примитиву и добавляет только отступ сверху", () => {
+    const submit = CSS.match(/\.lf-submit \{([^}]*)\}/);
+    expect(submit?.[1]).toContain("margin-top: 8px");
+    expect(submit?.[1]).not.toContain("width");
+  });
+
+  it("держит три брейкпоинта 768px: карточки в две колонки, их высота и сетка полей", () => {
+    expect(CSS.match(/@media \(min-width: 768px\)/g)?.length).toBeGreaterThanOrEqual(3);
   });
 });
