@@ -2,15 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Мобильная адаптация, глобус оригинала и производительность
-status: planning
-last_updated: "2026-09-06T15:30:00.000Z"
+status: ready_to_plan
+last_updated: 2026-09-06T15:52:57.483Z
 last_activity: 2026-09-06
 progress:
   total_phases: 4
   completed_phases: 0
   total_plans: 0
-  completed_plans: 0
+  completed_plans: 2
   percent: 0
+stopped_at: Phase 16 complete (1/1) — ready to discuss Phase 17
 ---
 
 # Project State
@@ -20,20 +21,20 @@ progress:
 See: .planning/PROJECT.md (updated 2026-09-06)
 
 **Core value:** Посетитель открывает страницу и видит красивый, живой лендинг уровня оригинала onevoice27.org, но про ЕАД: узнаёт, что такое «Единый голос 27», видит карту движения по дивизиону и может «зажечь свой свет».
-**Current focus:** Milestone v1.2 — фазы 14–16 параллельно в worktree (hero, огоньки карты, мобильная адаптация), затем фаза 17 (интеграция и приёмка)
+**Current focus:** Phase 17 — интеграция, гейт и приёмка
 
 ## Current Position
 
-Phase: 14 (Hero: видео-глобус и частицы оригинала) — not started
-Plan: —
-Status: Roadmap v1.2 создан (фазы 14–17), планов нет; фазы 14, 15, 16 стартуют параллельно от `main`
-Last activity: 2026-09-06 — Roadmap v1.2 created
+Phase: 14 и 15 исполняются параллельно в worktree (agent-14: план 14-02, agent-15: план 15-01); фаза 16 завершена и слита
+Plan: 14-02, 15-01
+Status: Executing
+Last activity: 2026-09-06
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total plans completed: 47
+- Total plans completed: 48
 - Average duration: - min
 - Total execution time: 0 hours
 
@@ -54,6 +55,7 @@ Last activity: 2026-09-06 — Roadmap v1.2 created
 | 11 | 3 | - | - |
 | 8 | 2 | - | - |
 | 13 | 2 | - | - |
+| 16 | 1 | - | - |
 
 **Recent Trend:**
 
