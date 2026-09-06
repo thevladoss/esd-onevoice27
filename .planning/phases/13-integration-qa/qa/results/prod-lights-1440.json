@@ -1,0 +1,91 @@
+{
+    "mode": "lights",
+    "viewport": {
+        "width": 1440,
+        "height": 900
+    },
+    "firstFrame": true,
+    "firstFrameCounts": {
+        "cores": 942,
+        "buckets": 5
+    },
+    "buckets": 5,
+    "bucketOrder": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+    ],
+    "bucketsMarked": 5,
+    "halos": 942,
+    "halosInBuckets": 942,
+    "haloFillsOk": true,
+    "haloPerson": 694,
+    "haloGroup": 248,
+    "cores": 942,
+    "pulseClass": 0,
+    "gradients": 2,
+    "gradientIds": [
+        "light-halo-person",
+        "light-halo-group"
+    ],
+    "supportsProperty": true,
+    "animationNames": [
+        "light-breathe",
+        "light-breathe",
+        "light-breathe",
+        "light-breathe",
+        "light-breathe"
+    ],
+    "animationDuration": "2.6s",
+    "animationDelay3": "-1.56s",
+    "coreStroke": "rgb(255, 255, 255)",
+    "coreStrokeWidth": "0.9px",
+    "coreStrokeOpacity": "0.5",
+    "personFill": "rgb(158, 67, 154)",
+    "groupFill": "rgb(84, 164, 172)",
+    "peopleAccent": "rgb(210, 142, 190)",
+    "groupsAccent": "rgb(123, 194, 199)",
+    "shellBackground": "rgb(5, 4, 15)",
+    "breath": {
+        "before": {
+            "haloR": "9px",
+            "haloOpacity": "1",
+            "bucketOpacity": "0.57739"
+        },
+        "after": {
+            "haloR": "9px",
+            "haloOpacity": "1",
+            "bucketOpacity": "0.530476"
+        },
+        "gapMs": 650
+    },
+    "checks": {
+        "firstFrame": true,
+        "buckets": true,
+        "bucketOrder": true,
+        "bucketsMarked": true,
+        "halos": true,
+        "halosInBuckets": true,
+        "haloFills": true,
+        "cores": true,
+        "noPulseClass": true,
+        "gradients": true,
+        "coreStroke": true,
+        "coreStrokeWidth": true,
+        "coreStrokeOpacity": true,
+        "lightColors": true,
+        "counterAccents": true,
+        "animationName": true,
+        "animationDuration": true,
+        "animationDelay3": true,
+        "supportsProperty": true,
+        "radiusStatic": true,
+        "opacityBreathes": true
+    },
+    "failed": [],
+    "channel": "chrome",
+    "headless": false,
+    "reduced": false
+}

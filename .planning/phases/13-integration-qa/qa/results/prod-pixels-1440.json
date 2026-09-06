@@ -1,0 +1,277 @@
+[
+  {
+    "mode": "cover",
+    "selector": ".news-card__cover",
+    "index": 0,
+    "src": "https://img.youtube.com/vi/YpLD6p-z00g/hqdefault.jpg",
+    "rect": {
+      "x": 177,
+      "y": 386.76,
+      "width": 339.33,
+      "height": 190.87
+    },
+    "ratio": 1.7778,
+    "topBand": 3.56,
+    "bottomBand": 13.09,
+    "topBlackShare": 0.917,
+    "bottomBlackShare": 0,
+    "center": 47.9,
+    "bandRows": 6,
+    "floor": 12,
+    "source": {
+      "width": 480,
+      "height": 360,
+      "topBar": 94,
+      "bottomBar": 67,
+      "expectedBar": 45,
+      "barsBeyond16x9": {
+        "top": 49,
+        "bottom": 22
+      },
+      "contentRatio": 2.412
+    },
+    "pass": false,
+    "url": "https://thevladoss.github.io/esd-onevoice27/",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    }
+  },
+  {
+    "mode": "cover",
+    "selector": ".news-card__cover",
+    "index": 1,
+    "src": "https://img.youtube.com/vi/qQsgK18gKCU/hqdefault.jpg",
+    "rect": {
+      "x": 550.33,
+      "y": 386.76,
+      "width": 339.34,
+      "height": 190.88
+    },
+    "ratio": 1.7778,
+    "topBand": 110.14,
+    "bottomBand": 16.74,
+    "topBlackShare": 0,
+    "bottomBlackShare": 0,
+    "center": 106.23,
+    "bandRows": 6,
+    "floor": 12,
+    "source": {
+      "width": 480,
+      "height": 360,
+      "topBar": 46,
+      "bottomBar": 46,
+      "expectedBar": 45,
+      "barsBeyond16x9": {
+        "top": 1,
+        "bottom": 1
+      },
+      "contentRatio": 1.791
+    },
+    "pass": true,
+    "url": "https://thevladoss.github.io/esd-onevoice27/",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    }
+  },
+  {
+    "mode": "cover",
+    "selector": ".news-card__cover",
+    "index": 2,
+    "src": "https://img.youtube.com/vi/dnQS3tFmCNU/hqdefault.jpg",
+    "rect": {
+      "x": 923.66,
+      "y": 386.76,
+      "width": 339.34,
+      "height": 190.87
+    },
+    "ratio": 1.7778,
+    "topBand": 61.67,
+    "bottomBand": 16.54,
+    "topBlackShare": 0,
+    "bottomBlackShare": 0,
+    "center": 109.98,
+    "bandRows": 6,
+    "floor": 12,
+    "source": {
+      "width": 480,
+      "height": 360,
+      "topBar": 46,
+      "bottomBar": 46,
+      "expectedBar": 45,
+      "barsBeyond16x9": {
+        "top": 1,
+        "bottom": 1
+      },
+      "contentRatio": 1.791
+    },
+    "pass": true,
+    "url": "https://thevladoss.github.io/esd-onevoice27/",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    }
+  },
+  {
+    "mode": "cover",
+    "selector": ".news-card__cover",
+    "index": 3,
+    "src": "https://img.youtube.com/vi/GK_RXxwZxEc/hqdefault.jpg",
+    "rect": {
+      "x": 177,
+      "y": 386.64,
+      "width": 339.33,
+      "height": 190.87
+    },
+    "ratio": 1.7778,
+    "topBand": 3.5,
+    "bottomBand": 13.11,
+    "topBlackShare": 0.922,
+    "bottomBlackShare": 0,
+    "center": 75.62,
+    "bandRows": 6,
+    "floor": 12,
+    "source": {
+      "width": 480,
+      "height": 360,
+      "topBar": 77,
+      "bottomBar": 77,
+      "expectedBar": 45,
+      "barsBeyond16x9": {
+        "top": 32,
+        "bottom": 32
+      },
+      "contentRatio": 2.33
+    },
+    "pass": false,
+    "url": "https://thevladoss.github.io/esd-onevoice27/",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    }
+  },
+  {
+    "mode": "cover",
+    "selector": ".news-card__cover",
+    "index": 4,
+    "src": "https://img.youtube.com/vi/xH3MMwox8cU/hqdefault.jpg",
+    "rect": {
+      "x": 550.33,
+      "y": 386.7,
+      "width": 339.34,
+      "height": 190.88
+    },
+    "ratio": 1.7778,
+    "topBand": 136.62,
+    "bottomBand": 19.29,
+    "topBlackShare": 0,
+    "bottomBlackShare": 0,
+    "center": 107.08,
+    "bandRows": 6,
+    "floor": 12,
+    "source": {
+      "width": 480,
+      "height": 360,
+      "topBar": 45,
+      "bottomBar": 45,
+      "expectedBar": 45,
+      "barsBeyond16x9": {
+        "top": 0,
+        "bottom": 0
+      },
+      "contentRatio": 1.778
+    },
+    "pass": true,
+    "url": "https://thevladoss.github.io/esd-onevoice27/",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    }
+  },
+  {
+    "mode": "cover",
+    "selector": ".news-card__cover",
+    "index": 5,
+    "src": "https://img.youtube.com/vi/gwqe_QH6KX0/hqdefault.jpg",
+    "rect": {
+      "x": 923.66,
+      "y": 386.91,
+      "width": 339.34,
+      "height": 190.88
+    },
+    "ratio": 1.7778,
+    "topBand": 17.3,
+    "bottomBand": 14.56,
+    "topBlackShare": 0,
+    "bottomBlackShare": 0,
+    "center": 47.53,
+    "bandRows": 6,
+    "floor": 12,
+    "source": {
+      "width": 480,
+      "height": 360,
+      "topBar": 45,
+      "bottomBar": 45,
+      "expectedBar": 45,
+      "barsBeyond16x9": {
+        "top": 0,
+        "bottom": 0
+      },
+      "contentRatio": 1.778
+    },
+    "pass": true,
+    "url": "https://thevladoss.github.io/esd-onevoice27/",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    }
+  },
+  {
+    "mode": "points",
+    "shell": ".map-shell",
+    "rect": {
+      "x": 0,
+      "y": 191.09,
+      "width": 1440,
+      "height": 630
+    },
+    "points": [
+      {
+        "fx": 0.5,
+        "fy": 0.12,
+        "x": 720,
+        "y": 267,
+        "r": 18,
+        "g": 13,
+        "b": 52,
+        "L": 16.88
+      },
+      {
+        "fx": 0.08,
+        "fy": 0.5,
+        "x": 115,
+        "y": 506,
+        "r": 19,
+        "g": 16,
+        "b": 42,
+        "L": 18.52
+      },
+      {
+        "fx": 0.92,
+        "fy": 0.85,
+        "x": 1325,
+        "y": 727,
+        "r": 5,
+        "g": 4,
+        "b": 15,
+        "L": 5.01
+      }
+    ],
+    "url": "https://thevladoss.github.io/esd-onevoice27/",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    }
+  }
+]

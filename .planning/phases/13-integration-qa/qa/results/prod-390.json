@@ -1,0 +1,684 @@
+{
+  "meta": {
+    "site": "prod",
+    "href": "https://thevladoss.github.io/esd-onevoice27/",
+    "innerWidth": 390,
+    "innerHeight": 844,
+    "devicePixelRatio": 1,
+    "scrollWidth": 390,
+    "documentHeight": 11291,
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36"
+  },
+  "glass": {
+    "aboutCard": {
+      "backgroundImage": "linear-gradient(145deg, rgba(255, 255, 255, 0.043), rgba(0, 0, 0, 0) 30%), linear-gradient(rgba(49, 41, 77, 0.44), rgba(18, 12, 52, 0.62))",
+      "backgroundColor": "rgba(0, 0, 0, 0)",
+      "borderTopWidth": "1px",
+      "borderTopStyle": "solid",
+      "borderTopColor": "rgba(239, 237, 245, 0.18)",
+      "borderRadius": "16px",
+      "boxShadow": "rgba(255, 255, 255, 0.035) 0px 1px 0px 0px inset, rgba(3, 2, 18, 0.24) 0px 20px 46px 0px",
+      "backdropFilter": "blur(14px) saturate(1.12)"
+    },
+    "aboutCardCount": 3,
+    "resourceCard": {
+      "backgroundImage": "linear-gradient(rgba(255, 255, 255, 0.075), rgba(0, 0, 0, 0) 34%), linear-gradient(145deg, rgba(49, 41, 77, 0.44), rgba(18, 12, 52, 0.62))",
+      "backgroundColor": "rgba(0, 0, 0, 0)",
+      "borderTopWidth": "1px",
+      "borderTopStyle": "solid",
+      "borderTopColor": "rgba(239, 237, 245, 0.18)",
+      "borderRadius": "16px",
+      "boxShadow": "rgba(255, 255, 255, 0.035) 0px 1px 0px 0px inset, rgba(3, 2, 18, 0.24) 0px 20px 46px 0px",
+      "backdropFilter": "blur(14px) saturate(1.25)"
+    },
+    "resourceCardCount": 3,
+    "triptychItem": {
+      "backgroundImage": "none",
+      "backgroundColor": "rgba(33, 26, 62, 0.48)",
+      "borderTopWidth": "1px",
+      "borderTopStyle": "solid",
+      "borderTopColor": "rgba(239, 237, 245, 0.15)",
+      "borderRadius": "14px",
+      "boxShadow": "none",
+      "backdropFilter": "none"
+    },
+    "triptychItemCount": 3,
+    "triptychFrame": {
+      "backgroundImage": "none",
+      "backgroundColor": "rgba(0, 0, 0, 0)",
+      "borderTopWidth": "0px",
+      "borderTopStyle": "none",
+      "borderTopColor": "rgb(248, 247, 251)",
+      "borderRadius": "18px",
+      "boxShadow": "none",
+      "backdropFilter": "none"
+    },
+    "triptychFrameBefore": {
+      "boxShadow": "rgba(255, 255, 255, 0.075) 1px 1px 0px 0px inset, rgba(3, 2, 18, 0.3) -1px -1px 0px 0px inset",
+      "backgroundImage": "none",
+      "borderRadius": "18px",
+      "filter": "none",
+      "inset": "0px"
+    },
+    "titles": {
+      "about": {
+        "backgroundImage": "linear-gradient(104deg, rgb(227, 175, 210) 2%, rgb(143, 157, 214) 52%, rgb(123, 194, 199))",
+        "color": "rgb(248, 247, 251)",
+        "webkitTextFillColor": "rgba(0, 0, 0, 0)",
+        "fontWeight": "900",
+        "fontSize": "30px"
+      },
+      "map": {
+        "backgroundImage": "none",
+        "color": "rgb(239, 237, 245)",
+        "webkitTextFillColor": "rgb(239, 237, 245)",
+        "fontWeight": "900",
+        "fontSize": "30px"
+      },
+      "form": {
+        "backgroundImage": "none",
+        "color": "rgb(239, 237, 245)",
+        "webkitTextFillColor": "rgb(239, 237, 245)",
+        "fontWeight": "900",
+        "fontSize": "30px"
+      },
+      "involve": {
+        "backgroundImage": "none",
+        "color": "rgb(239, 237, 245)",
+        "webkitTextFillColor": "rgb(239, 237, 245)",
+        "fontWeight": "900",
+        "fontSize": "30px"
+      },
+      "news": {
+        "backgroundImage": "none",
+        "color": "rgb(239, 237, 245)",
+        "webkitTextFillColor": "rgb(239, 237, 245)",
+        "fontWeight": "900",
+        "fontSize": "30px"
+      },
+      "resources": {
+        "backgroundImage": "none",
+        "color": "rgb(239, 237, 245)",
+        "webkitTextFillColor": "rgb(239, 237, 245)",
+        "fontWeight": "900",
+        "fontSize": "30px"
+      }
+    }
+  },
+  "map": {
+    "shellClipPath": "polygon(0px 32px, 100% 0px, 100% calc(100% - 32px), 0px 100%)",
+    "shellVertices": 4,
+    "shellRect": {
+      "x": 0,
+      "y": 1448.87,
+      "width": 390,
+      "height": 590.8
+    },
+    "bandBeforeClipPath": "polygon(0px 32px, 100% 0px, 100% 100%, 0px 100%)",
+    "bandBeforeBackgroundColor": "rgb(18, 12, 52)",
+    "shellBackgroundColor": "rgb(5, 4, 15)",
+    "canvasBackgroundColor": "rgba(0, 0, 0, 0)",
+    "bucketCount": 5,
+    "buckets": [
+      "0",
+      "1",
+      "2",
+      "3",
+      "4"
+    ],
+    "bucketAnimationName": "light-breathe",
+    "bucketAnimationDuration": "2.6s",
+    "haloCount": 942,
+    "coreCount": 942,
+    "pulseCount": 0,
+    "keyframes": [
+      "footer-wave-drift",
+      "footer-halo-drift",
+      "hero-beam",
+      "star-drift",
+      "star-drift-b",
+      "lf-toast-in",
+      "lf-toast-out",
+      "light-breathe",
+      "light-arrive",
+      "resources-zoom",
+      "resources-particles"
+    ],
+    "hasBreathe": true,
+    "hasPulse": false,
+    "samplePoints": [
+      {
+        "fx": 0.5,
+        "fy": 0.12,
+        "x": 195,
+        "y": 1520
+      },
+      {
+        "fx": 0.08,
+        "fy": 0.5,
+        "x": 31,
+        "y": 1744
+      },
+      {
+        "fx": 0.92,
+        "fy": 0.85,
+        "x": 359,
+        "y": 1951
+      }
+    ],
+    "scrollY": 0
+  },
+  "form": {
+    "fields": {
+      "initial": [
+        {
+          "name": "lightType",
+          "id": "_r_2_-type-individual",
+          "type": "radio",
+          "required": false,
+          "role": null
+        },
+        {
+          "name": "lightType",
+          "id": "_r_2_-type-group",
+          "type": "radio",
+          "required": false,
+          "role": null
+        },
+        {
+          "name": "firstName",
+          "id": "_r_2_-firstName",
+          "type": "text",
+          "required": true,
+          "role": null
+        },
+        {
+          "name": "lastName",
+          "id": "_r_2_-lastName",
+          "type": "text",
+          "required": true,
+          "role": null
+        },
+        {
+          "name": "countryId",
+          "id": "_r_2_-countryId",
+          "type": "select",
+          "required": true,
+          "role": null
+        },
+        {
+          "name": "city",
+          "id": "_r_2_-city",
+          "type": "text",
+          "required": false,
+          "role": null
+        },
+        {
+          "name": "email",
+          "id": "_r_2_-email",
+          "type": "email",
+          "required": true,
+          "role": null
+        },
+        {
+          "name": "consent",
+          "id": "_r_2_-consent",
+          "type": "checkbox",
+          "required": true,
+          "role": null
+        }
+      ],
+      "individual": [
+        {
+          "name": "lightType",
+          "id": "_r_2_-type-individual",
+          "type": "radio",
+          "required": false,
+          "role": null
+        },
+        {
+          "name": "lightType",
+          "id": "_r_2_-type-group",
+          "type": "radio",
+          "required": false,
+          "role": null
+        },
+        {
+          "name": "firstName",
+          "id": "_r_2_-firstName",
+          "type": "text",
+          "required": true,
+          "role": null
+        },
+        {
+          "name": "lastName",
+          "id": "_r_2_-lastName",
+          "type": "text",
+          "required": true,
+          "role": null
+        },
+        {
+          "name": "countryId",
+          "id": "_r_2_-countryId",
+          "type": "select",
+          "required": true,
+          "role": null
+        },
+        {
+          "name": "city",
+          "id": "_r_2_-city",
+          "type": "text",
+          "required": false,
+          "role": null
+        },
+        {
+          "name": "email",
+          "id": "_r_2_-email",
+          "type": "email",
+          "required": true,
+          "role": null
+        },
+        {
+          "name": "consent",
+          "id": "_r_2_-consent",
+          "type": "checkbox",
+          "required": true,
+          "role": null
+        }
+      ],
+      "group": [
+        {
+          "name": "lightType",
+          "id": "_r_2_-type-individual",
+          "type": "radio",
+          "required": false,
+          "role": null
+        },
+        {
+          "name": "lightType",
+          "id": "_r_2_-type-group",
+          "type": "radio",
+          "required": false,
+          "role": null
+        },
+        {
+          "name": "orgName",
+          "id": "_r_2_-orgName",
+          "type": "text",
+          "required": true,
+          "role": null
+        },
+        {
+          "name": "firstName",
+          "id": "_r_2_-firstName",
+          "type": "text",
+          "required": true,
+          "role": null
+        },
+        {
+          "name": "lastName",
+          "id": "_r_2_-lastName",
+          "type": "text",
+          "required": true,
+          "role": null
+        },
+        {
+          "name": "countryId",
+          "id": "_r_2_-countryId",
+          "type": "select",
+          "required": true,
+          "role": null
+        },
+        {
+          "name": "city",
+          "id": "_r_2_-city",
+          "type": "text",
+          "required": false,
+          "role": null
+        },
+        {
+          "name": "email",
+          "id": "_r_2_-email",
+          "type": "email",
+          "required": true,
+          "role": null
+        },
+        {
+          "name": "consent",
+          "id": "_r_2_-consent",
+          "type": "checkbox",
+          "required": true,
+          "role": null
+        }
+      ]
+    },
+    "typeCardIdle": {
+      "backgroundColor": "rgba(33, 26, 62, 0.42)",
+      "borderTopColor": "rgba(239, 237, 245, 0.16)",
+      "borderTopWidth": "1px",
+      "borderRadius": "16px",
+      "minHeight": "150px",
+      "padding": "24px",
+      "boxShadow": "rgba(248, 247, 251, 0.04) 0px 1px 0px 0px inset, rgba(18, 12, 52, 0.16) 0px 16px 38px 0px"
+    },
+    "typeCardChecked": {
+      "backgroundColor": "rgba(51, 94, 104, 0.16)",
+      "borderTopColor": "rgba(123, 194, 199, 0.72)",
+      "borderTopWidth": "1px",
+      "borderRadius": "16px",
+      "minHeight": "150px",
+      "padding": "24px",
+      "boxShadow": "rgba(248, 247, 251, 0.08) 0px 1px 0px 0px inset, rgba(18, 12, 52, 0.28) 0px 18px 42px 0px, rgba(187, 108, 174, 0.3) 0px 0px 24px 0px"
+    },
+    "typeCardRect": {
+      "x": 16,
+      "y": 621.73,
+      "width": 358,
+      "height": 170
+    },
+    "field": {
+      "minHeight": "54px",
+      "height": "54px",
+      "borderRadius": "16px",
+      "backgroundColor": "rgba(33, 26, 62, 0.58)",
+      "borderTopColor": "rgba(239, 237, 245, 0.18)",
+      "borderTopWidth": "1px",
+      "padding": "14px 16px",
+      "fontSize": "16px",
+      "fontWeight": "500",
+      "color": "rgba(248, 247, 251, 0.94)"
+    },
+    "fieldRect": {
+      "x": 16,
+      "y": 934.92,
+      "width": 358,
+      "height": 54
+    },
+    "label": {
+      "fontWeight": "650",
+      "fontSize": "14px",
+      "color": "rgba(248, 247, 251, 0.96)",
+      "textTransform": "none"
+    },
+    "labelText": "Имя обязательно",
+    "submit": {
+      "minHeight": "54px",
+      "borderRadius": "999px",
+      "fontWeight": "700",
+      "width": 358,
+      "text": "Зажечь свой свет →"
+    },
+    "glassWrapper": 0,
+    "formWidth": 358
+  },
+  "media": {
+    "cards": [
+      {
+        "index": 0,
+        "ratio": 1.7778,
+        "rect": {
+          "x": 17,
+          "y": 7560.69,
+          "width": 356,
+          "height": 200.25
+        },
+        "objectFit": "cover",
+        "objectPosition": "50% 50%",
+        "naturalWidth": 480,
+        "naturalHeight": 360,
+        "currentSrc": "https://img.youtube.com/vi/YpLD6p-z00g/hqdefault.jpg"
+      },
+      {
+        "index": 1,
+        "ratio": 1.7778,
+        "rect": {
+          "x": 17,
+          "y": 7786.94,
+          "width": 356,
+          "height": 200.25
+        },
+        "objectFit": "cover",
+        "objectPosition": "50% 50%",
+        "naturalWidth": 480,
+        "naturalHeight": 360,
+        "currentSrc": "https://img.youtube.com/vi/qQsgK18gKCU/hqdefault.jpg"
+      },
+      {
+        "index": 2,
+        "ratio": 1.7778,
+        "rect": {
+          "x": 17,
+          "y": 8013.19,
+          "width": 356,
+          "height": 200.25
+        },
+        "objectFit": "cover",
+        "objectPosition": "50% 50%",
+        "naturalWidth": 480,
+        "naturalHeight": 360,
+        "currentSrc": "https://img.youtube.com/vi/dnQS3tFmCNU/hqdefault.jpg"
+      },
+      {
+        "index": 3,
+        "ratio": 1.7778,
+        "rect": {
+          "x": 17,
+          "y": 8239.44,
+          "width": 356,
+          "height": 200.25
+        },
+        "objectFit": "cover",
+        "objectPosition": "50% 50%",
+        "naturalWidth": 480,
+        "naturalHeight": 360,
+        "currentSrc": "https://img.youtube.com/vi/GK_RXxwZxEc/hqdefault.jpg"
+      },
+      {
+        "index": 4,
+        "ratio": 1.7778,
+        "rect": {
+          "x": 17,
+          "y": 8465.69,
+          "width": 356,
+          "height": 200.25
+        },
+        "objectFit": "cover",
+        "objectPosition": "50% 50%",
+        "naturalWidth": 480,
+        "naturalHeight": 360,
+        "currentSrc": "https://img.youtube.com/vi/xH3MMwox8cU/hqdefault.jpg"
+      },
+      {
+        "index": 5,
+        "ratio": 1.7778,
+        "rect": {
+          "x": 17,
+          "y": 8691.94,
+          "width": 356,
+          "height": 200.25
+        },
+        "objectFit": "cover",
+        "objectPosition": "50% 50%",
+        "naturalWidth": 480,
+        "naturalHeight": 360,
+        "currentSrc": "https://img.youtube.com/vi/gwqe_QH6KX0/hqdefault.jpg"
+      }
+    ],
+    "count": 6,
+    "coverRects": [
+      {
+        "index": 0,
+        "rect": {
+          "x": 17,
+          "y": 7560.69,
+          "width": 356,
+          "height": 200.25
+        }
+      },
+      {
+        "index": 3,
+        "rect": {
+          "x": 17,
+          "y": 8239.44,
+          "width": 356,
+          "height": 200.25
+        }
+      }
+    ],
+    "scrollY": 0
+  },
+  "res": {
+    "music": {
+      "rect": {
+        "x": 31,
+        "y": 9360.98,
+        "width": 328,
+        "height": 248
+      },
+      "cardRect": {
+        "x": 31,
+        "y": 9360.98,
+        "width": 328,
+        "height": 248
+      },
+      "dw": 8,
+      "dh": -48
+    },
+    "copy": {
+      "rect": {
+        "x": 16,
+        "y": 9137.19,
+        "width": 358,
+        "height": 171.8
+      },
+      "cardRect": null,
+      "dw": -170,
+      "dh": -351.2
+    },
+    "materials": {
+      "rect": {
+        "x": 31,
+        "y": 9632.98,
+        "width": 328,
+        "height": 248
+      },
+      "cardRect": {
+        "x": 31,
+        "y": 9632.98,
+        "width": 328,
+        "height": 248
+      },
+      "dw": 56,
+      "dh": -88
+    },
+    "video": {
+      "rect": {
+        "x": 31,
+        "y": 9904.98,
+        "width": 328,
+        "height": 248
+      },
+      "cardRect": {
+        "x": 31,
+        "y": 9904.98,
+        "width": 328,
+        "height": 248
+      },
+      "dw": -40,
+      "dh": -8
+    },
+    "gridTemplateColumns": "none",
+    "columnGap": "24px",
+    "rowGap": "24px",
+    "justifyContent": "normal",
+    "alignItems": "center",
+    "display": "flex",
+    "gridWidth": 358,
+    "copyStyle": {
+      "borderTopStyle": "solid",
+      "borderTopColor": "rgb(248, 247, 251)",
+      "borderTopWidth": "0px",
+      "backgroundColor": "rgba(0, 0, 0, 0)",
+      "borderRadius": "0px",
+      "padding": "0px"
+    },
+    "panelsPresent": false
+  },
+  "foot": {
+    "display": "flex",
+    "flexDirection": "column",
+    "alignItems": "center",
+    "textAlign": "center",
+    "gap": "20px",
+    "justifyContent": "center",
+    "width": 358,
+    "children": [
+      {
+        "name": "wordmark wordmark--footer",
+        "tag": "span",
+        "order": "0",
+        "rect": {
+          "x": 100,
+          "y": 11041.62,
+          "width": 190,
+          "height": 72
+        },
+        "centerDx": 0
+      },
+      {
+        "name": "site-footer__caption",
+        "tag": "p",
+        "order": "0",
+        "rect": {
+          "x": 16,
+          "y": 11133.62,
+          "width": 358,
+          "height": 43
+        },
+        "centerDx": 0
+      },
+      {
+        "name": "site-footer__links",
+        "tag": "nav",
+        "order": "0",
+        "rect": {
+          "x": 85.44,
+          "y": 11196.62,
+          "width": 219.13,
+          "height": 59.19
+        },
+        "centerDx": 0
+      },
+      {
+        "name": "site-footer__legal",
+        "tag": "p",
+        "order": "0",
+        "rect": {
+          "x": 16,
+          "y": 11275.8,
+          "width": 358,
+          "height": 40.8
+        },
+        "centerDx": 0
+      }
+    ],
+    "logo": {
+      "x": 100,
+      "y": 11041.62,
+      "width": 190,
+      "height": 72,
+      "filter": "drop-shadow(rgba(91, 90, 214, 0.13) 0px 0px 22px)",
+      "beforeFilter": "none"
+    },
+    "linksDirection": "column",
+    "linksCount": 2,
+    "legalBorderTop": "0px"
+  },
+  "probe": {
+    "playwright": "1.63.0-alpha-2026-08-31",
+    "channel": "chrome",
+    "url": "https://thevladoss.github.io/esd-onevoice27/",
+    "attempt": 1,
+    "takenAt": "2026-09-06T09:48:33.446Z"
+  }
+}

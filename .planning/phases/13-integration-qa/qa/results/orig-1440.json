@@ -1,0 +1,633 @@
+{
+  "meta": {
+    "site": "orig",
+    "href": "https://onevoice27.org/",
+    "innerWidth": 1440,
+    "innerHeight": 900,
+    "devicePixelRatio": 1,
+    "scrollWidth": 1834,
+    "documentHeight": 7698,
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36"
+  },
+  "glass": {
+    "aboutCard": {
+      "backgroundImage": "linear-gradient(145deg, rgba(255, 255, 255, 0.043), rgba(0, 0, 0, 0) 30%), linear-gradient(rgba(49, 41, 77, 0.44), rgba(18, 12, 52, 0.62))",
+      "backgroundColor": "rgba(0, 0, 0, 0)",
+      "borderTopWidth": "1px",
+      "borderTopStyle": "solid",
+      "borderTopColor": "rgba(239, 237, 245, 0.18)",
+      "borderRadius": "16px",
+      "boxShadow": "rgba(255, 255, 255, 0.035) 0px 1px 0px 0px inset, rgba(3, 2, 18, 0.24) 0px 20px 46px 0px",
+      "backdropFilter": "blur(14px) saturate(1.12)"
+    },
+    "aboutCardCount": 3,
+    "resourceCard": {
+      "backgroundImage": "linear-gradient(rgba(255, 255, 255, 0.075), rgba(0, 0, 0, 0) 34%), linear-gradient(145deg, rgba(49, 41, 77, 0.44), rgba(18, 12, 52, 0.62))",
+      "backgroundColor": "rgba(0, 0, 0, 0)",
+      "borderTopWidth": "1px",
+      "borderTopStyle": "solid",
+      "borderTopColor": "rgba(239, 237, 245, 0.18)",
+      "borderRadius": "16px",
+      "boxShadow": "rgba(255, 255, 255, 0.035) 0px 1px 0px 0px inset, rgba(3, 2, 18, 0.24) 0px 20px 46px 0px",
+      "backdropFilter": "blur(14px) saturate(1.25)"
+    },
+    "resourceCardCount": 3,
+    "triptychItem": {
+      "backgroundImage": "none",
+      "backgroundColor": "rgba(33, 26, 62, 0.48)",
+      "borderTopWidth": "1px",
+      "borderTopStyle": "solid",
+      "borderTopColor": "rgba(239, 237, 245, 0.15)",
+      "borderRadius": "16px 0px 0px 16px",
+      "boxShadow": "rgba(2, 2, 12, 0.38) 0px 18px 40px 0px, rgba(48, 63, 131, 0.28) 0px 12px 34px 0px",
+      "backdropFilter": "none"
+    },
+    "triptychItemCount": 3,
+    "triptychFrame": {
+      "backgroundImage": "none",
+      "backgroundColor": "rgba(0, 0, 0, 0)",
+      "borderTopWidth": "0px",
+      "borderTopStyle": "none",
+      "borderTopColor": "rgba(248, 247, 251, 0.9)",
+      "borderRadius": "0px",
+      "boxShadow": "none",
+      "backdropFilter": "none"
+    },
+    "triptychFrameBefore": {
+      "boxShadow": "rgba(2, 2, 12, 0.58) 0px 34px 76px 0px, rgba(59, 77, 161, 0.22) 0px 0px 54px 0px",
+      "backgroundImage": "radial-gradient(circle at 8% 14%, rgba(210, 142, 190, 0.54), rgba(0, 0, 0, 0) 38%), radial-gradient(circle at 52% 104%, rgba(105, 120, 195, 0.46), rgba(0, 0, 0, 0) 48%), radial-gradient(circle at 94% 72%, rgba(123, 194, 199, 0.48), rgba(0, 0, 0, 0) 40%)",
+      "borderRadius": "36px",
+      "filter": "blur(26px)",
+      "inset": "-18px"
+    },
+    "titles": {
+      "about": {
+        "backgroundImage": "linear-gradient(104deg, rgb(227, 175, 210) 2%, rgb(143, 157, 214) 52%, rgb(123, 194, 199) 98%)",
+        "color": "rgb(227, 175, 210)",
+        "webkitTextFillColor": "rgba(0, 0, 0, 0)",
+        "fontWeight": "900",
+        "fontSize": "48px"
+      },
+      "map": {
+        "backgroundImage": "none",
+        "color": "rgb(239, 237, 245)",
+        "webkitTextFillColor": "rgb(239, 237, 245)",
+        "fontWeight": "900",
+        "fontSize": "48px"
+      },
+      "form": {
+        "backgroundImage": "none",
+        "color": "rgb(248, 247, 251)",
+        "webkitTextFillColor": "rgb(248, 247, 251)",
+        "fontWeight": "900",
+        "fontSize": "48px"
+      },
+      "involve": {
+        "backgroundImage": "none",
+        "color": "rgb(239, 237, 245)",
+        "webkitTextFillColor": "rgb(239, 237, 245)",
+        "fontWeight": "900",
+        "fontSize": "48px"
+      },
+      "news": {
+        "backgroundImage": "none",
+        "color": "rgb(239, 237, 245)",
+        "webkitTextFillColor": "rgb(239, 237, 245)",
+        "fontWeight": "900",
+        "fontSize": "48px"
+      },
+      "resources": {
+        "backgroundImage": "none",
+        "color": "rgb(239, 237, 245)",
+        "webkitTextFillColor": "rgb(239, 237, 245)",
+        "fontWeight": "900",
+        "fontSize": "48px"
+      }
+    }
+  },
+  "map": {
+    "shellClipPath": "polygon(0px 46.08px, 100% 0px, 100% calc(100% - 46.08px), 0px 100%)",
+    "shellVertices": 4,
+    "shellRect": {
+      "x": 0,
+      "y": 542.92,
+      "width": 1440,
+      "height": 882
+    },
+    "bandBeforeClipPath": "polygon(0px 46.08px, 100% 0px, 100% 100%, 0px 100%)",
+    "bandBeforeBackgroundColor": "rgba(0, 0, 0, 0)",
+    "shellBackgroundColor": "rgba(0, 0, 0, 0)",
+    "canvasBackgroundColor": "rgba(0, 0, 0, 0)",
+    "bucketCount": 0,
+    "buckets": [],
+    "bucketAnimationName": null,
+    "bucketAnimationDuration": null,
+    "haloCount": 0,
+    "coreCount": 0,
+    "pulseCount": 0,
+    "keyframes": [
+      "ping",
+      "spin",
+      "enter",
+      "exit",
+      "gradient",
+      "mapboxgl-spin",
+      "mapboxgl-user-location-dot-pulse",
+      "ov-resources-zoom-music",
+      "ov-resources-zoom-materials",
+      "ov-resources-zoom-video",
+      "ov-resources-particles",
+      "ov-footer-wave-drift",
+      "ov-footer-halo-drift",
+      "ov-hero-beam"
+    ],
+    "hasBreathe": false,
+    "hasPulse": false,
+    "samplePoints": [
+      {
+        "fx": 0.5,
+        "fy": 0.12,
+        "x": 720,
+        "y": 649
+      },
+      {
+        "fx": 0.08,
+        "fy": 0.5,
+        "x": 115,
+        "y": 984
+      },
+      {
+        "fx": 0.92,
+        "fy": 0.85,
+        "x": 1325,
+        "y": 1293
+      }
+    ],
+    "scrollY": 10
+  },
+  "form": {
+    "fields": {
+      "initial": [
+        {
+          "name": "LIGHT_TYPE",
+          "id": "LIGHT_TYPE-individual",
+          "type": "radio",
+          "required": false,
+          "role": null
+        },
+        {
+          "name": "LIGHT_TYPE",
+          "id": "LIGHT_TYPE-group",
+          "type": "radio",
+          "required": false,
+          "role": null
+        },
+        {
+          "name": "FIRSTNAME",
+          "id": "FIRSTNAME",
+          "type": "text",
+          "required": true,
+          "role": null
+        },
+        {
+          "name": "LASTNAME",
+          "id": "LASTNAME",
+          "type": "text",
+          "required": true,
+          "role": null
+        },
+        {
+          "name": null,
+          "id": "base-ui-_R_6lellikql6_",
+          "type": "text",
+          "required": false,
+          "role": "combobox"
+        },
+        {
+          "name": "email",
+          "id": "email",
+          "type": "email",
+          "required": true,
+          "role": null
+        },
+        {
+          "name": "terms",
+          "id": "terms",
+          "type": "checkbox",
+          "required": false,
+          "role": null
+        }
+      ],
+      "individual": [
+        {
+          "name": "LIGHT_TYPE",
+          "id": "LIGHT_TYPE-individual",
+          "type": "radio",
+          "required": false,
+          "role": null
+        },
+        {
+          "name": "LIGHT_TYPE",
+          "id": "LIGHT_TYPE-group",
+          "type": "radio",
+          "required": false,
+          "role": null
+        },
+        {
+          "name": "FIRSTNAME",
+          "id": "FIRSTNAME",
+          "type": "text",
+          "required": true,
+          "role": null
+        },
+        {
+          "name": "LASTNAME",
+          "id": "LASTNAME",
+          "type": "text",
+          "required": true,
+          "role": null
+        },
+        {
+          "name": null,
+          "id": "base-ui-_R_6lellikql6_",
+          "type": "text",
+          "required": false,
+          "role": "combobox"
+        },
+        {
+          "name": "email",
+          "id": "email",
+          "type": "email",
+          "required": true,
+          "role": null
+        },
+        {
+          "name": "terms",
+          "id": "terms",
+          "type": "checkbox",
+          "required": false,
+          "role": null
+        }
+      ],
+      "group": [
+        {
+          "name": "LIGHT_TYPE",
+          "id": "LIGHT_TYPE-individual",
+          "type": "radio",
+          "required": false,
+          "role": null
+        },
+        {
+          "name": "LIGHT_TYPE",
+          "id": "LIGHT_TYPE-group",
+          "type": "radio",
+          "required": false,
+          "role": null
+        },
+        {
+          "name": "ORG_NAME",
+          "id": "ORG_NAME",
+          "type": "text",
+          "required": true,
+          "role": null
+        },
+        {
+          "name": "FIRSTNAME",
+          "id": "FIRSTNAME",
+          "type": "text",
+          "required": true,
+          "role": null
+        },
+        {
+          "name": "LASTNAME",
+          "id": "LASTNAME",
+          "type": "text",
+          "required": true,
+          "role": null
+        },
+        {
+          "name": null,
+          "id": "base-ui-_R_6lellikql6_",
+          "type": "text",
+          "required": false,
+          "role": "combobox"
+        },
+        {
+          "name": "email",
+          "id": "email",
+          "type": "email",
+          "required": true,
+          "role": null
+        },
+        {
+          "name": "terms",
+          "id": "terms",
+          "type": "checkbox",
+          "required": false,
+          "role": null
+        }
+      ]
+    },
+    "typeCardIdle": {
+      "backgroundColor": "rgba(33, 26, 62, 0.42)",
+      "borderTopColor": "rgba(239, 237, 245, 0.16)",
+      "borderTopWidth": "1px",
+      "borderRadius": "16px",
+      "minHeight": "190px",
+      "padding": "24px",
+      "boxShadow": "rgba(248, 247, 251, 0.04) 0px 1px 0px 0px inset, rgba(18, 12, 52, 0.16) 0px 16px 38px 0px"
+    },
+    "typeCardChecked": {
+      "backgroundColor": "rgba(51, 94, 104, 0.16)",
+      "borderTopColor": "rgba(123, 194, 199, 0.72)",
+      "borderTopWidth": "1px",
+      "borderRadius": "16px",
+      "minHeight": "190px",
+      "padding": "24px",
+      "boxShadow": "rgba(248, 247, 251, 0.08) 0px 1px 0px 0px inset, rgba(18, 12, 52, 0.28) 0px 18px 42px 0px, rgba(187, 108, 174, 0.3) 0px 0px 24px 0px"
+    },
+    "typeCardRect": {
+      "x": 726,
+      "y": 414.02,
+      "width": 330,
+      "height": 190
+    },
+    "field": {
+      "minHeight": "54px",
+      "height": "54px",
+      "borderRadius": "16px",
+      "backgroundColor": "rgba(33, 26, 62, 0.58)",
+      "borderTopColor": "rgba(239, 237, 245, 0.18)",
+      "borderTopWidth": "1px",
+      "padding": "14px 16px",
+      "fontSize": "16px",
+      "fontWeight": "500",
+      "color": "rgba(248, 247, 251, 0.94)"
+    },
+    "fieldRect": {
+      "x": 384,
+      "y": 747.21,
+      "width": 328,
+      "height": 54
+    },
+    "label": {
+      "fontWeight": "650",
+      "fontSize": "14px",
+      "color": "rgba(248, 247, 251, 0.96)",
+      "textTransform": "none"
+    },
+    "labelText": "First name",
+    "submit": {
+      "minHeight": "54px",
+      "borderRadius": "999px",
+      "fontWeight": "700",
+      "width": 672,
+      "text": "Add your light"
+    },
+    "glassWrapper": 0,
+    "formWidth": 672
+  },
+  "media": {
+    "cards": [
+      {
+        "index": 0,
+        "ratio": 0.8,
+        "rect": {
+          "x": 177,
+          "y": 4145.98,
+          "width": 344.66,
+          "height": 430.83
+        },
+        "objectFit": "cover",
+        "objectPosition": "50% 50%",
+        "naturalWidth": 729,
+        "naturalHeight": 433,
+        "currentSrc": "https://images.hopesoftware.org/resize/L3c6MTkyMCxxOjc1L2hvcGUtaW1hZ2VzLzY1ZTcxMzAxZjY1NTI4MWE1MzhlZDM3My9qeW0xNzg3NTg1OTc4MDY2LmpwZw/w:1920,q:75/hope-images/65e71301f655281a538ed373/jym1787585978066.jpg"
+      },
+      {
+        "index": 1,
+        "ratio": 0.8,
+        "rect": {
+          "x": 547.66,
+          "y": 4145.98,
+          "width": 344.66,
+          "height": 430.83
+        },
+        "objectFit": "cover",
+        "objectPosition": "50% 50%",
+        "naturalWidth": 1073,
+        "naturalHeight": 574,
+        "currentSrc": "https://images.hopesoftware.org/resize/L3c6MTkyMCxxOjc1L2hvcGUtaW1hZ2VzLzY1ZTcxMzAxZjY1NTI4MWE1MzhlZDM3My9QVjgxNzg3MTY3MDAyMjMzLmpwZw/w:1920,q:75/hope-images/65e71301f655281a538ed373/PV81787167002233.jpg"
+      },
+      {
+        "index": 2,
+        "ratio": 0.8,
+        "rect": {
+          "x": 918.33,
+          "y": 4145.98,
+          "width": 344.66,
+          "height": 430.83
+        },
+        "objectFit": "cover",
+        "objectPosition": "50% 50%",
+        "naturalWidth": 765,
+        "naturalHeight": 498,
+        "currentSrc": "https://images.hopesoftware.org/resize/L3c6MTkyMCxxOjc1L2hvcGUtaW1hZ2VzLzY1ZTcxMzAxZjY1NTI4MWE1MzhlZDM3My8wY2IxNzg2NjI4MjM4OTI4LmpwZw/w:1920,q:75/hope-images/65e71301f655281a538ed373/0cb1786628238928.jpg"
+      },
+      {
+        "index": 3,
+        "ratio": 0.8,
+        "rect": {
+          "x": 177,
+          "y": 4602.81,
+          "width": 344.66,
+          "height": 430.83
+        },
+        "objectFit": "cover",
+        "objectPosition": "50% 50%",
+        "naturalWidth": 328,
+        "naturalHeight": 217,
+        "currentSrc": "https://images.hopesoftware.org/resize/L3c6MTkyMCxxOjc1L2hvcGUtaW1hZ2VzLzY1ZTcxMzAxZjY1NTI4MWE1MzhlZDM3My9XcVgxNzg2MzM2NTgyNzI0LkpQRw/w:1920,q:75/hope-images/65e71301f655281a538ed373/WqX1786336582724.JPG"
+      },
+      {
+        "index": 4,
+        "ratio": 0.8,
+        "rect": {
+          "x": 547.66,
+          "y": 4602.81,
+          "width": 344.66,
+          "height": 430.83
+        },
+        "objectFit": "cover",
+        "objectPosition": "50% 50%",
+        "naturalWidth": 1399,
+        "naturalHeight": 934,
+        "currentSrc": "https://images.hopesoftware.org/resize/L3c6MTkyMCxxOjc1L2hvcGUtaW1hZ2VzLzY1ZTcxMzAxZjY1NTI4MWE1MzhlZDM3My9JMnQxNzg1MzQxNzQ1MjE4LmpwZw/w:1920,q:75/hope-images/65e71301f655281a538ed373/I2t1785341745218.jpg"
+      },
+      {
+        "index": 5,
+        "ratio": 0.8,
+        "rect": {
+          "x": 918.33,
+          "y": 4602.81,
+          "width": 344.66,
+          "height": 430.83
+        },
+        "objectFit": "cover",
+        "objectPosition": "50% 50%",
+        "naturalWidth": 746,
+        "naturalHeight": 419,
+        "currentSrc": "https://images.hopesoftware.org/resize/L3c6MTkyMCxxOjc1L2hvcGUtaW1hZ2VzLzY1ZTcxMzAxZjY1NTI4MWE1MzhlZDM3My9keDMxNzg1MzQ5NjQxNjkxLmpwZw/w:1920,q:75/hope-images/65e71301f655281a538ed373/dx31785349641691.jpg"
+      }
+    ],
+    "count": 6,
+    "coverRects": [
+      {
+        "index": 0,
+        "rect": {
+          "x": 177,
+          "y": 4145.98,
+          "width": 344.66,
+          "height": 430.83
+        }
+      },
+      {
+        "index": 3,
+        "rect": {
+          "x": 177,
+          "y": 4602.81,
+          "width": 344.66,
+          "height": 430.83
+        }
+      }
+    ],
+    "scrollY": 1056
+  },
+  "res": {
+    "music": {
+      "rect": {
+        "x": 144,
+        "y": 5382.64,
+        "width": 320,
+        "height": 296
+      },
+      "cardRect": null,
+      "dw": 0,
+      "dh": 0
+    },
+    "copy": {
+      "rect": {
+        "x": 480,
+        "y": 5382.64,
+        "width": 528,
+        "height": 523
+      },
+      "cardRect": null,
+      "dw": 0,
+      "dh": 0
+    },
+    "materials": {
+      "rect": {
+        "x": 1024,
+        "y": 5569.64,
+        "width": 272,
+        "height": 336
+      },
+      "cardRect": null,
+      "dw": 0,
+      "dh": 0
+    },
+    "video": {
+      "rect": {
+        "x": 480,
+        "y": 5921.64,
+        "width": 368,
+        "height": 256
+      },
+      "cardRect": null,
+      "dw": 0,
+      "dh": 0
+    },
+    "gridTemplateColumns": "320px 528px 272px",
+    "columnGap": "16px",
+    "rowGap": "16px",
+    "justifyContent": "center",
+    "alignItems": "start",
+    "display": "grid",
+    "gridWidth": 1152,
+    "copyStyle": {
+      "borderTopStyle": "dotted",
+      "borderTopColor": "rgba(84, 164, 172, 0.25)",
+      "borderTopWidth": "1px",
+      "backgroundColor": "rgba(84, 164, 172, 0.05)",
+      "borderRadius": "16px",
+      "padding": "32px"
+    },
+    "panelsPresent": true
+  },
+  "foot": {
+    "display": "flex",
+    "flexDirection": "column",
+    "alignItems": "center",
+    "textAlign": "center",
+    "gap": "34px",
+    "justifyContent": "center",
+    "width": 1152,
+    "children": [
+      {
+        "name": "order-1 flex justify-center px-4 text-inherit sm:order-2 sm:col-span-2 sm:justify-end md:order-3 xl:order-4 xl:col-span-1 dark:text-white",
+        "tag": "div",
+        "order": "1",
+        "rect": {
+          "x": 570,
+          "y": 6399.45,
+          "width": 300,
+          "height": 108
+        },
+        "centerDx": 0
+      },
+      {
+        "name": "text-inherit dark:text-white order-2 sm:order-1 sm:col-span-4 md:col-span-3 px-4",
+        "tag": "div",
+        "order": "2",
+        "rect": {
+          "x": 380,
+          "y": 6541.45,
+          "width": 680,
+          "height": 0
+        },
+        "centerDx": 0
+      },
+      {
+        "name": "text-inherit dark:text-white self-end font-sans text-xs leading-relaxed order-5 sm:col-span-6 md:order-4 md:col-span-3 xl:order-5 xl:col-span-6 px-4",
+        "tag": "div",
+        "order": "3",
+        "rect": {
+          "x": 380,
+          "y": 6575.45,
+          "width": 680,
+          "height": 40.8
+        },
+        "centerDx": 0
+      }
+    ],
+    "logo": {
+      "x": 570,
+      "y": 6399.45,
+      "width": 300,
+      "height": 108,
+      "filter": "none",
+      "beforeFilter": "drop-shadow(rgba(105, 120, 195, 0.13) 0px 0px 22px)"
+    },
+    "linksDirection": null,
+    "linksCount": null,
+    "legalBorderTop": "0px"
+  },
+  "probe": {
+    "playwright": "1.63.0-alpha-2026-08-31",
+    "channel": "chrome",
+    "url": "https://onevoice27.org/",
+    "attempt": 1,
+    "takenAt": "2026-09-06T09:51:22.513Z"
+  }
+}
