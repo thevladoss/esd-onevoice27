@@ -1,9 +1,12 @@
 #!/usr/bin/env node
 /*
- * Зонд карты фазы 8. Два режима:
- *   band — MAP-01/03/04: карта в первом кадре, отсутствие второй линии на стыке
- *          карты и формы (пиксельная выборка), отсутствие горизонтальной прокрутки;
- *   fps  — MAP-06: счётчик requestAnimationFrame за 2 с на сцене карты.
+ * Зонд карты фазы 8. Три режима:
+ *   band   — MAP-01/03/04: карта в первом кадре, отсутствие второй линии на стыке
+ *            карты и формы (пиксельная выборка), отсутствие горизонтальной прокрутки;
+ *   fps    — MAP-06: счётчик requestAnimationFrame за 2 с на сцене карты;
+ *   lights — MAP-05/06/07: пять корзин с градиентными ореолами, обводка ядра,
+ *            живое дыхание радиуса и прозрачности, цвета огоньков и счётчиков;
+ *            с --reduced анимации нет, а ореол статичен.
  *
  * Зависимостей в репозиторий не добавляет: playwright резолвится из PW_ROOT,
  * из кэша npx или из обычного node_modules. Печатает одну строку JSON и итог
@@ -11,6 +14,7 @@
  *
  *   node .planning/phases/08-map-band-and-lights/qa/map-probe.mjs band --width 1440 --height 900
  *   node .planning/phases/08-map-band-and-lights/qa/map-probe.mjs fps --runs 3
+ *   node .planning/phases/08-map-band-and-lights/qa/map-probe.mjs lights --reduced
  */
 import { existsSync, readdirSync } from "node:fs";
 import { createRequire } from "node:module";
@@ -20,6 +24,10 @@ import { pathToFileURL } from "node:url";
 
 /** Огоньков на карте: 694 человека + 248 групп из src/data/lights.ts. */
 const EXPECTED_LIGHTS = 942;
+/** Фазовых корзин ореолов: LIGHT_BUCKETS из EsdMap.tsx. */
+const LIGHT_BUCKETS = 5;
+/** Пауза между двумя замерами дыхания: четверть периода 2.6s. */
+const BREATH_GAP_MS = 650;
 /** Порог перепада яркости между соседними строками: скачок > 6 считается видимой линией. */
 const JUMP_THRESHOLD = 6;
 /** Полуширина окна вокруг линии скоса: сам скос перепад давать обязан. */
@@ -42,8 +50,8 @@ const DEFAULTS = {
 
 function parseArgs(argv) {
   const mode = argv[0];
-  if (mode !== "band" && mode !== "fps") {
-    console.error("Режим: band | fps");
+  if (mode !== "band" && mode !== "fps" && mode !== "lights") {
+    console.error("Режим: band | fps | lights");
     process.exit(2);
   }
   const opts = { ...DEFAULTS, mode };
@@ -369,6 +377,158 @@ async function runFps(context, opts) {
   };
 }
 
+/**
+ * Текущее состояние дыхания: радиус первого ореола и прозрачность его корзины.
+ * Функция уезжает в браузер, поэтому замыканий снаружи не держит.
+ */
+const readBreath = () => {
+  const halo = document.querySelector(".light-halo");
+  const bucket = document.querySelector('.light-bucket[data-bucket="0"]');
+  return {
+    haloR: getComputedStyle(halo).r,
+    haloOpacity: getComputedStyle(halo).opacity,
+    bucketOpacity: getComputedStyle(bucket).opacity,
+  };
+};
+
+async function runLights(context, opts) {
+  const page = await context.newPage();
+
+  // MAP-07: карта и огоньки живут уже в первом кадре, без плейсхолдеров.
+  await page.goto(opts.url, { waitUntil: "domcontentloaded" });
+  const early = await page.evaluate(
+    () =>
+      new Promise((done) =>
+        requestAnimationFrame(() =>
+          done({
+            cores: document.querySelectorAll(".light-core").length,
+            buckets: document.querySelectorAll(".light-bucket").length,
+          }),
+        ),
+      ),
+  );
+  const firstFrame = early.cores === EXPECTED_LIGHTS && early.buckets === LIGHT_BUCKETS;
+
+  await page.waitForLoadState("load");
+  await page.bringToFront();
+  await page.evaluate(() =>
+    document.querySelector(".map-shell").scrollIntoView({ block: "center" }),
+  );
+  await page.waitForTimeout(1000);
+
+  const structure = await page.evaluate(() => {
+    const buckets = Array.from(document.querySelectorAll(".light-bucket"));
+    const halos = Array.from(document.querySelectorAll(".light-halo"));
+    const fills = halos.map((halo) => halo.getAttribute("fill"));
+    return {
+      buckets: buckets.length,
+      bucketOrder: buckets.map((bucket) => bucket.getAttribute("data-bucket")),
+      bucketsMarked: buckets.filter((bucket) => bucket.dataset.anim === "pulse").length,
+      halos: halos.length,
+      halosInBuckets: halos.filter((halo) => halo.closest(".light-bucket") !== null).length,
+      haloFillsOk: fills.every((fill) => /^url\(#light-halo-(person|group)\)$/.test(fill ?? "")),
+      haloPerson: fills.filter((fill) => fill === "url(#light-halo-person)").length,
+      haloGroup: fills.filter((fill) => fill === "url(#light-halo-group)").length,
+      cores: document.querySelectorAll(".light-cores .light-core").length,
+      pulseClass: document.querySelectorAll(".light.pulse").length,
+      // Считаем градиенты самой карты: у иллюстраций секции «как участвовать»
+      // есть свои, и document-wide счёт ловил бы их тоже.
+      gradients: document.querySelectorAll(".esd-map__svg radialGradient").length,
+      gradientIds: Array.from(document.querySelectorAll(".esd-map__svg radialGradient")).map(
+        (node) => node.id,
+      ),
+    };
+  });
+
+  const styles = await page.evaluate(() => {
+    const read = (selector, property) => {
+      const node = document.querySelector(selector);
+      return node === null ? null : getComputedStyle(node)[property];
+    };
+    return {
+      supportsProperty: typeof CSS.registerProperty === "function",
+      animationNames: Array.from(document.querySelectorAll(".light-bucket")).map(
+        (bucket) => getComputedStyle(bucket).animationName,
+      ),
+      animationDuration: read('.light-bucket[data-bucket="0"]', "animationDuration"),
+      animationDelay3: read('.light-bucket[data-bucket="3"]', "animationDelay"),
+      coreStroke: read(".light-core", "stroke"),
+      coreStrokeWidth: read(".light-core", "strokeWidth"),
+      coreStrokeOpacity: read(".light-core", "strokeOpacity"),
+      personFill: read(".light--person .light-core", "fill"),
+      groupFill: read(".light--group .light-core", "fill"),
+      peopleAccent: read(".counter--people .counter__value", "color"),
+      groupsAccent: read(".counter--groups .counter__value", "color"),
+      shellBackground: read(".map-shell", "backgroundColor"),
+    };
+  });
+
+  const before = await page.evaluate(readBreath);
+  await page.waitForTimeout(BREATH_GAP_MS);
+  const after = await page.evaluate(readBreath);
+
+  // Общее для обоих режимов: разметка, цвета и обводка ядра от движения не зависят.
+  const checks = {
+    firstFrame,
+    buckets: structure.buckets === LIGHT_BUCKETS,
+    bucketOrder: structure.bucketOrder.join(",") === "0,1,2,3,4",
+    bucketsMarked: structure.bucketsMarked === LIGHT_BUCKETS,
+    halos: structure.halos === EXPECTED_LIGHTS,
+    halosInBuckets: structure.halosInBuckets === EXPECTED_LIGHTS,
+    haloFills: structure.haloFillsOk && structure.haloPerson > 0 && structure.haloGroup > 0,
+    cores: structure.cores === EXPECTED_LIGHTS,
+    noPulseClass: structure.pulseClass === 0,
+    gradients:
+      structure.gradients === 2 &&
+      structure.gradientIds.join(",") === "light-halo-person,light-halo-group",
+    coreStroke: styles.coreStroke === "rgb(255, 255, 255)",
+    coreStrokeWidth: styles.coreStrokeWidth === "0.9px",
+    coreStrokeOpacity: styles.coreStrokeOpacity === "0.5",
+    lightColors:
+      styles.personFill === "rgb(158, 67, 154)" && styles.groupFill === "rgb(84, 164, 172)",
+    counterAccents:
+      styles.peopleAccent === "rgb(210, 142, 190)" &&
+      styles.groupsAccent === "rgb(123, 194, 199)",
+  };
+
+  if (opts.reduced) {
+    // Гасит глобальный блок по data-anim="pulse": анимации нет, ореол статичен.
+    checks.animationOff = styles.animationNames.every((name) => name === "none");
+    checks.bucketOpaque = before.bucketOpacity === "1";
+    checks.haloStaticOpacity = before.haloOpacity === "0.22";
+    checks.haloStaticRadius = before.haloR === "6px";
+    checks.haloStill = before.haloR === after.haloR;
+  } else {
+    checks.animationName = styles.animationNames.every((name) => name === "light-breathe");
+    checks.animationDuration = styles.animationDuration === "2.6s";
+    checks.animationDelay3 = styles.animationDelay3 === "-1.56s";
+    checks.supportsProperty = styles.supportsProperty;
+    // Радиус дышит только с зарегистрированным --halo-k; opacity — в любом движке.
+    checks.radiusBreathes = before.haloR !== after.haloR;
+    checks.opacityBreathes = before.bucketOpacity !== after.bucketOpacity;
+  }
+
+  await page.close();
+  return {
+    result: {
+      mode: "lights",
+      viewport: { width: opts.width, height: opts.height },
+      firstFrame,
+      firstFrameCounts: early,
+      ...structure,
+      ...styles,
+      breath: { before, after, gapMs: BREATH_GAP_MS },
+      checks,
+      failed: Object.entries(checks)
+        .filter(([, value]) => value !== true)
+        .map(([key]) => key),
+    },
+    pass: Object.values(checks).every((value) => value === true),
+  };
+}
+
+const RUNNERS = { band: runBand, fps: runFps, lights: runLights };
+
 const opts = parseArgs(process.argv.slice(2));
 const playwright = await loadPlaywright();
 if (playwright === null) missingPlaywright();
@@ -386,7 +546,7 @@ const context = await browser.newContext({
 
 let outcome;
 try {
-  outcome = opts.mode === "band" ? await runBand(context, opts) : await runFps(context, opts);
+  outcome = await RUNNERS[opts.mode](context, opts);
 } finally {
   await context.close();
   await browser.close();
