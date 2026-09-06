@@ -7,6 +7,7 @@
       "height": 900
     }
   },
+  "consent": "нет баннера",
   "panelOpen": {
     "present": true,
     "className": "resources-panels is-open",
@@ -113,11 +114,11 @@
   },
   "fps": {
     "runs": [
-      68.8,
-      69.2,
-      68.8
+      69,
+      69,
+      69.5
     ],
-    "median": 68.8
+    "median": 69
   },
   "reducedMotion": {
     "firstClass": "resources-panels is-open",
@@ -128,6 +129,6 @@
     "playwright": "1.63.0-alpha-2026-08-31",
     "channel": "chrome",
     "attempt": 1,
-    "takenAt": "2026-09-06T10:02:33.617Z"
+    "takenAt": "2026-09-06T10:22:01.128Z"
   }
 }

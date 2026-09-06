@@ -52,12 +52,12 @@
         "before": {
             "haloR": "9px",
             "haloOpacity": "1",
-            "bucketOpacity": "0.57739"
+            "bucketOpacity": "0.575823"
         },
         "after": {
             "haloR": "9px",
             "haloOpacity": "1",
-            "bucketOpacity": "0.530476"
+            "bucketOpacity": "0.538324"
         },
         "gapMs": 650
     },

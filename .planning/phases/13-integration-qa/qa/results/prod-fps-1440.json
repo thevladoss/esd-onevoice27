@@ -6,23 +6,23 @@
     },
     "runs": [
         {
-            "fps": 69,
-            "maxGapMs": 24.3,
-            "frames": 139
+            "fps": 70.2,
+            "maxGapMs": 18.3,
+            "frames": 141
         },
         {
-            "fps": 68.1,
-            "maxGapMs": 25.6,
-            "frames": 137
-        },
-        {
-            "fps": 69.6,
-            "maxGapMs": 18,
+            "fps": 69.5,
+            "maxGapMs": 18.1,
             "frames": 140
+        },
+        {
+            "fps": 69.4,
+            "maxGapMs": 18.4,
+            "frames": 139
         }
     ],
-    "median": 69,
-    "maxGapMs": 25.6,
+    "median": 69.5,
+    "maxGapMs": 18.4,
     "floor": 50,
     "channel": "chrome",
     "headless": false,

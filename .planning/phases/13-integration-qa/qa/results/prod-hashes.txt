@@ -22,3 +22,31 @@ URL прогона:                  https://github.com/thevladoss/esd-onevoice2
 7ec892292a81360a7a22ba0371dc468345c83237f998f06aa45610379f0fc3f0  assets/index-BEFObVAO.js
 312241b95ca002f25a89841672b86ef84482c6c5767c054eff1a66ae20d6468d  assets/index-2NnJ3z1D.css
 ce8d2c48c97baffaf7e8d876a79df4d1996d618e663f3ab0ff499a176e262df2  assets/vendor-map-BjCgd77U.js
+
+--- Повторная сверка после плана 13-02 (правка source(".." ) в global.css) ---
+
+Коммит (HEAD на момент push): 05a0e073ba078514d39459fb6b5f639eef897465
+Прогон workflow:              34027051932 — «Deploy to GitHub Pages», conclusion success
+URL прогона:                  https://github.com/thevladoss/esd-onevoice27/actions/runs/34027051932
+Снято:                        2026-09-06T10:20Z (UTC), curl -H 'Cache-Control: no-cache' | shasum -a 256
+
+Имена ассетов сменились: автоопределение классов Tailwind шло от корня репозитория,
+и коммит QA-скриптов плана 13-02 подмешал в CSS утилиты из строк .planning/. После
+source("..") CSS собирается только из src/: 100,93 → 76,46 КБ. Содержимое главного
+чанка не изменилось — sha256 JS тот же, что у index-BEFObVAO.js плана 13-01,
+поменялось только имя файла (в него входит хэш зависимостей CSS).
+
+| путь | код | sha256 живого (первые 12) | sha256 dist (первые 12) | равен |
+|---|---|---|---|---|
+| /esd-onevoice27/ (index.html) | 200 | 62cd6845a9bf | 62cd6845a9bf | да |
+| /esd-onevoice27/assets/index-DyXKCQ9Z.js | 200 | 7ec892292a81 | 7ec892292a81 | да |
+| /esd-onevoice27/assets/index-gb-e5VHG.css | 200 | 982a2dddca7d | 982a2dddca7d | да |
+| /esd-onevoice27/assets/vendor-map-BjCgd77U.js | 200 | ce8d2c48c97b | ce8d2c48c97b | да |
+
+Итог: 4 из 4 равны, diff живого index.html и dist/index.html пуст.
+
+Полные хэши:
+62cd6845a9bf5e9151ae7bb11d814a86afe7327005c5f33e04213e3378c4128c  index.html
+7ec892292a81360a7a22ba0371dc468345c83237f998f06aa45610379f0fc3f0  assets/index-DyXKCQ9Z.js
+982a2dddca7d7783f8130476689e047899619963d5795313c3d335c7f65369c6  assets/index-gb-e5VHG.css
+ce8d2c48c97baffaf7e8d876a79df4d1996d618e663f3ab0ff499a176e262df2  assets/vendor-map-BjCgd77U.js
