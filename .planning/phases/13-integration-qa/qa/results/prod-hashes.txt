@@ -58,3 +58,18 @@ ce8d2c48c97baffaf7e8d876a79df4d1996d618e663f3ab0ff499a176e262df2  assets/vendor-
 Результат:       имена ассетов и все четыре sha256 те же, что в предыдущей таблице.
                  Документы (SMOKE.md, README.md, скриншоты) на бандл больше не влияют —
                  это и проверялось правкой source("..") в global.css.
+
+--- Четвёртая сверка: после фикса кропа обложек (оркестратор фазы 13) ---
+
+Коммит:          22dab32823ec8d9a3c0893c7145c0002f3668331
+Прогон:          34028123236 — success (перед ним 34027979187 на первом варианте кропа)
+Снято:           2026-09-06T10:58Z (UTC), curl -H 'Cache-Control: no-cache' | shasum -a 256
+
+| путь | код | sha256 живого (первые 12) | sha256 dist (первые 12) | равен |
+|---|---|---|---|---|
+| /esd-onevoice27/ (index.html) | 200 | 9a0d038dd0cf | 9a0d038dd0cf | да |
+| /esd-onevoice27/assets/index-ClJA1isH.js | 200 | d81f311ba504 | d81f311ba504 | да |
+| /esd-onevoice27/assets/index-gb-e5VHG.css | 200 | 982a2dddca7d | 982a2dddca7d | да |
+| /esd-onevoice27/assets/vendor-map-BjCgd77U.js | 200 | ce8d2c48c97b | ce8d2c48c97b | да |
+
+Итог: 4 из 4 равны. Изменился только главный чанк (данные новостей и NewsCard), CSS и vendor-map прежние.
