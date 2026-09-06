@@ -3,20 +3,9 @@
 ## Milestones
 
 - ✅ **v1.0 Прототип редизайна ЕАД** — Phases 1-6 (shipped 2026-09-05) — [архив](milestones/v1.0-ROADMAP.md)
-- [ ] **v1.1 Дизайн-правки по оригиналу** — Phases 7-13 (in progress, started 2026-09-06)
-
-## Overview v1.1
-
-Шесть визуальных отличий от onevoice27.org, названных пользователем после приёмки v1.0, разбиты на шесть независимых фаз по зонам кода: стекло и заголовки, лента карты с огоньками, форма, превью, ресурсы, футер. Каждая фаза владеет своим набором файлов и не редактирует чужие, поэтому фазы 7–12 исполняются параллельно в разных worktree без конфликтов слияния. Фаза 13 сливает ветки, гоняет полный гейт, деплоит на GitHub Pages и сверяет прод с оригиналом через Playwright. Точные значения CSS берутся из `docs/superpowers/specs/2026-09-06-design-fixes-v1.1-design.md`; номера пунктов спецификации совпадают с REQ-ID.
+- ✅ **v1.1 Дизайн-правки по оригиналу** — Phases 7-13 (shipped 2026-09-06) — [архив](milestones/v1.1-ROADMAP.md)
 
 ## Phases
-
-**Phase Numbering:**
-
-- Integer phases (1, 2, 3): Planned milestone work
-- Decimal phases (2.1, 2.2): Urgent insertions (marked with INSERTED)
-
-Decimal phases appear between their surrounding integers in numeric order.
 
 <details>
 <summary>✅ v1.0 Прототип редизайна ЕАД (Phases 1-6) — SHIPPED 2026-09-05</summary>
@@ -30,7 +19,8 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 </details>
 
-### v1.1 Дизайн-правки по оригиналу (Phases 7-13)
+<details>
+<summary>✅ v1.1 Дизайн-правки по оригиналу (Phases 7-13) — SHIPPED 2026-09-06</summary>
 
 - [x] **Phase 7: Стекло и заголовки** - Полупрозрачное стекло карточек About, Involve и ресурсов по CSS оригинала, плоские белые заголовки секций, градиент только у About (completed 2026-09-06)
 - [x] **Phase 8: Лента карты и дышащие огоньки** - Карта и форма на одной скошенной подложке без второй линии среза, огоньки с дышащим свечением в пяти корзинах, карта без reveal (completed 2026-09-06)
@@ -40,199 +30,25 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 12: Футер в одну колонку** - Логотип, подпись, ссылки столбиком и юридический текст по центру без разделительной линии (completed 2026-09-06)
 - [x] **Phase 13: Интеграция, гейт и приёмка** - Слияние фаз 7–12, полный гейт, деплой и Playwright-сравнение с оригиналом на 1440×900 и 390×844 (completed 2026-09-06)
 
-## Prerequisites / Dependencies
+</details>
 
-- Фазы 7, 8, 9, 10, 11, 12 не зависят друг от друга и стартуют одновременно от текущего `main` (сборка d188e78, 386 тестов зелёные).
-- Фаза 13 зависит от всех шести: начинается после слияния веток 7–12.
-- Стыки между фазами закрыты правилами владения файлами (ниже) и проверяются в фазе 13: подложка формы (8 и 9), утилита `glass-resource` (7 и 11), плоский заголовок формы (7 и 9), `VideoEmbed` в панели «Видео» (10 и 11).
+### 📋 Следующий milestone (не запланирован)
 
-## Правила параллельной работы (фазы 7–12)
-
-1. Каждая фаза редактирует только файлы из своего списка **Files**. Чужие файлы не трогать, даже ради одной строки.
-2. Нужно правило для чужого селектора: класть его в свой CSS-файл (пример: `.map-band .lf-section { background: transparent }` живёт в `map.css` фазы 8, а не в `light-form.css` фазы 9).
-3. Общие модули (`Button`, `GlassCard`, `Reveal`, `VideoEmbed`, `src/lib/*`) можно вызывать, но не менять; исключения перечислены в списках файлов (фаза 7 правит `GradientTitle`, фаза 12 добавляет проп `Wordmark`, оба с сохранением текущих вызовов).
-4. Новые файлы создаются только внутри своей зоны (`src/components/<секция>/`, `src/data/`).
-5. Тесты пишутся в той же фазе, что и код (test-as-you-go); в конце фазы `npm test` зелёный на её ветке.
-6. Переменные и утилиты общего `global.css` меняет только фаза 7; `@property` для карты объявляется в `map.css`, scroll lock ресурсов живёт в `resources.css` или через вызов существующего `src/lib/scrollLock.ts` без правок.
-
-## Phase Details
-
-### Phase 7: Стекло и заголовки
-
-**Goal**: Посетитель видит сквозь карточки About, Involve и ресурсов фон секции, как в оригинале, а заголовки секций читаются плоским белым, кроме градиентного About
-**Depends on**: Nothing (стартует от main)
-**Parallel**: Параллельно с фазами 8–12
-**Requirements**: GLASS-01, GLASS-02, GLASS-03, GLASS-04, GLASS-05, GLASS-06
-**Success Criteria** (what must be TRUE):
-
-  1. Карточки шагов About полупрозрачны и пропускают фон секции: поверхность `linear-gradient(145deg, rgb(255 255 255 / .045), transparent 30%), linear-gradient(180deg, rgb(49 41 77 / .44), rgb(18 12 52 / .62))`, рамка `1px solid rgb(239 237 245 / .18)`, тень `inset 0 1px 0 rgb(255 255 255 / .035), 0 20px 46px rgb(3 2 18 / .24)`, `backdrop-filter: blur(14px) saturate(112%)`; при наведении рамка светлеет до `rgb(143 157 214 / .34)` за 420ms; акцентная линия и разделитель шага на месте (GLASS-01, GLASS-02)
-  2. В `global.css` есть утилита `glass-resource` с поверхностью `linear-gradient(180deg, rgb(255 255 255 / .075), transparent 34%), linear-gradient(145deg, rgb(49 41 77 / .44), rgb(18 12 52 / .62))` и `blur(14px) saturate(125%)`; тест primitives проверяет её вычисленные значения; класс на `.resource-card` вешает фаза 11 (GLASS-03)
-  3. Триптих Involve: рамка без размытия с тенью `0 34px 76px rgb(2 2 12 / .58), 0 0 54px rgb(59 77 161 / .22)`, карточки с поверхностью `rgb(33 26 62 / .48)` и швом `1px solid rgb(239 237 245 / .15)`; при наведении поверхность карточки `rgb(49 41 77 / .54)` (GLASS-04)
-  4. Заголовки карты, формы, участия, новостей и ресурсов плоские `rgb(239 237 245)`; заголовок About градиентный `linear-gradient(104deg, rgb(227 175 210) 2%, rgb(143 157 214) 52%, rgb(123 194 199))`; hero h1 градиентный без изменений (GLASS-06)
-  5. Счётчики карты выглядят как до фазы: тесты `Counters` зелёные без правок, вычисленные стили `.counter` не изменились (GLASS-05)
-
-**Files** (владение):
-- `src/styles/global.css`: токены `--glass-surface`, `--glass-border`, `--shadow-card`, утилита `glass`, новая утилита `glass-resource`
-- `src/components/layout/primitives.css`: `.glass-card`, `.glass-card::before`, `.glass-card--interactive`, `.gradient-title--section` (становится плоским), новый `.gradient-title--section-gradient`
-- `src/components/layout/GradientTitle.tsx`: вариант `section-gradient`; `hero` и `section` сохраняются
-- `src/components/layout/primitives.test.tsx`
-- `src/components/layout/Section.tsx` (только при необходимости)
-- `src/components/about/about.css`, `src/components/about/About.tsx` (только `variant="section-gradient"` у заголовка), `src/components/about/About.test.tsx`
-- `src/components/involve/involve.css`, `src/components/involve/Involve.test.tsx`
-
-**Не трогать**: `map.css`, `light-form.css`, `resources.css`, `news/*`, `MapSection.tsx`, `LightForm.tsx`, `Resources.tsx`, `News.tsx`, `Involve.tsx`. Заголовки этих секций становятся плоскими через класс `.gradient-title--section`, вызовы `GradientTitle` в них менять не нужно.
-**Plans**: TBD
-**UI hint**: yes
-
-### Phase 8: Лента карты и дышащие огоньки
-
-**Goal**: Прокручивая к карте, посетитель видит карту и форму на одной скошенной подложке без второй линии среза, огоньки видны сразу и дышат свечением, а не мигают
-**Depends on**: Nothing (стартует от main)
-**Parallel**: Параллельно с фазами 7, 9–12
-**Requirements**: MAP-01, MAP-02, MAP-03, MAP-04, MAP-05, MAP-06, MAP-07
-**Success Criteria** (what must be TRUE):
-
-  1. Под картой и формой одна лента `.map-band` с подложкой `rgb(18 12 52)` и `clip-path: polygon(0 var(--map-wedge), 100% 0, 100% 100%, 0 100%)`; секции карты и формы внутри прозрачные; единственная граница между картой и формой — скос карты: выборка пикселей по x = 200 и x = 1240 на отрезке «низ карты + 120px» не содержит перепада яркости > 6, кроме линии скоса (MAP-01, MAP-03)
-  2. Нижний орб центрирован на нижнем правом крае карты и светит в область формы без обрезки; на <768px он растянут полосой во всю ширину (MAP-02)
-  3. Карта и огоньки видны в первом кадре после появления секции, без затухания reveal; заголовок и счётчики по-прежнему появляются каскадом (MAP-04, MAP-07)
-  4. Огоньки дышат свечением в пяти фазовых корзинах (`index % 5`): ядро 2.2px с обводкой `#fff` 0.9px opacity .5, ореол радиусом 6→12px и opacity .30→.60 с периодом ~2.6s, цвета `rgb(158 67 154)` и `rgb(84 164 172)`; анимация `light-pulse` отсутствует в CSS; кольцо `light-arrive` у нового огонька после отправки формы остаётся (MAP-05)
-  5. Chrome 1440×900 держит ≥ 50 fps с 942 огоньками (замер rAF за 2 с), иначе остаётся только дыхание opacity; без поддержки `@property` дышит только opacity групп; при `prefers-reduced-motion: reduce` ореолы статичны с opacity .45 (MAP-06, MAP-07)
-
-**Files** (владение):
-- `src/App.tsx`: `<MapBand />` вместо пары `<MapSection /><LightForm />`; `src/App.test.tsx` при необходимости (секции `#map` и `#light-form` остаются `<section>` внутри ленты, текущие проверки должны пройти)
-- новый `src/components/map/MapBand.tsx` и `MapBand.test.tsx`
-- `src/components/map/MapSection.tsx` (без `.map-section__skew` и собственной подложки, без `Reveal` вокруг `.map-container`), `MapSection.test.tsx`
-- `src/components/map/map.css`: `.map-band`, подложка, орбы, `@property --halo-k`, группы корзин, правила `.map-band .lf-section { background: transparent }` и `.map-band .lf-section::before { content: none }` (до слияния гасят орб формы; после фазы 9 становятся no-op)
-- `src/components/map/EsdMap.tsx`: пять групп `<g class="light-bucket" data-bucket="n">`, ядро и ореол по спецификации; `EsdMap.test.tsx`
-- `src/components/map/Counters.tsx` не меняется (GLASS-05)
-
-**Не трогать**: `src/components/form/*`, `global.css`, `primitives.css`. Правила для селекторов формы класть только в `map.css`.
-**Plans**: TBD
-**UI hint**: yes
-
-### Phase 9: Форма как в оригинале
-
-**Goal**: Посетитель заполняет форму «Зажгите свой свет» без карточки-обёртки, сам выбирает тип света, для группового маяка указывает организацию и видит понятные русские подписи и поля оригинала
-**Depends on**: Nothing (стартует от main)
-**Parallel**: Параллельно с фазами 7, 8, 10–12
-**Requirements**: FORM-01, FORM-02, FORM-03, FORM-04, FORM-05
-**Success Criteria** (what must be TRUE):
-
-  1. Форма стоит на секции без стеклянной карточки-обёртки; при старте тип света не выбран, отправка без выбора показывает «Выберите тип света» (FORM-01)
-  2. Выбор «Групповой маяк» показывает обязательное поле «Название организации» с placeholder «Например, община в Твери»; пустое поле даёт ошибку «Укажите название организации»; переключение на «Личный свет» убирает поле и ошибку; тесты покрывают оба состояния (FORM-01, FORM-02)
-  3. Подписи на русском по спецификации («Тип света», карточки «Личный свет» и «Групповой маяк» с описаниями, «Имя», «Фамилия», «Страна» с опцией «Выберите страну», «Город», «Электронная почта», согласие, кнопка «Зажечь свой свет →»); обязательные поля помечены звёздочкой `rgb(252 165 165)` с `title="Обязательно"` и sr-only «обязательно» (FORM-02)
-  4. Карточки типа света: поверхность `rgb(33 26 62 / .42)`, маячок `::before` 40×40, точка-радио 16px; выбранная карточка с рамкой `rgb(123 194 199 / .72)` и свечением `0 0 24px var(--halo)`; наведение поднимает на 2px. Поля 54px с radius 16px, фоном `rgb(33 26 62 / .58)`, рамкой `rgb(239 237 245 / .18)`; фокус `rgb(170 217 220)` + `0 0 0 3px rgb(123 194 199 / .12)`; чекбокс 18px с `accent-color`; кнопка `size="form"` во всю ширину с `margin-top: 8px` (FORM-03, FORM-04)
-  5. Шапка секции: eyebrow `rgb(170 217 220)`, плоский белый заголовок, лид 18px/1.65 `rgb(219 215 232)`, колонка 42rem, отступы секции 64px, форма через 48px после лида; `#light-form` ведёт к форме, успешная отправка показывает тост и добавляет огонёк на карту (FORM-05)
-
-**Files** (владение):
-- `src/components/form/LightForm.tsx` (без `GlassCard`, `fieldset` типа с sr-only `legend`, поле `orgName`), `LightTypeChoice.tsx`, `FormField.tsx`, `ConsentCheckbox.tsx`
-- `src/components/form/light-form.css`: удалить `.lf-section { background }` и `.lf-section::before` (подложку и орб даёт лента фазы 8; до слияния секция прозрачна и стоит на фоне страницы, вёрстка не ломается), стили карточек, полей, шапки
-- `src/components/form/LightForm.test.tsx`, `LightForm.failure.test.tsx`; `SuccessToast.tsx` не меняется
-- `src/data/copy.form.ts`
-- `src/lib/validation.ts` (поле `orgName`, пустой `type` с ошибкой «Выберите тип света»), `src/lib/validation.test.ts`
-
-**Не трогать**: `App.tsx`, `map.css`, `primitives.css`, `Button.tsx` (`size="form"` уже есть), `GlassCard.tsx`, `GradientTitle.tsx`. Плоский заголовок приходит из фазы 7 через `variant="section"`, менять вызов не нужно.
-**Plans**: TBD
-**UI hint**: yes
-
-### Phase 10: Превью новостей и видео
-
-**Goal**: Посетитель видит карточки новостей 16:9 без чёрных полос YouTube с панелью заголовка и ховером оригинала, а превью роликов в About и панели «Видео» без полос и лишней обрезки
-**Depends on**: Nothing (стартует от main)
-**Parallel**: Параллельно с фазами 7–9, 11, 12
-**Requirements**: MEDIA-01, MEDIA-02, MEDIA-03
-**Success Criteria** (what must be TRUE):
-
-  1. Обложка карточки новости занимает контейнер 16:9 с `object-fit: cover; object-position: center`: чёрных полос сверху и снизу нет, средняя яркость 6px-полос у верхнего и нижнего края обложки > 12 (MEDIA-01)
-  2. Панель заголовка лежит снизу карточки с `inset 4px`, padding `clamp(18px, 2.4vw, 28px)`, radius 12px; заголовок 800 с `line-clamp: 3`, дата 700 12px uppercase `rgb(170 217 220)`; над обложкой оверлей `linear-gradient(180deg, rgb(50 16 47 / .10) 18%, rgb(50 16 47 / .52) 62%, rgb(3 3 12 / .96) 100%)` (MEDIA-02)
-  3. При наведении или фокусе картинка растёт до `scale(1.035)` за 760ms, панель становится `rgb(247 239 232 / .96)` с текстом `rgb(18 12 52)`, рамка карточки `rgb(143 157 214 / .38)`; при `prefers-reduced-motion: reduce` картинка не масштабируется (MEDIA-02)
-  4. Превью роликов в About и в панели «Видео» держат 16:9 с `object-fit: cover`, без полос и лишней обрезки; lite-embed по клику работает как раньше (MEDIA-03)
-
-**Files** (владение):
-- `src/components/news/NewsCard.tsx`, `src/components/news/news.css`, `src/components/news/News.test.tsx` (новый `NewsCard.test.tsx` при необходимости)
-- `src/components/about/VideoEmbed.tsx`, `src/components/about/video-embed.css`, `src/components/about/VideoEmbed.test.tsx` (только проверка и правка кропа; публичный API компонента не меняется, его вызывает `VideoGrid` фазы 11)
-
-**Не трогать**: `News.tsx`, `NewsPagination.tsx`, `about.css`, `About.tsx`, `resources/*`, `global.css`.
-**Plans**: TBD
-**UI hint**: yes
-
-### Phase 11: Ресурсы: сетка, карточки, панели
-
-**Goal**: Посетитель видит блок ресурсов с сеткой и карточками оригинала, открывает полноэкранную панель со шторным переходом и находит в ней материалы ЕАД, а где аналога нет, английские материалы оригинала
-**Depends on**: Nothing (стартует от main)
-**Parallel**: Параллельно с фазами 7–10, 12
-**Requirements**: RES-01, RES-02, RES-03, RES-04, RES-05, RES-06
-**Success Criteria** (what must be TRUE):
-
-  1. На ≥1024px блоки стоят по сетке `minmax(0, 320fr) minmax(0, 528fr) minmax(0, 272fr)` с gap 16px: текст в центре (528/523, пунктирная рамка), музыка слева (320/296), материалы справа прижаты к низу (272/336), видео во второй строке под текстом (`min(69.697%, 368px)`, 368/256); на <1024px колонка по центру, текст первым, карточки `min(100%, 328px)` × 248px (RES-01)
-  2. Карточка: строка индикатора с подписью и точкой 16px акцента, контент внизу (заголовок 800, описание .875rem, действие «Открыть …» с подчёркиванием `scaleX(.34)` → `scaleX(1)` на ховер); карточка поднимается на 4px с рамкой акцента за 420ms; акценты `rgb(143 157 214)` / `rgb(123 194 199)` / `rgb(210 142 190)`; поверхность из утилиты `glass-resource` фазы 7 (до слияния карточка остаётся на текущем стекле, класс уже проставлен) (RES-02)
-  3. Клик по карточке открывает полноэкранную панель z 10000: слои `rgb(132 53 127)` и `rgb(59 77 161)` въезжают справа за 620ms со сдвигом 90ms, панель проявляется через 180ms; страница под ней не прокручивается; фокус на кнопке «Назад»; `Escape` и «Назад» закрывают с обратной анимацией и возвращают фокус на карточку; `#resources-materials` открывает материалы; при reduced motion переходов нет (RES-03)
-  4. Внутри панели кнопка «Назад», заголовок, описание, сетка файлов `repeat(auto-fill, minmax(min(100%, 17.5rem), 1fr))` с бейджами типа и кнопками «Скачать»/«Открыть», языковые группы `<details>`: «Музыка» показывает три файла оригинала с русским пояснением; «Материалы» показывает раскрытую группу ЕАД (4 позиции с бейджем «WEB») и группы English/Spanish/Portuguese/French; «Видео» показывает 16 роликов ЕАД и карточку «Video backgrounds» ZIP; заглушки `MusicPlaceholder` в коде нет (RES-04, RES-05)
-  5. При открытой панели фон секции красится в цвет карточки (`rgb(22 29 61)` / `rgb(25 47 54)` / `rgb(50 16 47)`), атмосфера и частицы на месте (RES-06)
-
-**Files** (владение):
-- `src/components/resources/Resources.tsx`, `ResourceCard.tsx` (класс `glass-resource` вместо собственного фона), `ResourcePanel.tsx` (полноэкранная панель), `MaterialsList.tsx`, `VideoGrid.tsx`, `resources.css` (сетка, карточки, панель, слои, scroll lock через класс на `html`/`body`), `Resources.test.tsx`, `VideoGrid.test.tsx`, новый `ResourcePanel.test.tsx`; `MusicPlaceholder.tsx` удалить
-- `src/data/copy.resources.ts`, `src/data/materials.ts`, новый `src/data/resourceFiles.ts` (+ тест на состав групп и ссылки)
-
-**Не трогать**: `global.css` (scroll lock: класс на `html`/`body` с правилом в `resources.css` или вызов существующего `src/lib/scrollLock.ts` без правок), `primitives.css`, `Header.css`, `VideoEmbed.tsx` (фаза 10; вызывать с текущим API).
-**Plans**: TBD
-**UI hint**: yes
-
-### Phase 12: Футер в одну колонку
-
-**Goal**: Посетитель видит футер оригинала в одну колонку по центру: логотип, подпись, ссылки столбиком и юридический текст
-**Depends on**: Nothing (стартует от main)
-**Parallel**: Параллельно с фазами 7–11
-**Requirements**: FOOT-01, FOOT-02
-**Success Criteria** (what must be TRUE):
-
-  1. Футер выстроен колонкой по центру шириной `min(100% - 32px, 1152px)` с gap `clamp(20px, 3vw, 34px)` и padding-block `clamp(72px, 10vw, 124px)`: логотип `clamp(190px, 26vw, 300px)` с `drop-shadow(0 0 22px rgb(91 90 214 / .13))`, под ним подпись `min(100%, 680px)`, ниже ссылки, ниже юридический текст `.75rem` `rgb(239 237 245 / .66)`; скос, волны и гало на месте (FOOT-01)
-  2. Ссылки стоят столбиком по центру с gap 8px, 700 14px `rgb(248 247 251 / .92)`, при наведении `rgb(170 217 220)`; над юридическим текстом нет разделительной линии (FOOT-02)
-  3. Тест Footer подтверждает порядок узлов «логотип → подпись → ссылки → юридический текст» и `rel="noopener noreferrer"` у внешних ссылок; шапка с тем же `Wordmark` выглядит как раньше (FOOT-01)
-
-**Files** (владение):
-- `src/components/layout/Footer.tsx`, `Footer.css`, `Footer.test.tsx`
-- `src/data/copy.ts` (только блок `footer`)
-- `src/components/layout/Wordmark.tsx` (опциональный проп размера с текущим значением по умолчанию, шапка не меняется), `Wordmark.test.tsx` при необходимости
-
-**Не трогать**: `Header.tsx`, `Header.css`, `global.css`, `primitives.css`.
-**Plans**: TBD
-**UI hint**: yes
-
-### Phase 13: Интеграция, гейт и приёмка
-
-**Goal**: Прод на GitHub Pages содержит все шесть правок вместе, проходит полный гейт и по Playwright-сравнению совпадает с оригиналом по пунктам GLASS, MAP, FORM, MEDIA, RES и FOOT
-**Depends on**: Phases 7, 8, 9, 10, 11, 12 (после слияния всех шести)
-**Requirements**: QA-01, QA-02, QA-03
-**Success Criteria** (what must be TRUE):
-
-  1. После слияния веток 7–12 `npm test` зелёный: старые тесты и новые из списка (состояния формы и `orgName`; открытие и закрытие панели ресурсов с фокусом, `Escape`, scroll lock и deep link; пять корзин огоньков без `pulse`; карточка новости 16:9; порядок узлов футера); недостающие тесты из списка дописаны в этой фазе (QA-01)
-  2. Гейт проходит без ошибок: `npx tsc -b`, `npm test`, `npm run lint`, `npm run build`, `node scripts/check-dist.mjs`; прогон Deploy to GitHub Pages зелёный, прод отдаёт сборку, побайтно равную локальному `dist` (QA-02)
-  3. `docs/qa/SMOKE.md` содержит таблицу «оригинал / прод» на 1440×900 и 390×844 по пунктам GLASS (computed background/border/backdrop карточек), MAP (полигон скоса, отсутствие второй линии по MAP-03, fps по MAP-06), FORM (поля в двух состояниях), MEDIA (16:9, полосы), RES (прямоугольники четырёх блоков ±8px от пропорций оригинала на ширине 1152), FOOT (одна колонка); скриншоты лежат в `docs/qa/` (QA-03)
-  4. Стыки фаз после слияния без дефектов: форма стоит на прозрачном фоне внутри `.map-band` без второй линии (8 + 9), карточки ресурсов на утилите `glass-resource` (7 + 11), заголовок формы плоский (7 + 9), превью в панели «Видео» без полос (10 + 11)
-
-**Files**:
-- слияние веток/worktree фаз 7–12 в `main`
-- `docs/qa/SMOKE.md`, скриншоты `docs/qa/*.jpeg` (v1.1), `README.md` при необходимости
-- точечные правки в любых файлах при дефектах стыка (у фазы нет параллельных соседей)
-- `.planning/*` по итогам приёмки
-
-**Plans**: TBD
+Кандидаты из бэклога v2 (см. milestones/v1.1-MILESTONE-AUDIT.md и PROJECT.md): фото-обложки триптиха и новостей как в оригинале, Lighthouse и OG-превью, параллакс триптиха, автоцентрирование карты на новом огоньке и кнопки зума, плеер официальной песни ЕАД, реальная отправка формы, единый E2E-тест «отправка формы → огонёк», возврат дыхания радиуса ореола при запасе fps. Запуск: `/bm:new-milestone`.
 
 ## Progress
 
 | Phase | Milestone | Plans Complete | Status | Completed |
-|-------|-----------|----------------|--------|-----------|
 | 1. Каркас и деплой | v1.0 | 5/5 | Complete | 2026-09-05 |
 | 2. Hero и карта | v1.0 | 5/5 | Complete | 2026-09-05 |
 | 3. Форма, О проекте, Участие | v1.0 | 4/4 | Complete | 2026-09-05 |
 | 4. Новости, Ресурсы, Цитата | v1.0 | 4/4 | Complete | 2026-09-05 |
 | 5. Полировка и финальный прогон | v1.0 | 8/8 | Complete | 2026-09-05 |
 | 6. Точность оригинала | v1.0 | 4/4 | Complete | 2026-09-05 |
-| 7. Стекло и заголовки | v1.1 | 2/2 | Complete    | 2026-09-06 |
-| 8. Лента карты и дышащие огоньки | v1.1 | 2/2 | Complete    | 2026-09-06 |
-| 9. Форма как в оригинале | v1.1 | 2/2 | Complete    | 2026-09-06 |
-| 10. Превью новостей и видео | v1.1 | 1/1 | Complete    | 2026-09-06 |
-| 11. Ресурсы: сетка, карточки, панели | v1.1 | 3/3 | Complete    | 2026-09-06 |
-| 12. Футер в одну колонку | v1.1 | 1/1 | Complete    | 2026-09-06 |
-| 13. Интеграция, гейт и приёмка | v1.1 | 2/2 | Complete    | 2026-09-06 |
+| 7. Стекло и заголовки | v1.1 | 2/2 | Complete | 2026-09-06 |
+| 8. Лента карты и дышащие огоньки | v1.1 | 2/2 | Complete | 2026-09-06 |
+| 9. Форма как в оригинале | v1.1 | 2/2 | Complete | 2026-09-06 |
+| 10. Превью новостей и видео | v1.1 | 1/1 | Complete | 2026-09-06 |
+| 11. Ресурсы: сетка, карточки, панели | v1.1 | 3/3 | Complete | 2026-09-06 |
+| 12. Футер в одну колонку | v1.1 | 1/1 | Complete | 2026-09-06 |
+| 13. Интеграция, гейт и приёмка | v1.1 | 2/2 | Complete | 2026-09-06 |
