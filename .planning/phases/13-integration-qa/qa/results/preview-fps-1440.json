@@ -1,0 +1,30 @@
+{
+  "mode": "fps",
+  "viewport": {
+    "width": 1440,
+    "height": 900
+  },
+  "runs": [
+    {
+      "fps": 70.7,
+      "maxGapMs": 17.9,
+      "frames": 142
+    },
+    {
+      "fps": 69.9,
+      "maxGapMs": 17.6,
+      "frames": 140
+    },
+    {
+      "fps": 71.1,
+      "maxGapMs": 18.3,
+      "frames": 143
+    }
+  ],
+  "median": 70.7,
+  "maxGapMs": 18.3,
+  "floor": 50,
+  "channel": "chrome",
+  "headless": false,
+  "reduced": false
+}

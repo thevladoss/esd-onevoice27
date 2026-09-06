@@ -1,0 +1,56 @@
+{
+  "mode": "band",
+  "viewport": {
+    "width": 390,
+    "height": 844
+  },
+  "wedge": 32,
+  "shell": {
+    "top": -140.6,
+    "bottom": 450.2,
+    "width": 390
+  },
+  "firstFrame": {
+    "mapOpaque": true,
+    "mapWithoutInlineStyle": true,
+    "lightsRendered": true,
+    "lightsCount": 942,
+    "shellWedge": true,
+    "bandBackdrop": true
+  },
+  "scans": [
+    {
+      "x": 20,
+      "ySkew": 448.5,
+      "window": [
+        442,
+        568
+      ],
+      "skewStep": 11.16,
+      "skewJump": 11.16,
+      "maxJumpOutsideSkew": 0,
+      "jumps": []
+    },
+    {
+      "x": 370,
+      "ySkew": 419.8,
+      "window": [
+        413,
+        539
+      ],
+      "skewStep": 19.44,
+      "skewJump": 14.58,
+      "maxJumpOutsideSkew": 0.93,
+      "jumps": []
+    }
+  ],
+  "scrollWidth": 390,
+  "innerWidth": 390,
+  "noScrollbar": true,
+  "strict": false,
+  "cleanBand": true,
+  "skewVisible": true,
+  "channel": "chrome",
+  "headless": false,
+  "reduced": false
+}
