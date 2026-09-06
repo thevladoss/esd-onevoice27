@@ -10,7 +10,6 @@
      значение в tokens.css. */
   --shadow-card: inset 0 1px 0 rgb(255 255 255 / .035), 0 20px 46px rgb(3 2 18 / .24);
   --gradient-brand: linear-gradient(104deg, #d28ebe 0%, #3b4da1 52%, #7bc2c7 100%);
-  --gradient-title: linear-gradient(104deg, #e3afd2 2%, #8f9dd6 52%, #7bc2c7 98%);
   --gradient-action: linear-gradient(125deg, #6c2c68 0%, #3b4da1 50%, #39727e 100%);
   /* Сколько плавающий header отъедает сверху вместе с зазором до заголовка
      секции: пилюля 72px впритык к краю плюс зазор 16px. Единственный источник

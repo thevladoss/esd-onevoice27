@@ -120,6 +120,22 @@ describe("GradientTitle", () => {
     const heading = screen.getByRole("heading", { level: 2, name: "Зажгите свет" });
     expect(heading.tagName).toBe("H2");
     expect(heading).toHaveClass("gradient-title", "gradient-title--section");
+    expect(heading).not.toHaveClass("gradient-title--section-gradient");
+  });
+
+  it("вариант section-gradient рендерит h2 с классом градиентного заголовка", () => {
+    render(
+      <GradientTitle as="h2" variant="section-gradient">
+        Что такое Единый голос 27?
+      </GradientTitle>,
+    );
+    const heading = screen.getByRole("heading", {
+      level: 2,
+      name: "Что такое Единый голос 27?",
+    });
+    expect(heading.tagName).toBe("H2");
+    expect(heading).toHaveClass("gradient-title", "gradient-title--section-gradient");
+    expect(heading).not.toHaveClass("gradient-title--section");
   });
 });
 
@@ -284,5 +300,51 @@ describe("стекло не трогает шапку и счётчики (GLASS
 
   it("счётчики не стоят на стеклянной поверхности", () => {
     expect(COUNTERS_TSX).not.toContain("glass");
+  });
+});
+
+describe("плоские и градиентные заголовки (GLASS-06)", () => {
+  it("делает заголовок секции плоским белым, без всякого фона", () => {
+    const section = block(PRIMITIVES_CSS, ".gradient-title--section {");
+    expect(section).toContain("color: rgb(239 237 245);");
+    expect(section).toContain("font-size: var(--text-section);");
+    expect(section).toContain("letter-spacing: -0.035em;");
+    expect(section).not.toContain("background");
+  });
+
+  it("оставляет градиент оригинала заголовку About на том же кегле", () => {
+    const gradient = block(PRIMITIVES_CSS, ".gradient-title--section-gradient {");
+    expect(gradient).toContain(
+      "background-image: linear-gradient(104deg, rgb(227 175 210) 2%, " +
+        "rgb(143 157 214) 52%, rgb(123 194 199));",
+    );
+    expect(gradient).toContain("font-size: var(--text-section);");
+  });
+
+  it("заливает текст фоном только у hero и у заголовка About", () => {
+    const clip = block(
+      PRIMITIVES_CSS,
+      ".gradient-title--hero, .gradient-title--section-gradient {",
+    );
+    expect(clip).toContain("background-clip: text;");
+    expect(clip).toContain("-webkit-text-fill-color: transparent;");
+  });
+
+  it("держит в базовом классе только общую типографику", () => {
+    const base = block(PRIMITIVES_CSS, ".gradient-title {");
+    expect(base).toContain("font-weight: 900;");
+    expect(base).not.toContain("background-clip");
+    expect(base).not.toContain("text-fill-color");
+  });
+
+  it("не трогает кегль заголовка первого экрана", () => {
+    expect(block(PRIMITIVES_CSS, ".gradient-title--hero {")).toContain(
+      "font-size: clamp(2.75rem, 8vw, 4.5rem);",
+    );
+  });
+
+  it("убирает токен --gradient-title: у него не осталось потребителей", () => {
+    expect(GLOBAL_CSS).not.toContain("--gradient-title:");
+    expect(PRIMITIVES_CSS).not.toContain("var(--gradient-title)");
   });
 });
