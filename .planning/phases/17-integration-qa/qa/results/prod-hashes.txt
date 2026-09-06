@@ -1,0 +1,37 @@
+Прогон workflow: 34046791832 — «Deploy to GitHub Pages», conclusion success
+URL прогона:     https://github.com/thevladoss/esd-onevoice27/actions/runs/34046791832
+Запущен:         2026-09-06T16:51:43Z, завершён 2026-09-06T16:53:05Z (1 мин 22 с)
+Живой сайт:      https://thevladoss.github.io/esd-onevoice27/ — HTTP/2 200
+Локальный гейт:  npx tsc -b, npm test (52 файла / 564 теста), npm run lint, npm run build,
+                 node scripts/check-dist.mjs → OK: 12 проверок
+Повторов сверки: 1 проход, кэш Pages свежую сборку отдал сразу
+
+Побайтная сверка живого сайта с локальным dist (фаза 17, план 01)
+
+Живой сайт:      https://thevladoss.github.io/esd-onevoice27/
+Локальная сборка: dist
+Коммит HEAD:     827785cb7a18fd1ec950577bddbfc1ebc1076808
+Снято:           2026-09-06T16:53:40.718Z
+Проходов:        1
+Список ассетов:  список ассетов совпал, файлов: 3
+
+| путь | код | sha256 живого (первые 12) | sha256 dist (первые 12) | равен |
+|---|---|---|---|---|
+| /esd-onevoice27/ (index.html) | 200 | 9d16d6270348 | 9d16d6270348 | да |
+| /esd-onevoice27/favicon.svg | 200 | 92fa3607592f | 92fa3607592f | да |
+| /esd-onevoice27/assets/index-D5PMozSR.js | 200 | cda4264a1a5c | cda4264a1a5c | да |
+| /esd-onevoice27/assets/vendor-map-BjCgd77U.js | 200 | ce8d2c48c97b | ce8d2c48c97b | да |
+| /esd-onevoice27/assets/index-BrMtUpqK.css | 200 | 49e780ab0553 | 49e780ab0553 | да |
+| /esd-onevoice27/hero-globe.webm | 200 | 854bc2915f17 | 854bc2915f17 | да |
+| /esd-onevoice27/hero-globe.mp4 | 200 | a43ac08a8d83 | a43ac08a8d83 | да |
+
+Итог: 7 из 7 равны.
+
+Полные хэши живых файлов:
+9d16d6270348f14f332b201049cd2ceb980e71e68639a47ea61c017b61c06a1c  index.html
+92fa3607592fc8988ef579f0922f124eb37005907474ff08e1305b22ec8bf735  favicon.svg
+cda4264a1a5c94f3e7adaf5f26e3cfa76eb42b54e17c5465cd044f782d8af15e  assets/index-D5PMozSR.js
+ce8d2c48c97baffaf7e8d876a79df4d1996d618e663f3ab0ff499a176e262df2  assets/vendor-map-BjCgd77U.js
+49e780ab05533b9bfbfaa4b604f10082fc6c052d011fcc74798a8ec55b1e7803  assets/index-BrMtUpqK.css
+854bc2915f1795fb76f21fb2a72dda68907bc2051e6ebd6bd7e27670b300052c  hero-globe.webm
+a43ac08a8d837c6573d1d27bc1117d1af7c820b271d1fb0a37b267d7b4916722  hero-globe.mp4
