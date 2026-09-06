@@ -1,10 +1,11 @@
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { fireEvent, render, screen, within } from "@testing-library/react";
+import { act, fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Resources } from "./Resources";
 import { Involve } from "../involve/Involve";
-import { materials } from "../../data/materials";
+import { esdMaterials } from "../../data/materials";
+import { musicFiles } from "../../data/resourceFiles";
 import type { ResourceKey } from "../../data/copy.resources";
 import { resourcesCopy } from "../../data/copy.resources";
 
@@ -28,23 +29,37 @@ function cardButtons() {
   return Array.from(document.querySelectorAll<HTMLButtonElement>("button[data-kind]"));
 }
 
-/** Именованная секция сама стала ландмарком region, поэтому панель ищем внутри неё. */
 function resourcesSection() {
   const section = document.querySelector<HTMLElement>("section#resources");
   expect(section).not.toBeNull();
   return section as HTMLElement;
 }
 
-function panelRegion() {
-  return within(resourcesSection()).getByRole("region");
+/** Панель уезжает порталом в body, поэтому ищется по документу, а не внутри секции. */
+function panelDialog() {
+  return screen.getByRole("dialog");
 }
 
-function queryPanelRegion() {
-  return within(resourcesSection()).queryByRole("region");
+function queryPanelDialog() {
+  return screen.queryByRole("dialog");
+}
+
+function panelsContainer() {
+  return document.querySelector<HTMLElement>(".resources-panels");
+}
+
+/** Список явный: планировщик React ходит через MessageChannel, и подменять его не нужно. */
+function useShutterTimers() {
+  vi.useFakeTimers({
+    toFake: ["setTimeout", "clearTimeout", "requestAnimationFrame", "cancelAnimationFrame"],
+  });
 }
 
 afterEach(() => {
+  vi.useRealTimers();
   history.replaceState(null, "", window.location.pathname);
+  document.documentElement.classList.remove("resources-panel-locked");
+  document.body.classList.remove("resources-panel-locked");
 });
 
 describe("Resources: карточки и панели", () => {
@@ -62,10 +77,10 @@ describe("Resources: карточки и панели", () => {
     for (const card of cards) {
       expect(card.getAttribute("aria-expanded")).toBe("false");
     }
-    expect(queryPanelRegion()).toBeNull();
+    expect(queryPanelDialog()).toBeNull();
   });
 
-  it("клик по «Материалы» раскрывает панель с пятью внешними ссылками и отдаёт ей фокус", () => {
+  it("клик по «Материалы» раскрывает панель с материалами ЕАД и отдаёт фокус кнопке «Назад»", () => {
     render(<Resources />);
 
     const materialsBtn = screen.getByRole("button", { name: CARD_MATERIALS });
@@ -73,35 +88,46 @@ describe("Resources: карточки и панели", () => {
 
     expect(materialsBtn.getAttribute("aria-expanded")).toBe("true");
 
-    const region = panelRegion();
-    const labelId = region.getAttribute("aria-labelledby");
+    const panel = panelDialog();
+    const labelId = panel.getAttribute("aria-labelledby");
     expect(labelId).toBeTruthy();
-    expect(document.getElementById(labelId as string)).toHaveTextContent("Будьте готовы");
+    expect(document.getElementById(labelId as string)).toHaveTextContent(
+      resourcesCopy.panels.materials.title,
+    );
 
-    const links = within(region).getAllByRole("link");
-    expect(links).toHaveLength(5);
+    const esd = document.querySelector<HTMLElement>("#resources-group-esd");
+    expect(esd).toHaveAttribute("open");
+
+    const links = Array.from((esd as HTMLElement).querySelectorAll("a"));
     expect(links.map((link) => link.getAttribute("href"))).toEqual(
-      materials.map((material) => material.href),
+      esdMaterials.map((material) => material.href),
     );
     for (const link of links) {
       expect(link.getAttribute("target")).toBe("_blank");
       expect(link.getAttribute("rel")).toBe("noopener noreferrer");
     }
 
-    expect(region).toHaveAttribute("tabindex", "-1");
-    expect(region).toHaveFocus();
+    expect(panel).toHaveAttribute("tabindex", "-1");
+    expect(screen.getByRole("button", { name: "Назад" })).toHaveFocus();
   });
 
   it("повторный клик по активной карточке закрывает панель", () => {
+    useShutterTimers();
     render(<Resources />);
 
     const materialsBtn = screen.getByRole("button", { name: CARD_MATERIALS });
     fireEvent.click(materialsBtn);
-    expect(panelRegion()).toBeInTheDocument();
+    expect(panelDialog()).toBeInTheDocument();
 
     fireEvent.click(materialsBtn);
     expect(materialsBtn.getAttribute("aria-expanded")).toBe("false");
-    expect(queryPanelRegion()).toBeNull();
+    expect(panelsContainer()).toHaveClass("is-closing");
+
+    act(() => {
+      vi.advanceTimersByTime(900);
+    });
+
+    expect(queryPanelDialog()).toBeNull();
   });
 
   it("клик по «Видео» показывает 16 фасадов и переключает aria-expanded между карточками", () => {
@@ -112,33 +138,35 @@ describe("Resources: карточки и панели", () => {
 
     fireEvent.click(videoBtn);
 
-    let region = panelRegion();
-    expect(within(region).getAllByRole("button", { name: FACADE })).toHaveLength(16);
+    let panel = panelDialog();
+    expect(panel).toHaveAttribute("data-kind", "video");
+    expect(within(panel).getAllByRole("button", { name: FACADE })).toHaveLength(16);
     expect(videoBtn.getAttribute("aria-expanded")).toBe("true");
     expect(materialsBtn.getAttribute("aria-expanded")).toBe("false");
 
     fireEvent.click(materialsBtn);
 
-    region = panelRegion();
-    expect(within(region).getAllByRole("link")).toHaveLength(5);
-    expect(within(region).queryAllByRole("button", { name: FACADE })).toHaveLength(0);
+    panel = panelDialog();
+    expect(panel).toHaveAttribute("data-kind", "materials");
+    expect(panel.querySelectorAll("details.resources-group")).toHaveLength(5);
+    expect(within(panel).queryAllByRole("button", { name: FACADE })).toHaveLength(0);
     expect(materialsBtn.getAttribute("aria-expanded")).toBe("true");
     expect(videoBtn.getAttribute("aria-expanded")).toBe("false");
   });
 
-  it("клик по «Музыка» показывает честную заглушку без ссылок", () => {
+  it("клик по «Музыка» показывает три файла оригинала", () => {
     render(<Resources />);
 
     fireEvent.click(screen.getByRole("button", { name: CARD_MUSIC }));
 
-    const region = panelRegion();
-    expect(within(region).getByText("Песня ещё в работе")).toBeInTheDocument();
-    expect(
-      within(region).getByText(
-        "Официальная песня «Единого голоса 27» скоро появится здесь. Следите за новостями дивизиона.",
-      ),
-    ).toBeInTheDocument();
-    expect(within(region).queryAllByRole("link")).toHaveLength(0);
+    const panel = panelDialog();
+    expect(within(panel).getByText(resourcesCopy.panels.music.description)).toBeInTheDocument();
+
+    const links = within(panel).getAllByRole("link");
+    expect(links.map((link) => link.getAttribute("href"))).toEqual(
+      musicFiles.map((file) => file.href),
+    );
+    expect(screen.queryByText("Песня ещё в работе")).toBeNull();
   });
 
   it("не держит вложенных ссылок и кнопок внутри карточек-кнопок", () => {
@@ -151,7 +179,7 @@ describe("Resources: карточки и панели", () => {
     }
   });
 
-  it("держит id панели на элементе с role=region, а aria-controls — на раскрытой карточке", () => {
+  it("держит id панели на диалоге, а aria-controls — на раскрытой карточке", () => {
     render(<Resources />);
 
     const materialsBtn = screen.getByRole("button", { name: CARD_MATERIALS });
@@ -159,9 +187,9 @@ describe("Resources: карточки и панели", () => {
 
     fireEvent.click(materialsBtn);
 
-    const region = panelRegion();
-    expect(region.getAttribute("id")).toBe("resources-panel");
-    expect(document.getElementById("resources-panel")).toBe(region);
+    const panel = panelDialog();
+    expect(panel.getAttribute("id")).toBe("resources-panel");
+    expect(document.getElementById("resources-panel")).toBe(panel);
     expect(materialsBtn.getAttribute("aria-controls")).toBe("resources-panel");
 
     for (const card of cardButtons().filter((card) => card !== materialsBtn)) {
@@ -170,39 +198,57 @@ describe("Resources: карточки и панели", () => {
     }
   });
 
-  it("показывает кнопку «Свернуть панель» при раскрытой панели", () => {
+  it("показывает кнопку «Назад» при раскрытой панели", () => {
     render(<Resources />);
 
     fireEvent.click(screen.getByRole("button", { name: CARD_MATERIALS }));
 
-    expect(screen.getByRole("button", { name: "Свернуть панель" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Назад" })).toBeInTheDocument();
+  });
+
+  it("блокирует прокрутку документа, пока панель открыта", () => {
+    useShutterTimers();
+    render(<Resources />);
+
+    fireEvent.click(screen.getByRole("button", { name: CARD_MATERIALS }));
+
+    expect(document.documentElement).toHaveClass("resources-panel-locked");
+    expect(document.body).toHaveClass("resources-panel-locked");
+
+    fireEvent.click(screen.getByRole("button", { name: "Назад" }));
+    act(() => {
+      vi.advanceTimersByTime(900);
+    });
+
+    expect(document.documentElement).not.toHaveClass("resources-panel-locked");
+    expect(document.body).not.toHaveClass("resources-panel-locked");
   });
 });
 
 describe("панель: клавиатура и deep link", () => {
-  it("Esc внутри панели закрывает её и возвращает фокус на карточку-триггер", () => {
+  it("Esc закрывает панель и возвращает фокус на карточку-триггер", () => {
     render(<Resources />);
 
     const materialsBtn = screen.getByRole("button", { name: CARD_MATERIALS });
     fireEvent.click(materialsBtn);
 
-    const region = panelRegion();
-    fireEvent.keyDown(region, { key: "Escape" });
+    // Слушатель висит на документе: фокус в этот момент стоит на кнопке «Назад» внутри портала.
+    fireEvent.keyDown(document, { key: "Escape" });
 
-    expect(queryPanelRegion()).toBeNull();
+    expect(panelsContainer()).toHaveClass("is-closing");
     expect(materialsBtn.getAttribute("aria-expanded")).toBe("false");
     expect(materialsBtn).toHaveFocus();
   });
 
-  it("кнопка «Свернуть панель» закрывает панель и возвращает фокус на карточку-триггер", () => {
+  it("кнопка «Назад» закрывает панель и возвращает фокус на карточку-триггер", () => {
     render(<Resources />);
 
     const videoBtn = screen.getByRole("button", { name: CARD_VIDEO });
     fireEvent.click(videoBtn);
 
-    fireEvent.click(screen.getByRole("button", { name: "Свернуть панель" }));
+    fireEvent.click(screen.getByRole("button", { name: "Назад" }));
 
-    expect(queryPanelRegion()).toBeNull();
+    expect(panelsContainer()).toHaveClass("is-closing");
     expect(videoBtn.getAttribute("aria-expanded")).toBe("false");
     expect(videoBtn).toHaveFocus();
   });
@@ -212,8 +258,8 @@ describe("панель: клавиатура и deep link", () => {
 
     render(<Resources />);
 
-    const region = panelRegion();
-    expect(within(region).getAllByRole("link")).toHaveLength(5);
+    expect(panelDialog()).toHaveAttribute("data-kind", "materials");
+    expect(document.querySelectorAll("#resources-group-esd a")).toHaveLength(4);
     expect(
       screen.getByRole("button", { name: CARD_MATERIALS }).getAttribute("aria-expanded"),
     ).toBe("true");
@@ -221,7 +267,7 @@ describe("панель: клавиатура и deep link", () => {
 
   it("открывает панель материалов, когда хэш меняют снаружи разметки", () => {
     render(<Resources />);
-    expect(queryPanelRegion()).toBeNull();
+    expect(queryPanelDialog()).toBeNull();
 
     // Событие шлётся руками намеренно: так выглядит вход через «Назад», закладку
     // или адресную строку. Клик по внутренней ссылке проверяет сценарий выше —
@@ -229,8 +275,8 @@ describe("панель: клавиатура и deep link", () => {
     window.location.hash = "#resources-materials";
     fireEvent(window, new Event("hashchange"));
 
-    const region = panelRegion();
-    expect(within(region).getAllByRole("link")).toHaveLength(5);
+    expect(panelDialog()).toHaveAttribute("data-kind", "materials");
+    expect(document.querySelectorAll("#resources-group-esd a")).toHaveLength(4);
     expect(
       screen.getByRole("button", { name: CARD_MATERIALS }).getAttribute("aria-expanded"),
     ).toBe("true");
@@ -248,15 +294,17 @@ describe("панель: клавиатура и deep link", () => {
     const link = screen.getByRole("link", { name: "Скачать материалы" });
 
     await user.click(link);
-    expect(panelRegion()).toBeInTheDocument();
+    expect(panelDialog()).toHaveAttribute("data-kind", "materials");
 
-    fireEvent.click(screen.getByRole("button", { name: "Свернуть панель" }));
-    expect(queryPanelRegion()).toBeNull();
+    fireEvent.click(screen.getByRole("button", { name: "Назад" }));
+    expect(panelsContainer()).toHaveClass("is-closing");
 
     // Хэш уже равен целевому, поэтому hashchange браузер не шлёт: панель держится
-    // на делегированном клике, а не на смене адреса.
+    // на делегированном клике, а не на смене адреса. Панель ещё уезжает — второй клик
+    // разворачивает её обратно, не дожидаясь конца анимации.
     await user.click(link);
-    expect(panelRegion()).toBeInTheDocument();
+    expect(panelDialog()).toHaveAttribute("data-kind", "materials");
+    expect(panelsContainer()).not.toHaveClass("is-closing");
   });
 
   it("снимает слушателя хэша при размонтировании", () => {

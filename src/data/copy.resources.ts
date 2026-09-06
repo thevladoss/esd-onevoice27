@@ -27,13 +27,10 @@ export const resourcesCopy: {
   panels: Record<ResourceKey, { title: string; description: string }>;
   groups: Record<ResourceGroupId, string>;
   panel: {
-    close: string;
-    closeLabel: string;
     back: string;
     download: string;
     open: string;
   };
-  music: { emptyTitle: string; emptyBody: string };
 } = {
   eyebrow: "Ресурсы",
   title: "Всё, что нужно для старта",
@@ -86,19 +83,10 @@ export const resourcesCopy: {
     pt: "Portuguese resources",
     fr: "French resources",
   },
+  /** Кнопки панели: «Назад» в шапке, «Скачать» и «Открыть» на карточках файлов. */
   panel: {
-    /** Читает старый ResourcePanel, снимает план 11-03. */
-    close: "Свернуть",
-    /** Читает старый ResourcePanel, снимает план 11-03. */
-    closeLabel: "Свернуть панель",
     back: "Назад",
     download: "Скачать",
     open: "Открыть",
-  },
-  /** Читает MusicPlaceholder, снимает план 11-03. */
-  music: {
-    emptyTitle: "Песня ещё в работе",
-    emptyBody:
-      "Официальная песня «Единого голоса 27» скоро появится здесь. Следите за новостями дивизиона.",
   },
 };

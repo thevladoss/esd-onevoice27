@@ -1,6 +1,6 @@
 import { materialGroups, musicFiles, videoFiles } from "./resourceFiles";
 import type { ResourceFile, ResourceFileType } from "./resourceFiles";
-import { esdMaterials, englishFolder, materials } from "./materials";
+import { esdMaterials, englishFolder } from "./materials";
 import { resourcesCopy } from "./copy.resources";
 import { videos } from "./videos";
 
@@ -129,7 +129,6 @@ describe("данные ресурсов", () => {
 
     expect(englishFolder.href).toContain("sharepoint.com");
     expect(englishFolder.kind).toBe("folder");
-    expect(materials).toHaveLength(5);
   });
 
   it("resourcesCopy отдаёт строки карточек и панелей", () => {

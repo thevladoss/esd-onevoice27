@@ -53,6 +53,3 @@ export const englishFolder: MaterialItem = {
   href: "https://gcsda.sharepoint.com/:f:/s/digitalmediateam/EtNk5tgXbZRMiJ7Nk1nOlRsBhAq-Xx8Oc7vfWiJzI86OJA?e=sSsYtg",
   kind: "folder",
 };
-
-/** Читают MaterialsList и Resources.test, снимает план 11-03. */
-export const materials: readonly MaterialItem[] = [...esdMaterials, englishFolder] as const;
