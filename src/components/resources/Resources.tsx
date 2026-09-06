@@ -33,7 +33,6 @@ export function Resources() {
     materials: null,
     video: null,
   });
-  const panelRef = useRef<HTMLDivElement>(null);
   const sectionRef = useRef<HTMLElement>(null);
 
   function toggle(kind: ResourceKey) {
@@ -48,12 +47,6 @@ export function Resources() {
       cardRefs.current[trigger]?.focus();
     }
   }
-
-  useEffect(() => {
-    if (active) {
-      panelRef.current?.focus({ preventScroll: true });
-    }
-  }, [active]);
 
   /** Панель материалов открывают три входа:
    *  1. хэш при монтировании — переход с внешней страницы или из закладки;
@@ -168,29 +161,12 @@ export function Resources() {
             />
           </RevealItem>
         </RevealGroup>
-
-        {/* Обёртка держит только анимацию высоты: `id="resources-panel"` живёт на самой
-            панели с `role="region"`, иначе `aria-controls` карточек указывал бы на
-            безролевой div (04-UI-SPEC.md:244). */}
-        <div data-open={active !== null} className="resources-panel-wrap mt-8">
-          <div className="min-h-0 overflow-hidden">
-            {active ? (
-              <ResourcePanel
-                key={active}
-                kind={active}
-                onClose={close}
-                ref={panelRef}
-                onKeyDown={(event) => {
-                  if (event.key === "Escape") {
-                    event.stopPropagation();
-                    close();
-                  }
-                }}
-              />
-            ) : null}
-          </div>
-        </div>
       </div>
+
+      {/* Панель уходит порталом в body и накрывает страницу целиком, поэтому стоит рядом
+          с содержимым секции, а не внутри него. `id="resources-panel"` живёт на диалоге:
+          `aria-controls` открытой карточки указывает на существующий узел, как и раньше. */}
+      <ResourcePanel active={active} onClose={close} />
     </section>
   );
 }
