@@ -22,13 +22,13 @@
 
 ### Огоньки карты (LIGHT)
 
-- [ ] **LIGHT-01**: Огоньки рисует `LightsCanvas.tsx` (чистый модуль `lightsCanvas.ts`): `<canvas class="map-lights-canvas" data-anim="pulse" aria-hidden>` внутри `.esd-map` поверх SVG, absolute inset 0, `pointer-events: none`, dpr ≤ 2; из SVG удалены `.map-lights`, корзины, `.light-core`, `.light-ring`, `<defs>` с градиентами и соответствующие правила `map.css` (`@property --halo-k`, `.light-*`, `light-breathe`, `light-arrive`)
-- [ ] **LIGHT-02**: Свечение как у оригинала: спрайты ореола (радиальный градиент от цвета alpha .9 к 0, радиус 12px) и ядра (2,2px, белая обводка .9px alpha .5) для `person` `rgb(158 67 154)` и `group` `rgb(84 164 172)`; каждый кадр пять корзин рисуются с `globalAlpha = .30 + .30·s` и радиусом ореола `7 + 5·s` px, `s = (1 + sin(2π·t/2600 − 2π·n/5)) / 2`, ядра с alpha 1
-- [ ] **LIGHT-03**: Огоньки не отстают от стран при зуме и панораме: позиция `transform.apply([x, y])`, размер спрайта от масштаба не зависит, `handleFrame` в `EsdMap.tsx` вызывает `draw(transform)` немедленно в каждом кадре жеста и полёта
-- [ ] **LIGHT-04**: Цикл дыхания идёт на 30 fps и останавливается по `IntersectionObserver` (threshold 0) на контейнере карты, по `document.hidden` и при `prefers-reduced-motion`; при reduce один статичный кадр: ореол 9px alpha .22, ядра обычные, без колец
-- [ ] **LIGHT-05**: Новый огонёк после отправки формы получает кольцо 1px цвета огонька: 900 мс, радиус 6→20,4px, alpha .5→0 по `cubic-bezier(.16, 1, .3, 1)`, одна прокрутка, на это время цикл на полной частоте rAF; в `motionPolicy.test.ts` значение `new-light` остаётся в реестре, но выходит из списка обязательных
-- [ ] **LIGHT-06**: Canvas несёт `data-light-count`, `data-people`, `data-groups`, `data-new`, обновляемые при каждом изменении `lights`; без 2d-контекста (jsdom) атрибуты ставятся, рисование и rAF пропускаются; `EsdMap.test.tsx` и `App.seams.test.tsx` переведены с подсчёта `.light-core`/`.light-bucket` на атрибуты, проверки `map.css` заменены проверками констант `lightsCanvas.ts` (2600 мс, 5 корзин, радиусы 7–12, alpha .30–.60)
-- [ ] **LIGHT-07**: Бюджет: на 390×844 при CPU×4 hero, карта и форма держат ≥ 55 fps; на 1440×900 без троттлинга ≥ 100 fps; число узлов SVG на странице < 1300
+- [x] **LIGHT-01**: Огоньки рисует `LightsCanvas.tsx` (чистый модуль `lightsCanvas.ts`): `<canvas class="map-lights-canvas" data-anim="pulse" aria-hidden>` внутри `.esd-map` поверх SVG, absolute inset 0, `pointer-events: none`, dpr ≤ 2; из SVG удалены `.map-lights`, корзины, `.light-core`, `.light-ring`, `<defs>` с градиентами и соответствующие правила `map.css` (`@property --halo-k`, `.light-*`, `light-breathe`, `light-arrive`)
+- [x] **LIGHT-02**: Свечение как у оригинала: спрайты ореола (радиальный градиент от цвета alpha .9 к 0, радиус 12px) и ядра (2,2px, белая обводка .9px alpha .5) для `person` `rgb(158 67 154)` и `group` `rgb(84 164 172)`; каждый кадр пять корзин рисуются с `globalAlpha = .30 + .30·s` и радиусом ореола `7 + 5·s` px, `s = (1 + sin(2π·t/2600 − 2π·n/5)) / 2`, ядра с alpha 1
+- [x] **LIGHT-03**: Огоньки не отстают от стран при зуме и панораме: позиция `transform.apply([x, y])`, размер спрайта от масштаба не зависит, `handleFrame` в `EsdMap.tsx` вызывает `draw(transform)` немедленно в каждом кадре жеста и полёта
+- [x] **LIGHT-04**: Цикл дыхания идёт на 30 fps и останавливается по `IntersectionObserver` (threshold 0) на контейнере карты, по `document.hidden` и при `prefers-reduced-motion`; при reduce один статичный кадр: ореол 9px alpha .22, ядра обычные, без колец
+- [x] **LIGHT-05**: Новый огонёк после отправки формы получает кольцо 1px цвета огонька: 900 мс, радиус 6→20,4px, alpha .5→0 по `cubic-bezier(.16, 1, .3, 1)`, одна прокрутка, на это время цикл на полной частоте rAF; в `motionPolicy.test.ts` значение `new-light` остаётся в реестре, но выходит из списка обязательных
+- [x] **LIGHT-06**: Canvas несёт `data-light-count`, `data-people`, `data-groups`, `data-new`, обновляемые при каждом изменении `lights`; без 2d-контекста (jsdom) атрибуты ставятся, рисование и rAF пропускаются; `EsdMap.test.tsx` и `App.seams.test.tsx` переведены с подсчёта `.light-core`/`.light-bucket` на атрибуты, проверки `map.css` заменены проверками констант `lightsCanvas.ts` (2600 мс, 5 корзин, радиусы 7–12, alpha .30–.60)
+- [x] **LIGHT-07**: Бюджет: на 390×844 при CPU×4 hero, карта и форма держат ≥ 55 fps; на 1440×900 без троттлинга ≥ 100 fps; число узлов SVG на странице < 1300
 
 ### Мобильная адаптация (MOB)
 
@@ -72,13 +72,13 @@
 | GLOBE-06 | Phase 14 | Complete |
 | GLOBE-07 | Phase 14 | Complete |
 | GLOBE-08 | Phase 14 | Complete |
-| LIGHT-01 | Phase 15 | Pending |
-| LIGHT-02 | Phase 15 | Pending |
-| LIGHT-03 | Phase 15 | Pending |
-| LIGHT-04 | Phase 15 | Pending |
-| LIGHT-05 | Phase 15 | Pending |
-| LIGHT-06 | Phase 15 | Pending |
-| LIGHT-07 | Phase 15 | Pending |
+| LIGHT-01 | Phase 15 | Complete |
+| LIGHT-02 | Phase 15 | Complete |
+| LIGHT-03 | Phase 15 | Complete |
+| LIGHT-04 | Phase 15 | Complete |
+| LIGHT-05 | Phase 15 | Complete |
+| LIGHT-06 | Phase 15 | Complete |
+| LIGHT-07 | Phase 15 | Complete |
 | MOB-01 | Phase 16 | Complete |
 | MOB-02 | Phase 16 | Complete |
 | MOB-03 | Phase 16 | Complete |
