@@ -1,17 +1,16 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.1
-milestone_name: Дизайн-правки по оригиналу
-status: Awaiting next milestone
-stopped_at: Milestone v1.1 shipped 2026-09-06 (Phase 13 was final phase)
-last_updated: "2026-09-06T10:59:04.367Z"
-last_activity: 2026-09-06 — Milestone v1.1 completed and archived
+milestone: v1.2
+milestone_name: Мобильная адаптация, глобус оригинала и производительность
+status: planning
+last_updated: "2026-09-06T15:07:00.664Z"
+last_activity: 2026-09-06
 progress:
-  total_phases: 7
-  completed_phases: 7
-  total_plans: 13
-  completed_plans: 13
-  percent: 100
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # Project State
@@ -21,14 +20,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-09-06)
 
 **Core value:** Посетитель открывает страницу и видит красивый, живой лендинг уровня оригинала onevoice27.org, но про ЕАД: узнаёт, что такое «Единый голос 27», видит карту движения по дивизиону и может «зажечь свой свет».
-**Current focus:** Milestone v1.1 shipped 2026-09-06; следующий milestone не запланирован (`/bm:new-milestone`)
+**Current focus:** Milestone v1.2 — определение требований и roadmap
 
 ## Current Position
 
-Phase: Milestone v1.1 complete
+Phase: Not started (defining requirements)
 Plan: —
-Status: Awaiting next milestone
-Last activity: 2026-09-06 — Milestone v1.1 completed and archived
+Status: Defining requirements
+Last activity: 2026-09-06 — Milestone v1.2 started
 
 ## Performance Metrics
 
