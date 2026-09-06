@@ -4,6 +4,7 @@
 import { useState } from "react";
 import { newsCopy } from "../../data/copy.news";
 import type { NewsItem } from "../../data/news";
+import "./news.css";
 
 const dateFormatter = new Intl.DateTimeFormat("ru-RU", {
   day: "numeric",
@@ -32,17 +33,20 @@ export function NewsCard({ item }: { item: NewsItem }) {
   const date = formatNewsDate(item.date);
 
   return (
-    <article className="h-full">
+    <article className="news-card h-full">
       <a
         href={item.href}
         target="_blank" rel="noopener noreferrer"
-        className="group relative block h-full overflow-hidden rounded-card border border-[var(--glass-border)] bg-midnight-900 transition-colors duration-[420ms] ease-header hover:border-[rgb(123_194_199/.4)] focus-within:border-[rgb(123_194_199/.4)] focus-visible:outline-2 focus-visible:-outline-offset-3 focus-visible:outline-horizon-400"
+        className="news-card__link group overflow-hidden focus-visible:outline-2 focus-visible:-outline-offset-3 focus-visible:outline-horizon-400"
       >
-        <div className="aspect-[4/5] w-full overflow-hidden">
+        {/* Кадр 16:9 срезает у обложки `hqdefault.jpg` (480×360) чёрные полосы по 12,5%
+            сверху и снизу: `object-cover object-center` масштабирует картинку по ширине,
+            а лишнюю высоту обрезает поровну. Оверлей поверх кадра рисует news.css. */}
+        <div className="news-card__cover aspect-video w-full">
           {coverFailed ? (
             <div
               aria-hidden="true"
-              className="flex h-full w-full flex-col items-center justify-center gap-1 bg-[linear-gradient(145deg,rgb(48_63_131/.86),rgb(18_12_52/.76))] px-4 pb-20 text-center"
+              className="news-card__fallback flex h-full w-full flex-col items-center justify-start gap-1 bg-[linear-gradient(145deg,rgb(48_63_131/.86),rgb(18_12_52/.76))] px-4 pt-5 text-center"
             >
               <p className="font-body text-xs font-bold uppercase leading-[1.4] tracking-[0.08em] text-paper/78">
                 {newsCopy.coverFailedTitle}
@@ -58,26 +62,19 @@ export function NewsCard({ item }: { item: NewsItem }) {
               loading="lazy"
               decoding="async"
               onError={() => setCoverFailed(true)}
-              className="h-full w-full max-w-full object-cover object-center transition-transform duration-[520ms] ease-header motion-safe:group-hover:scale-[1.04]"
+              className="news-card__image h-full w-full max-w-full object-cover object-center motion-safe:group-hover:scale-[1.035] motion-safe:group-focus-within:scale-[1.035]"
             />
           )}
         </div>
-        <span
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,transparent_38%,rgb(7_2_16/.9)_100%)]"
-        />
-        <div className="absolute inset-x-4 bottom-4 flex flex-col gap-2">
+        {/* Цвет и типографику панели держит news.css: на ховере текст темнеет вместе с
+            подложкой, поэтому утилит цвета на дате и заголовке нет. */}
+        <div className="news-card__panel">
           {date ? (
-            <time
-              dateTime={item.date}
-              className="font-body text-xs font-bold uppercase leading-[1.4] tracking-[0.08em] text-horizon-200"
-            >
+            <time dateTime={item.date} className="news-card__date">
               {date}
             </time>
           ) : null}
-          <h3 className="line-clamp-4 font-display text-[22px] font-extrabold leading-[1.15] tracking-[-0.03em] text-paper [text-wrap:balance]">
-            {item.title}
-          </h3>
+          <h3 className="news-card__title line-clamp-3">{item.title}</h3>
         </div>
       </a>
     </article>

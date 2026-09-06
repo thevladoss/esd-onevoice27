@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { VideoEmbed } from "./VideoEmbed";
 
@@ -133,5 +135,68 @@ describe("VideoEmbed", () => {
       expect(container.firstElementChild).toBeNull();
       unmount();
     }
+  });
+});
+
+/* Постер `hqdefault.jpg` приходит 480×360 с чёрными полосами по 12,5% сверху и снизу.
+   Контейнер 16:9 с `object-fit: cover` срезает ровно их, поэтому кроп проверяется по
+   тексту CSS: vitest настроен с `css: false` и computed style в jsdom пустой. */
+const VIDEO_EMBED_CSS = readFileSync(
+  resolve(process.cwd(), "src/components/about/video-embed.css"),
+  "utf8",
+);
+
+/** Тело правила по селектору: до первой закрывающей скобки. */
+function ruleBody(pattern: RegExp): string {
+  return pattern.exec(VIDEO_EMBED_CSS)?.[1] ?? "";
+}
+
+describe("VideoEmbed: кроп постера 16:9", () => {
+  it("отдаёт постер тем же классом и размером и в обычном фасаде, и в компактном", () => {
+    const { container, unmount } = renderEmbed();
+
+    expect(container.firstElementChild).toHaveClass("ve");
+    const poster = container.querySelector("img");
+    expect(poster).toHaveClass("ve-poster");
+    expect(poster).toHaveAttribute("width", "480");
+    expect(poster).toHaveAttribute("height", "360");
+    expect(poster?.getAttribute("src")).toMatch(/\/hqdefault\.jpg$/);
+    unmount();
+
+    const compact = render(<VideoEmbed videoId={videoId} title={title} size="compact" />);
+
+    expect(compact.container.firstElementChild).toHaveClass("ve", "ve--compact");
+    const compactPoster = compact.container.querySelector("img");
+    expect(compactPoster).toHaveClass("ve-poster");
+    expect(compactPoster).toHaveAttribute("width", "480");
+    expect(compactPoster).toHaveAttribute("height", "360");
+  });
+
+  it("держит кадр 16:9 и кроет его постером по центру", () => {
+    const ve = ruleBody(/\.ve \{([^}]*)\}/);
+    expect(ve).toContain("aspect-ratio: 16 / 9");
+    expect(ve).toContain("overflow: hidden");
+
+    const poster = ruleBody(/\.ve-poster \{([^}]*)\}/);
+    expect(poster).toContain("width: 100%");
+    expect(poster).toContain("height: 100%");
+    expect(poster).toContain("object-fit: cover");
+    expect(poster).toContain("object-position: center");
+  });
+
+  it("не даёт компактному варианту переопределить пропорцию и кроп", () => {
+    const compact = ruleBody(/\.ve--compact \{([^}]*)\}/);
+
+    expect(compact).not.toBe("");
+    expect(compact).not.toContain("aspect-ratio");
+    expect(compact).not.toContain("object-fit");
+  });
+
+  it("сажает плеер в тот же кадр, что и постер", () => {
+    expect(ruleBody(/\.ve-frame \{([^}]*)\}/)).toContain("inset: 0");
+  });
+
+  it("не заводит второй политики сокращённого движения", () => {
+    expect(VIDEO_EMBED_CSS).not.toContain("prefers-reduced-motion");
   });
 });

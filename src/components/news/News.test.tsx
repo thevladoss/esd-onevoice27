@@ -113,15 +113,16 @@ describe("News", () => {
     }
   });
 
-  it("держит обложку в пропорции 4:5 и не даёт ей растянуться", () => {
+  it("держит обложку в пропорции 16:9 и не даёт ей растянуться", () => {
     render(<News />);
 
     for (const article of screen.getAllByRole("article")) {
-      const frame = article.querySelector("div.aspect-\\[4\\/5\\]");
+      const frame = article.querySelector("div.aspect-video");
       expect(frame).not.toBeNull();
 
       const image = article.querySelector("img");
       expect(image?.className).toContain("object-cover");
+      expect(image?.className).toContain("object-center");
       expect(image?.className).toContain("max-w-full");
     }
   });
