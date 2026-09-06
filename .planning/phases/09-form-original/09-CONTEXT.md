@@ -45,7 +45,7 @@
 - Цвета в CSS писать литералами `rgb(r g b / a)` из спецификации: токены `--color-midnight-*` проекта сдвинуты на шаг относительно палитры оригинала.
 - Тесты в той же фазе, что и код; `npm test` по затронутым файлам зелёный до завершения плана; `npx tsc -b` и `npm run lint` без ошибок.
 - Весь пользовательский текст на русском, идентификаторы на английском. Комментарии в коде на русском, как в проекте.
-- Reduced motion: любые новые анимации гаснут при `prefers-reduced-motion: reduce` через единый блок в своём CSS (`@media (prefers-reduced-motion: reduce)`).
+- Reduced motion: единственный блок `@media (prefers-reduced-motion: reduce)` живёт в `src/styles/global.css` (тест `src/styles/motionPolicy.test.ts`); в CSS фазы такой блок не заводить. Декоративные петли помечать существующими значениями `data-anim` из закрытого реестра (stars, globe, beam, pulse, new-light, particles, atmosphere, wave, halo), новых значений не добавлять; переходы гасит глобальное правило `transition-duration: 0.01ms`.
 
 ## Deferred Ideas
 
