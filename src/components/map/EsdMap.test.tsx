@@ -1,3 +1,6 @@
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
+
 import { select } from "d3-selection";
 import { fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -5,7 +8,7 @@ import userEvent from "@testing-library/user-event";
 import { ESD_IDS } from "../../data/countries";
 import { generateLights } from "../../data/lights";
 import { LightsProvider, useLights } from "../../state/lights";
-import { EsdMap, LIGHT_CORE_RADIUS, LIGHT_HALO_RADIUS } from "./EsdMap";
+import { EsdMap, LIGHT_BUCKETS, LIGHT_CORE_RADIUS, LIGHT_HALO_RADIUS } from "./EsdMap";
 import { ZoomTransform } from "d3-zoom";
 
 import {
@@ -24,6 +27,13 @@ const lights = generateLights();
 
 function count(selector: string): number {
   return document.querySelectorAll(selector).length;
+}
+
+/** Сколько ореолов лежит в каждой из пяти корзин, по порядку data-bucket. */
+function haloPerBucket(): number[] {
+  return Array.from(document.querySelectorAll(".light-bucket")).map(
+    (bucket) => bucket.querySelectorAll(".light-halo").length,
+  );
 }
 
 /** Экранные координаты огоньков: по ним видно, как проекция легла в контейнер. */
@@ -80,35 +90,78 @@ describe("EsdMap", () => {
     expect(count(".light--group")).toBe(248);
   });
 
-  it("пульсирует не больше сорока огоньков и всегда пульсирует новым", async () => {
+  it("раскладывает ореолы по пяти фазовым корзинам", async () => {
     render(
       <LightsProvider initialLights={lights}>
         <AddLightHarness />
       </LightsProvider>,
     );
 
-    const before = count(".light.pulse");
-    expect(before).toBeGreaterThanOrEqual(1);
-    expect(before).toBeLessThanOrEqual(40);
+    expect(count(".light-bucket")).toBe(LIGHT_BUCKETS);
+    expect(count(".light-bucket")).toBe(5);
+    expect(
+      Array.from(document.querySelectorAll(".light-bucket")).map((bucket) =>
+        bucket.getAttribute("data-bucket"),
+      ),
+    ).toEqual(["0", "1", "2", "3", "4"]);
+    expect(count('.light-bucket[data-anim="pulse"]')).toBe(5);
+
+    // 942 = 5 × 188 + 2: первые две корзины получают по огоньку сверх ровной доли.
+    const perBucket = haloPerBucket();
+    expect(perBucket).toEqual([189, 189, 188, 188, 188]);
+    expect(perBucket.reduce((sum, value) => sum + value, 0)).toBe(942);
+    expect(count(".light-cores .light-core")).toBe(942);
+    // Старой пульсации каждого двадцать четвёртого огонька больше нет.
+    expect(count(".light.pulse")).toBe(0);
 
     await userEvent.click(screen.getByRole("button", { name: "зажечь" }));
-    expect(count(".light.pulse")).toBe(before + 1);
+    expect(count(".light-halo")).toBe(943);
     expect(count(".light.is-new")).toBe(1);
+    expect(count('.light.is-new .light-ring[data-anim="new-light"]')).toBe(1);
+    // 942 % 5 = 2: новый огонёк попадает в третью корзину.
+    expect(haloPerBucket()).toEqual([189, 189, 189, 188, 188]);
   });
 
-  it("помечает пульсирующие огоньки и кольцо нового атрибутами реестра движения", async () => {
+  it("держит data-anim только на корзинах и кольце нового огонька", async () => {
     render(
       <LightsProvider initialLights={lights}>
         <AddLightHarness />
       </LightsProvider>,
     );
 
-    // Атрибут стоит на группе огонька, а не на каждом круге внутри неё.
-    expect(count('[data-anim="pulse"]')).toBe(count(".light.pulse"));
+    // Атрибут стоит на корзине, а не на каждом круге внутри неё: под reduce
+    // гаснут пять анимаций вместо 942.
+    expect(count('[data-anim="pulse"]')).toBe(5);
+    expect(count('g.light-bucket[data-anim="pulse"]')).toBe(5);
     expect(count('circle[data-anim="pulse"]')).toBe(0);
+    expect(count(".light[data-anim]")).toBe(0);
 
     await userEvent.click(screen.getByRole("button", { name: "зажечь" }));
     expect(count('.light.is-new circle[data-anim="new-light"]')).toBe(1);
+  });
+
+  it("красит ореол радиальным градиентом типа, ядро оставляет на currentColor", () => {
+    const { container } = render(<EsdMap lights={lights} size={SIZE} />);
+
+    for (const id of ["light-halo-person", "light-halo-group"]) {
+      const gradient = container.querySelector(`radialGradient#${id}`);
+      expect(gradient).not.toBeNull();
+      const stops = Array.from(gradient?.querySelectorAll("stop") ?? []);
+      expect(stops.map((stop) => stop.getAttribute("stop-opacity"))).toEqual(["0.9", "0"]);
+      expect(stops.every((stop) => stop.getAttribute("stop-color") === "currentColor")).toBe(true);
+    }
+
+    const halos = Array.from(container.querySelectorAll(".light-halo"));
+    expect(halos.every((halo) => halo.closest(".light-bucket") !== null)).toBe(true);
+    const fills = halos.map((halo) => halo.getAttribute("fill"));
+    expect(fills.filter((fill) => fill === "url(#light-halo-person)")).toHaveLength(694);
+    expect(fills.filter((fill) => fill === "url(#light-halo-group)")).toHaveLength(248);
+
+    // Ядро цвета не знает: его задаёт класс типа на родительской группе.
+    const cores = Array.from(container.querySelectorAll(".light-core"));
+    expect(cores.every((core) => !core.hasAttribute("fill"))).toBe(true);
+    expect(count(".light--person")).toBe(694);
+    expect(count(".light--group")).toBe(248);
   });
 
   it("обходится без filter на огоньках", () => {
@@ -387,5 +440,85 @@ describe("зум карты", () => {
     expect(zoomEventFilter(fakeEvent({ type: "mousedown", button: 2 }))).toBe(false);
     // На macOS ctrl+click приходит как mousedown с button 0 и открывает контекстное меню.
     expect(zoomEventFilter(fakeEvent({ type: "mousedown", button: 0, ctrlKey: true }))).toBe(false);
+  });
+});
+
+/*
+ * Дыхание живёт в CSS целиком: jsdom анимаций не считает и `r` из calc не
+ * разрешает, поэтому правила проверяются по тексту файла — тем же способом,
+ * что и политика движения в src/styles/motionPolicy.test.ts.
+ */
+const MAP_CSS = readFileSync(resolve(process.cwd(), "src/components/map/map.css"), "utf8");
+
+describe("map.css: дыхание огоньков", () => {
+  it("регистрирует множитель радиуса как число", () => {
+    expect(MAP_CSS.match(/@property --halo-k \{/g)).toHaveLength(1);
+    const block = /@property --halo-k \{([\s\S]*?)\}/.exec(MAP_CSS)?.[1] ?? "";
+    expect(block).toContain('syntax: "<number>";');
+    expect(block).toContain("inherits: true;");
+    expect(block).toContain("initial-value: 1.5;");
+  });
+
+  it("дышит только прозрачностью: fallback MAP-06 после замера fps", () => {
+    // Opacity корзины .30 → .60 за период 2.6s; радиус статичный 6px × 1.5,
+    // потому что дыхание радиуса держало 50,9 fps при пороге 50.
+    const frames = /@keyframes light-breathe \{([\s\S]*?)\n\}/.exec(MAP_CSS)?.[1] ?? "";
+    expect(frames).toMatch(/0%,\s*100% \{\s*opacity: \.3;\s*\}/);
+    expect(frames).toMatch(/50% \{\s*opacity: \.6;\s*\}/);
+    expect(frames).not.toContain("--halo-k");
+  });
+
+  it("сдвигает фазу корзин отрицательной задержкой", () => {
+    expect(MAP_CSS).toMatch(
+      /\.light-bucket \{\s*animation: light-breathe 2\.6s ease-in-out infinite;/,
+    );
+    expect(MAP_CSS).toContain("animation-delay: calc(-2.6s * 3 / 5);");
+    expect(MAP_CSS.match(/animation-delay: calc\(-2\.6s \* /g)).toHaveLength(4);
+  });
+
+  it("считает радиус ореола через множитель и не перебивает заливку градиента", () => {
+    const block = /\.light-halo \{([\s\S]*?)\}/.exec(MAP_CSS)?.[1] ?? "";
+    expect(block).toContain("var(--halo-k, 1)");
+    expect(block).not.toContain("fill:");
+  });
+
+  it("даёт ядру белую обводку постоянной толщины", () => {
+    const block = /\.light-core \{([\s\S]*?)\}/.exec(MAP_CSS)?.[1] ?? "";
+    expect(block).toContain("stroke: #fff;");
+    expect(block).toContain("stroke-width: .9px;");
+    expect(block).toContain("stroke-opacity: .5;");
+    expect(block).toContain("vector-effect: non-scaling-stroke;");
+  });
+
+  it("убрал старую пульсацию и сохранил кольцо нового огонька", () => {
+    expect(MAP_CSS).not.toContain("light-pulse");
+    expect(MAP_CSS).toContain("@keyframes light-arrive");
+  });
+
+  it("держит цвета огоньков и акценты счётчиков литералами", () => {
+    for (const literal of [
+      "--light-person: rgb(158 67 154);",
+      "--light-group: rgb(84 164 172);",
+      "--counter-accent: rgb(210 142 190);",
+      "--counter-accent: rgb(123 194 199);",
+    ]) {
+      expect(MAP_CSS).toContain(literal);
+    }
+  });
+
+  it("отдаёт гашение под reduce глобальному файлу", () => {
+    // Единственный медиазапрос бережного движения живёт в global.css и находит
+    // корзины по data-anim="pulse".
+    expect(MAP_CSS).not.toContain("prefers-reduced-motion");
+  });
+});
+
+describe("map.css: полотно карты", () => {
+  it("красит оболочку карты почти чёрным под тем же скосом", () => {
+    // Вода у оригинала — rgb(5 4 15); прозрачный SVG показывал бы вместо неё
+    // подложку ленты, и нижняя кромка скоса терялась бы вне суши.
+    const block = /\.map-shell \{([\s\S]*?)\}/.exec(MAP_CSS)?.[1] ?? "";
+    expect(block).toContain("background: rgb(5 4 15);");
+    expect(block).toContain("clip-path: polygon(");
   });
 });

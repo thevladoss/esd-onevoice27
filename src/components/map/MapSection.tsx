@@ -34,8 +34,6 @@ export function MapSection() {
 
   return (
     <section id="map" className="map-section" aria-labelledby="map-title">
-      {/* Скос режет подложку, а не содержимое: в вырезе остаётся фон hero. */}
-      <div className="map-section__skew" aria-hidden="true" />
       <span className="map-orb map-orb--top" aria-hidden="true" />
       <span className="map-orb map-orb--bottom" aria-hidden="true" />
       <div className="map-section__inner">
@@ -57,18 +55,17 @@ export function MapSection() {
           <Counters />
         </div>
         <div className="map-shell">
-          {/* Обёртка снаружи контейнера карты: размеры контейнера читает ResizeObserver. */}
-          <Reveal delay={0.1}>
-            <div className="map-container">
-              <EsdMap
-                lights={lights}
-                selectedCountryId={selection.id}
-                flightKey={selection.key}
-                onUserZoomAway={handleZoomAway}
-                onError={setMapError}
-              />
-            </div>
-          </Reveal>
+          {/* Обёртки появления вокруг контейнера нет: карта и огоньки видны в первом
+              кадре, как у оригинала. Каскад остался у заголовка секции и счётчиков. */}
+          <div className="map-container">
+            <EsdMap
+              lights={lights}
+              selectedCountryId={selection.id}
+              flightKey={selection.key}
+              onUserZoomAway={handleZoomAway}
+              onError={setMapError}
+            />
+          </div>
         </div>
         <ZoomHint />
       </div>

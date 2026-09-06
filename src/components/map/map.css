@@ -1,3 +1,15 @@
+/* Множитель радиуса ореола: наследуется кругами внутри корзин. Дыхание радиуса
+   (1 → 2) держало 50,9 fps на 942 огоньках при пороге 50, поэтому по MAP-06
+   включён fallback: радиус статичный (6px × 1.5 = 9px, середина диапазона
+   оригинала 7–12px), дышит только opacity корзины — 71 fps на том же стенде.
+   Свойство остаётся зарегистрированным, чтобы вернуть дыхание радиуса двумя
+   строками в keyframes, если появится запас по производительности. */
+@property --halo-k {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 1.5;
+}
+
 .esd-map {
   position: relative;
   width: 100%;
@@ -27,12 +39,24 @@
   stroke-width: 1px;
 }
 
-/* Огоньки: свечение рисуется вторым кругом, а не тенью, иначе сотни точек не тянет ни один браузер. */
+/* Огоньки: свечение рисуется отдельным кругом с радиальным градиентом, а не
+   тенью и не фильтром — сотни размытий не тянет ни один браузер. Дышит не
+   каждый двадцать четвёртый огонёк, как раньше, а пять корзин со сдвигом фазы. */
 .light--person {
   color: var(--light-person);
 }
 
 .light--group {
+  color: var(--light-group);
+}
+
+/* Цвет градиента задаётся на самом узле градиента: stop-color: currentColor
+   внутри читает его по наследству. */
+.light-halo-def--person {
+  color: var(--light-person);
+}
+
+.light-halo-def--group {
   color: var(--light-group);
 }
 
@@ -43,14 +67,18 @@
  */
 .light-core {
   fill: currentColor;
-  opacity: .9;
+  stroke: #fff;
+  stroke-width: .9px;
+  stroke-opacity: .5;
+  /* Обводка держит .9px на любом зуме: иначе на k = 8 она стала бы 7px. */
+  vector-effect: non-scaling-stroke;
   r: calc(var(--light-core-r, 2.2px) / var(--zoom-k, 1));
 }
 
+/* Заливку даёт атрибут fill=url(#light-halo-…), любое правило fill перебило бы
+   его; прозрачностью управляет корзина. */
 .light-halo {
-  fill: currentColor;
-  opacity: .22;
-  r: calc(var(--light-halo-r, 6px) / var(--zoom-k, 1));
+  r: calc(var(--light-halo-r, 6px) * var(--halo-k, 1) / var(--zoom-k, 1));
 }
 
 .light-ring {
@@ -61,21 +89,39 @@
   r: calc(var(--light-halo-r, 6px) / var(--zoom-k, 1));
 }
 
-.light.pulse {
-  transform-box: fill-box;
-  transform-origin: center;
-  animation: light-pulse 2.4s ease-in-out infinite;
+/* Корзина ореолов. Своего медиазапроса на бережное движение тут нет: корзина
+   помечена data-anim="pulse", и глобальный блок гасит её анимацию (--halo-k
+   остаётся initial-value 1.5, радиус 9px, opacity корзины 1), даёт ореолу
+   статичную opacity .22 и прячет кольцо нового огонька целиком. */
+.light-bucket {
+  animation: light-breathe 2.6s ease-in-out infinite;
 }
 
-@keyframes light-pulse {
+/* Отрицательная задержка сдвигает фазу на n/5 периода: поле дышит волной,
+   а не мигает синхронно. */
+.light-bucket[data-bucket="1"] {
+  animation-delay: calc(-2.6s * 1 / 5);
+}
+
+.light-bucket[data-bucket="2"] {
+  animation-delay: calc(-2.6s * 2 / 5);
+}
+
+.light-bucket[data-bucket="3"] {
+  animation-delay: calc(-2.6s * 3 / 5);
+}
+
+.light-bucket[data-bucket="4"] {
+  animation-delay: calc(-2.6s * 4 / 5);
+}
+
+@keyframes light-breathe {
   0%,
   100% {
-    transform: scale(1);
-    opacity: .9;
+    opacity: .3;
   }
   50% {
-    transform: scale(1.8);
-    opacity: .45;
+    opacity: .6;
   }
 }
 
@@ -163,18 +209,21 @@
   color: #f8f7fb;
 }
 
+/* Акценты счётчиков отвязаны от цвета огоньков: у оригинала это signal-400 и
+   horizon-400, они светлее самих точек на карте. Литералы повторяют прежние
+   значения переменных огоньков, поэтому карточки выглядят как до фазы. */
 .counter--people {
   background:
     radial-gradient(circle at 12% 0%, rgb(158 67 154 / .16), transparent 52%),
     linear-gradient(145deg, rgb(48 63 131 / .86), rgb(7 2 16 / .76));
-  --counter-accent: var(--light-person);
+  --counter-accent: rgb(210 142 190);
 }
 
 .counter--groups {
   background:
     radial-gradient(circle at 88% 0%, rgb(84 164 172 / .15), transparent 52%),
     linear-gradient(145deg, rgb(48 63 131 / .82), rgb(7 2 16 / .76));
-  --counter-accent: var(--light-group);
+  --counter-accent: rgb(123 194 199);
 }
 
 .counter__label {
@@ -240,35 +289,55 @@
   }
 }
 
-/* Секция карты: подложка, скос и переходы сняты с onevoice27.org */
-.map-section {
+/* Лента карты и формы: у оригинала обе секции живут внутри одного `#ov-map`
+   с единой скошенной подложкой, поэтому шва между ними нет.
+   Горизонталь клипует лента: орбы уезжают за края на 38% и иначе раздвигали бы
+   scrollWidth документа. Вертикаль открыта — нижний орб светит из края карты
+   в область формы. Лента заходит под hero на глубину скоса: в вырезе остаётся
+   фон hero, а не дырка. */
+.map-band {
   --map-wedge: clamp(32px, 3.2vw, 52px);
-  /* Полоса ореолов у верхней кромки и глубина затемнения над картой */
-  --map-atmosphere: clamp(260px, 38vw, 560px);
-  --map-transition: clamp(150px, 34vw, 340px);
-  /* Семантические алиасы цветов огоньков: палитра проекта их не знает. */
-  --light-person: #d28ebe;
-  --light-group: #7bc2c7;
 
   position: relative;
   isolation: isolate;
-  color: #f8f7fb;
-  /* Секция заходит под hero на глубину скоса: в вырезе остаётся его фон */
-  margin-top: calc(0px - var(--map-wedge) - 1px);
-  /* Ореолы границ выезжают далеко за свои якоря и светят в hero и в форму.
-     Горизонталь секция клипует (иначе нижний орб со сдвигом 38% раздвигает
-     scrollWidth документа на ≥768px), вертикаль остаётся открытой. */
   overflow-x: clip;
+  margin-top: calc(0px - var(--map-wedge) - 1px);
 }
 
-/* Подложка секции: скос режет только её, поэтому в вырезе видно hero, а не дырку. */
-.map-section__skew {
+/* Подложка ленты: одна на карту и форму, скос режет только её. */
+.map-band::before {
+  content: "";
   position: absolute;
   inset: 0;
   z-index: -1;
   background: rgb(18 12 52);
   clip-path: polygon(0 var(--map-wedge), 100% 0, 100% 100%, 0 100%);
   pointer-events: none;
+}
+
+/* Подложку и орб под формой даёт лента. Те же правила фаза 9 убирает из
+   light-form.css; после слияния эти две строки становятся no-op. */
+.map-band .lf-section {
+  background: transparent;
+}
+
+.map-band .lf-section::before {
+  content: none;
+}
+
+/* Секция карты стоит на ленте и своей подложки не имеет: переходы и ореолы
+   сняты с onevoice27.org */
+.map-section {
+  /* Полоса ореолов у верхней кромки и глубина затемнения над картой */
+  --map-atmosphere: clamp(260px, 38vw, 560px);
+  --map-transition: clamp(150px, 34vw, 340px);
+  /* Семантические алиасы цветов огоньков: палитра проекта их не знает. */
+  --light-person: rgb(158 67 154);
+  --light-group: rgb(84 164 172);
+
+  position: relative;
+  isolation: isolate;
+  color: #f8f7fb;
 }
 
 /* Три ореола у верхней кромки: центры вынесены за границу, внутрь заходят края пятен. */
@@ -286,6 +355,10 @@
     radial-gradient(circle at 88% -22%, rgb(57 114 126 / .2) 0, transparent 40%);
 }
 
+/* Орбы лежат в изолированном контексте `.map-section`, поэтому `z-index: -1`
+   ставит их выше подложки ленты (она уходит под всех детей `.map-band`) и ниже
+   ореолов кромки (0), колонки заголовка (1) и сцены карты. Форма идёт в DOM
+   позже секции и рисуется поверх орба, а её прозрачный фон орб не закрывает. */
 .map-orb {
   position: absolute;
   z-index: -1;
@@ -305,8 +378,11 @@
   transform: translate(-38%, -72%);
 }
 
+/* Верхняя кромка орба стоит на нижнем крае секции карты (секция заканчивается
+   низом карты), сдвиг на −50% ставит центр ровно на кромку, и нижняя половина
+   орба светит в форму — как `.ov-map-skew-mask--bottom::after` у оригинала. */
 .map-orb--bottom {
-  bottom: 0;
+  top: 100%;
   right: 0;
   width: clamp(520px, 72vw, 1100px);
   background: radial-gradient(circle,
@@ -314,7 +390,7 @@
     rgb(39 52 102 / .22) 30%,
     rgb(22 29 61 / .34) 48%,
     transparent 70%);
-  transform: translate(38%, 50%);
+  transform: translate(38%, -50%);
 }
 
 /* На узком экране круг превращается в полосу во всю ширину: центр градиента
@@ -330,7 +406,7 @@
       rgb(39 52 102 / .22) 30%,
       rgb(22 29 61 / .34) 48%,
       transparent 70%);
-    transform: translateY(50%);
+    transform: translateY(-50%);
   }
 }
 
@@ -365,11 +441,16 @@
   padding-inline: 16px;
 }
 
-/* Карта во всю ширину: скос режет её саму сверху и снизу. */
+/* Карта во всю ширину: скос режет её саму сверху и снизу.
+   Полотно почти чёрное, как вода у оригинала: SVG прозрачен, и без этого фона
+   вне стран просвечивала подложка ленты, а нижняя кромка скоса читалась только
+   там, где под ней лежит суша. Фон режет тот же clip-path, поэтому скос виден
+   по всей ширине карты. */
 .map-shell {
   position: relative;
   isolation: isolate;
   overflow: hidden;
+  background: rgb(5 4 15);
   clip-path: polygon(
     0 var(--map-wedge),
     100% 0,
