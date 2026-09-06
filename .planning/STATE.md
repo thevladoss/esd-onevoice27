@@ -2,11 +2,11 @@
 gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Дизайн-правки по оригиналу
-status: planning
-last_updated: "2026-09-06T06:46:36.253Z"
+status: ready
+last_updated: "2026-09-06T07:30:00.000Z"
 last_activity: 2026-09-06
 progress:
-  total_phases: 0
+  total_phases: 7
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -17,17 +17,19 @@ progress:
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-09-05)
+See: .planning/PROJECT.md (updated 2026-09-06)
 
 **Core value:** Посетитель открывает страницу и видит красивый, живой лендинг уровня оригинала onevoice27.org, но про ЕАД: узнаёт, что такое «Единый голос 27», видит карту движения по дивизиону и может «зажечь свой свет».
-**Current focus:** Milestone v1.0 shipped 2026-09-05; следующий milestone не запланирован (`/bm:new-milestone`)
+**Current focus:** Milestone v1.1 «Дизайн-правки по оригиналу»: roadmap на фазы 7–13 готов; фазы 7–12 планируются и исполняются параллельно в отдельных worktree, фаза 13 сливает и принимает.
 
 ## Current Position
 
-Phase: Not started (defining requirements)
+Phase: 7 (Стекло и заголовки) — Not started
 Plan: —
-Status: Defining requirements
-Last activity: 2026-09-06 — Milestone v1.1 started
+Status: Roadmap created, ready to plan
+Last activity: 2026-09-06 — Roadmap v1.1 записан (фазы 7–13, 32/32 требований)
+
+Параллельные фазы: 7, 8, 9, 10, 11, 12 стартуют от main одновременно; 13 после слияния всех шести.
 
 ## Performance Metrics
 
@@ -78,6 +80,11 @@ Last activity: 2026-09-06 — Milestone v1.1 started
 - [Phase 05]: приём деплоя = код 200 + пустой diff списка ассетов + совпадение sha256 живых файлов и локального dist
 - [Phase 05]: права workflow разложены по джобам (build без OIDC-токена) — строже единого блока permissions, приводить к плану не стали
 - [Phase 05]: ореолы точек глобуса плоскими кругами без shadowBlur: тень стоила 533 мс на кадр на GPU, без неё 4 мс; FPS в Playwright-Chrome мерить при закрытых WebGL-вкладках
+- [Roadmap v1.1]: фазы 7–12 разведены по владению файлами и идут параллельно; правило для чужого селектора кладётся в свой CSS-файл, чужие файлы не редактируются
+- [Roadmap v1.1]: GLASS-06 через плоский `.gradient-title--section` по умолчанию и новый `section-gradient` только в About.tsx: вызовы GradientTitle в секциях других фаз не меняются
+- [Roadmap v1.1]: GLASS-03 отдаётся утилитой `glass-resource` в global.css (фаза 7), класс на `.resource-card` вешает фаза 11; до слияния карточки ресурсов остаются на текущем стекле
+- [Roadmap v1.1]: подложку и орб под формой даёт лента `.map-band` фазы 8; фаза 9 убирает фон и `::before` секции формы, до слияния секция прозрачна
+- [Roadmap v1.1]: scroll lock панели ресурсов без правок global.css: класс на html/body с правилом в resources.css или вызов существующего src/lib/scrollLock.ts
 
 ### Pending Todos
 
@@ -85,7 +92,7 @@ Last activity: 2026-09-06 — Milestone v1.1 started
 
 ### Blockers/Concerns
 
-Нет открытых: проекция и производительность карты подтверждены smoke фаз 2, 5 и 6.
+Нет открытых. Риск фазы 8: бюджет ≥ 50 fps на 942 огоньках с дыханием радиуса через `@property`; спецификация задаёт fallback на дыхание opacity (MAP-06).
 
 ## Deferred Items
 
@@ -97,10 +104,12 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-09-05T18:49:13.640Z
-Stopped at: Completed 05-07-PLAN.md
-Resume file: .planning/phases/05-polish-and-release/05-07-SUMMARY.md
+Last session: 2026-09-06T07:30:00.000Z
+Stopped at: Roadmap v1.1 created (phases 7–13)
+Resume file: .planning/ROADMAP.md
 
 ## Operator Next Steps
 
-- Start the next milestone with /gsd-new-milestone
+- Спланировать фазы 7–12: `/bm:plan-phase 7` … `/bm:plan-phase 12` (независимы, можно параллельно)
+- Исполнять фазы 7–12 в отдельных worktree по правилам владения файлами из ROADMAP.md
+- После слияния шести веток: `/bm:plan-phase 13`

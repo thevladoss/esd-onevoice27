@@ -85,44 +85,44 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| GLASS-01 | — | Pending |
-| GLASS-02 | — | Pending |
-| GLASS-03 | — | Pending |
-| GLASS-04 | — | Pending |
-| GLASS-05 | — | Pending |
-| GLASS-06 | — | Pending |
-| MAP-01 | — | Pending |
-| MAP-02 | — | Pending |
-| MAP-03 | — | Pending |
-| MAP-04 | — | Pending |
-| MAP-05 | — | Pending |
-| MAP-06 | — | Pending |
-| MAP-07 | — | Pending |
-| FORM-01 | — | Pending |
-| FORM-02 | — | Pending |
-| FORM-03 | — | Pending |
-| FORM-04 | — | Pending |
-| FORM-05 | — | Pending |
-| MEDIA-01 | — | Pending |
-| MEDIA-02 | — | Pending |
-| MEDIA-03 | — | Pending |
-| RES-01 | — | Pending |
-| RES-02 | — | Pending |
-| RES-03 | — | Pending |
-| RES-04 | — | Pending |
-| RES-05 | — | Pending |
-| RES-06 | — | Pending |
-| FOOT-01 | — | Pending |
-| FOOT-02 | — | Pending |
-| QA-01 | — | Pending |
-| QA-02 | — | Pending |
-| QA-03 | — | Pending |
+| GLASS-01 | Phase 7 | Pending |
+| GLASS-02 | Phase 7 | Pending |
+| GLASS-03 | Phase 7 | Pending |
+| GLASS-04 | Phase 7 | Pending |
+| GLASS-05 | Phase 7 | Pending |
+| GLASS-06 | Phase 7 | Pending |
+| MAP-01 | Phase 8 | Pending |
+| MAP-02 | Phase 8 | Pending |
+| MAP-03 | Phase 8 | Pending |
+| MAP-04 | Phase 8 | Pending |
+| MAP-05 | Phase 8 | Pending |
+| MAP-06 | Phase 8 | Pending |
+| MAP-07 | Phase 8 | Pending |
+| FORM-01 | Phase 9 | Pending |
+| FORM-02 | Phase 9 | Pending |
+| FORM-03 | Phase 9 | Pending |
+| FORM-04 | Phase 9 | Pending |
+| FORM-05 | Phase 9 | Pending |
+| MEDIA-01 | Phase 10 | Pending |
+| MEDIA-02 | Phase 10 | Pending |
+| MEDIA-03 | Phase 10 | Pending |
+| RES-01 | Phase 11 | Pending |
+| RES-02 | Phase 11 | Pending |
+| RES-03 | Phase 11 | Pending |
+| RES-04 | Phase 11 | Pending |
+| RES-05 | Phase 11 | Pending |
+| RES-06 | Phase 11 | Pending |
+| FOOT-01 | Phase 12 | Pending |
+| FOOT-02 | Phase 12 | Pending |
+| QA-01 | Phase 13 | Pending |
+| QA-02 | Phase 13 | Pending |
+| QA-03 | Phase 13 | Pending |
 
 **Coverage:**
 - v1 requirements: 32 total
-- Mapped to phases: 0
-- Unmapped: 32 ⚠️
+- Mapped to phases: 32
+- Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-09-06*
-*Last updated: 2026-09-06 after initial definition*
+*Last updated: 2026-09-06 after roadmap creation (phases 7–13)*
