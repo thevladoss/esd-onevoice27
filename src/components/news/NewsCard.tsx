@@ -63,6 +63,16 @@ export function NewsCard({ item }: { item: NewsItem }) {
               decoding="async"
               onError={() => setCoverFailed(true)}
               className="news-card__image h-full w-full max-w-full object-cover object-center motion-safe:group-hover:scale-[1.035] motion-safe:group-focus-within:scale-[1.035]"
+              // Базовый масштаб идёт через transform, а ховер — через свойство scale:
+              // два свойства складываются, и увеличенная обложка на ховере растёт как остальные.
+              style={
+                item.coverZoom || item.coverPosition
+                  ? {
+                      transform: item.coverZoom ? `scale(${item.coverZoom})` : undefined,
+                      objectPosition: item.coverPosition,
+                    }
+                  : undefined
+              }
             />
           )}
         </div>

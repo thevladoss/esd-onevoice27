@@ -6,6 +6,12 @@ export type NewsItem = {
   cover: string;
   href: string;
   source: string;
+  /** Дополнительный масштаб обложки: ролики шире 16:9 несут в `hqdefault.jpg` поля
+   *  выше стандартных 45 строк, и кроп 16:9 их не снимает. Значение подбирается по
+   *  высоте полей исходника (см. docs/qa/SMOKE.md, отклонение №9 фазы 13). */
+  coverZoom?: number;
+  /** `object-position` обложки, когда содержимое ролика смещено от центра кадра. */
+  coverPosition?: string;
 };
 
 /** Id ролика экранируется: в адрес постера и в параметр `v` он попадает значением, а не
@@ -27,6 +33,9 @@ export const news: NewsItem[] = [
     cover: cover("YpLD6p-z00g"),
     href: watch("YpLD6p-z00g"),
     source: YOUTUBE,
+    // Кадр 2,41:1: в постере 94 строки поля сверху и 67 снизу, содержимое ниже центра.
+    coverZoom: 1.5,
+    coverPosition: "50% 55%",
   },
   {
     id: "kaminsky",
@@ -51,6 +60,8 @@ export const news: NewsItem[] = [
     cover: cover("GK_RXxwZxEc"),
     href: watch("GK_RXxwZxEc"),
     source: YOUTUBE,
+    // Кадр 2,33:1: поля по 77 строк сверху и снизу.
+    coverZoom: 1.4,
   },
   {
     id: "expectations",

@@ -36,6 +36,23 @@ function renderCard(item = news[0]) {
 }
 
 describe("NewsCard", () => {
+  it("дополнительный кроп обложки: transform и object-position только у роликов шире 16:9", () => {
+    // День молитвы снят в 2,41:1: поля постера выше стандартных, кроп 16:9 их не снимает.
+    const wide = news.find((item) => item.id === "day-of-prayer");
+    const standard = news.find((item) => item.id === "kaminsky");
+    if (!wide || !standard) throw new Error("ожидались записи day-of-prayer и kaminsky");
+
+    const { unmount } = renderCard(wide);
+    const zoomed = screen.getByRole("link").querySelector("img");
+    expect(zoomed?.style.transform).toBe("scale(1.5)");
+    expect(zoomed?.style.objectPosition).toBe("50% 55%");
+    unmount();
+
+    renderCard(standard);
+    const plain = screen.getByRole("link").querySelector("img");
+    expect(plain?.getAttribute("style")).toBeNull();
+  });
+
   it("держит обложку в кадре 16:9 и кроет его картинкой по центру", () => {
     const { container } = renderCard();
 
