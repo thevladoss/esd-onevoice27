@@ -137,7 +137,7 @@ GPU) плюс лёгкий canvas на 30 fps, а огоньки живут в W
 
 | Фаза | Содержание | Файлы |
 |---|---|---|
-| 14 | GLOBE-01…07 | `src/components/hero/*`, `scripts/check-dist.mjs` |
+| 14 | GLOBE-01…08 | `src/components/hero/*`, `scripts/check-dist.mjs` |
 | 15 | LIGHT-01…07 | `src/components/map/*`, `src/styles/motionPolicy.test.ts`, `src/App.seams.test.tsx` |
 | 16 | MOB-01…04 | `src/components/layout/Footer.css`, `Header.css`, `form/ConsentCheckbox.tsx`, `light-form.css`, `news/NewsCard.tsx` |
 | 17 | SHIP-01…04 | `docs/qa/*`, `.planning/*` |
