@@ -510,3 +510,13 @@ describe("map.css: дыхание огоньков", () => {
     expect(MAP_CSS).not.toContain("prefers-reduced-motion");
   });
 });
+
+describe("map.css: полотно карты", () => {
+  it("красит оболочку карты почти чёрным под тем же скосом", () => {
+    // Вода у оригинала — rgb(5 4 15); прозрачный SVG показывал бы вместо неё
+    // подложку ленты, и нижняя кромка скоса терялась бы вне суши.
+    const block = /\.map-shell \{([\s\S]*?)\}/.exec(MAP_CSS)?.[1] ?? "";
+    expect(block).toContain("background: rgb(5 4 15);");
+    expect(block).toContain("clip-path: polygon(");
+  });
+});
