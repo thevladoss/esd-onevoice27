@@ -25,3 +25,141 @@
   position: relative;
   z-index: 1;
 }
+
+/* Карточка новости повторяет правила `#ov-news-feed article …` оригинала: кадр 16:9 с
+   обложкой, оверлей поверх кадра и панель заголовка, которая на ховере и на фокусе
+   светлеет до кремовой, а текст в ней темнеет. Цвета записаны литералами: токены
+   `--color-midnight-*` проекта сдвинуты на шаг относительно палитры оригинала.
+   Масштаб картинки задан утилитой `motion-safe:group-hover:scale-[1.035]` в разметке:
+   единственный блок политики сокращённого движения живёт в global.css, он же гасит
+   переходы этого файла. */
+
+.news-card__link {
+  position: relative;
+  isolation: isolate;
+  display: block;
+  height: 100%;
+  overflow: hidden;
+  border: 1px solid rgb(239 237 245 / .18);
+  border-radius: 16px;
+  background: rgb(18 12 52);
+  color: rgb(239 237 245 / .94);
+  transition: border-color 240ms ease;
+}
+
+/* Пропорцию 16:9 даёт утилита `aspect-video` на самом блоке, поэтому здесь её нет. */
+.news-card__cover {
+  position: relative;
+  overflow: hidden;
+  border-radius: inherit;
+}
+
+.news-card__cover::after {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgb(50 16 47 / .10) 18%, rgb(50 16 47 / .52) 62%, rgb(3 3 12 / .96) 100%);
+}
+
+/* `scale: 1.001` в покое убирает субпиксельный зазор по краю кадра — у оригинала ту же
+   роль играет `transform: scale(1.001)`. Утилита Tailwind v4 пишет в свойство `scale`,
+   поэтому переход задан на него, а не на `transform`. */
+.news-card__image {
+  display: block;
+  scale: 1.001;
+  transition: scale 760ms cubic-bezier(.16, 1, .3, 1);
+  will-change: transform;
+}
+
+.news-card__panel {
+  position: absolute;
+  z-index: 2;
+  isolation: isolate;
+  inset: auto 4px 4px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 8px;
+  margin: 0;
+  padding: clamp(18px, 2.4vw, 28px);
+  border-radius: 12px;
+  color: inherit;
+  background: transparent;
+  transition: color 240ms ease;
+}
+
+/* Подложку панели рисует ::before: фон переключается отдельно от текста и не ложится
+   поверх даты с заголовком. */
+.news-card__panel::before {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  border-radius: 12px;
+  pointer-events: none;
+  background: transparent;
+  box-shadow: none;
+  transition: background-color 240ms ease, box-shadow 240ms ease;
+}
+
+.news-card__panel > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Обрезку в три строки даёт утилита `line-clamp-3` на самом заголовке. */
+.news-card__title {
+  margin: 0;
+  color: inherit;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(1.125rem, 1.6vw, 1.375rem);
+  letter-spacing: -0.03em;
+  line-height: 1.08;
+  text-wrap: balance;
+}
+
+.news-card__date {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 12px;
+  line-height: 1.4;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: rgb(170 217 220);
+  transition: color 240ms ease;
+}
+
+/* Клавиатура получает то же состояние, что и мышь, но без медиазапроса: на устройстве
+   без ховера фокус карточку всё равно подсвечивает. */
+.news-card__link:focus-within {
+  border-color: rgb(143 157 214 / .38);
+}
+
+.news-card__link:focus-within .news-card__panel,
+.news-card__link:focus-within .news-card__date {
+  color: rgb(18 12 52);
+}
+
+.news-card__link:focus-within .news-card__panel::before {
+  background: rgb(247 239 232 / .96);
+  box-shadow: 0 12px 30px rgb(2 2 12 / .24);
+}
+
+@media (hover: hover) {
+  .news-card__link:hover {
+    border-color: rgb(143 157 214 / .38);
+  }
+
+  .news-card__link:hover .news-card__panel,
+  .news-card__link:hover .news-card__date {
+    color: rgb(18 12 52);
+  }
+
+  .news-card__link:hover .news-card__panel::before {
+    background: rgb(247 239 232 / .96);
+    box-shadow: 0 12px 30px rgb(2 2 12 / .24);
+  }
+}
