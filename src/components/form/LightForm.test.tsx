@@ -1,3 +1,6 @@
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
+
 import { act, fireEvent, render, screen } from "@testing-library/react";
 
 import { formCopy } from "../../data/copy.form";
@@ -684,5 +687,78 @@ describe("LightForm: пометка обязательных полей", () => 
 
     expect(screen.getByRole("textbox", { name: "Имя обязательно" })).toBe(control("firstName"));
     expect(screen.getByRole("combobox", { name: "Страна обязательно" })).toBe(countrySelect());
+  });
+});
+
+/*
+ * Значения оригинала — свойство самого CSS, а не отрендеренного дерева: vitest настроен
+ * с css: false, поэтому в jsdom правил формы нет. Файл читается с диска тем же приёмом,
+ * что и в motionPolicy.test.ts.
+ */
+describe("light-form.css: значения оригинала", () => {
+  const CSS = readFileSync(resolve(process.cwd(), "src/components/form/light-form.css"), "utf8");
+
+  it("не держит ни политики движения, ни следов стеклянной карточки", () => {
+    for (const forbidden of [
+      "prefers-reduced-motion",
+      ".lf-section::before",
+      ".lf-card",
+      ".lf-check-box",
+      ".lf-legend",
+      "data-anim",
+      "--color-signal-400",
+      "--color-horizon-400",
+    ]) {
+      expect(CSS, `в CSS остался ${forbidden}`).not.toContain(forbidden);
+    }
+  });
+
+  it("оставляет секцию прозрачной: подложку кладёт лента карты", () => {
+    const section = CSS.match(/\.lf-section \{([^}]*)\}/);
+    expect(section).not.toBeNull();
+    expect(section?.[1]).not.toContain("background");
+  });
+
+  it("переносит значения полей, карточек и шапки из спецификации", () => {
+    for (const value of [
+      "--field-height: 54px",
+      "--field-radius: 16px",
+      "rgb(33 26 62 / .58)",
+      "rgb(239 237 245 / .18)",
+      "rgb(49 41 77 / .7)",
+      "0 0 0 3px rgb(123 194 199 / .12)",
+      "--field-border-focus: rgb(170 217 220)",
+      "rgb(33 26 62 / .42)",
+      "rgb(123 194 199 / .72)",
+      "0 0 24px var(--halo)",
+      "translateY(-2px)",
+      "width: 40px",
+      "radial-gradient(circle, var(--beacon) 0 2px, transparent 3px)",
+      "--beacon: rgb(170 217 220)",
+      "--beacon: rgb(227 175 210)",
+      "0 0 10px var(--beacon)",
+      "accent-color: rgb(170 217 220)",
+      "--form-width: 42rem",
+      "padding-block: 64px",
+      "margin-bottom: 48px",
+      "18px/1.65",
+      "rgb(219 215 232)",
+      "repeat(6, minmax(0, 1fr))",
+      "grid-column: span 3",
+      "rgb(252 165 165)",
+      "min-height: 190px",
+    ]) {
+      expect(CSS, `в CSS нет значения ${value}`).toContain(value);
+    }
+  });
+
+  it("оставляет ширину кнопки примитиву и добавляет только отступ сверху", () => {
+    const submit = CSS.match(/\.lf-submit \{([^}]*)\}/);
+    expect(submit?.[1]).toContain("margin-top: 8px");
+    expect(submit?.[1]).not.toContain("width");
+  });
+
+  it("держит три брейкпоинта 768px: карточки в две колонки, их высота и сетка полей", () => {
+    expect(CSS.match(/@media \(min-width: 768px\)/g)?.length).toBeGreaterThanOrEqual(3);
   });
 });
