@@ -1,0 +1,48 @@
+{
+  "mode": "fps",
+  "section": "map",
+  "selector": ".map-shell",
+  "viewport": {
+    "width": 390,
+    "height": 844
+  },
+  "cpu": 4,
+  "dpr": 1,
+  "lightCount": "942",
+  "canvasBitmap": {
+    "width": 390,
+    "height": 591
+  },
+  "runs": [
+    {
+      "fps": 120.4,
+      "maxGapMs": 10.4,
+      "frames": 241
+    },
+    {
+      "fps": 120.2,
+      "maxGapMs": 10.4,
+      "frames": 241
+    },
+    {
+      "fps": 119.7,
+      "maxGapMs": 16.2,
+      "frames": 240
+    }
+  ],
+  "median": 120.2,
+  "maxGapMs": 16.2,
+  "floor": 55,
+  "url": "http://localhost:4175/esd-onevoice27/",
+  "reduced": false,
+  "stand": {
+    "channel": "chrome",
+    "headless": false,
+    "playwright": "1.63.0-alpha-2026-08-31",
+    "playwrightFrom": "/Users/thevladoss/.npm/_npx/9833c18b2d85bc59/node_modules/playwright/index.js",
+    "deviceScaleFactor": 1,
+    "cpuThrottling": 4,
+    "mobileEmulation": true
+  },
+  "recordedAt": "2026-09-06T16:27:30.618Z"
+}

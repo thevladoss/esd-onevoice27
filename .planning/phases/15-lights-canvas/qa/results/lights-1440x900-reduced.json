@@ -1,0 +1,89 @@
+{
+  "mode": "lights",
+  "viewport": {
+    "width": 1440,
+    "height": 900
+  },
+  "dpr": 1,
+  "structure": {
+    "anim": "pulse",
+    "ariaHidden": "true",
+    "lightCount": "942",
+    "people": "694",
+    "groups": "248",
+    "fresh": "0",
+    "position": "absolute",
+    "pointerEvents": "none",
+    "inset": [
+      "0px",
+      "0px",
+      "0px",
+      "0px"
+    ],
+    "cssSize": {
+      "width": 1440,
+      "height": 630
+    },
+    "bitmap": {
+      "width": 1440,
+      "height": 630
+    },
+    "devicePixelRatio": 1,
+    "expectedBitmap": {
+      "width": 1440,
+      "height": 630
+    },
+    "previousSibling": "svg"
+  },
+  "svgNodes": 282,
+  "svgNodeLimit": 1300,
+  "mapCircles": 0,
+  "legacyNodes": 0,
+  "countries": 177,
+  "breath": {
+    "before": {
+      "lit": 114037,
+      "sum": 5587891
+    },
+    "after": {
+      "lit": 114037,
+      "sum": 5587891
+    },
+    "gapMs": 650,
+    "alive": false,
+    "static": true
+  },
+  "zoom": null,
+  "checks": {
+    "canvasPresent": true,
+    "canvasAfterSvg": true,
+    "animPulse": true,
+    "ariaHidden": true,
+    "lightCount": true,
+    "people": true,
+    "groups": true,
+    "fresh": true,
+    "positionAbsolute": true,
+    "pointerEventsNone": true,
+    "insetZero": true,
+    "bitmapMatchesDpr": true,
+    "svgNodesUnderLimit": true,
+    "noMapCircles": true,
+    "noLegacyLightNodes": true,
+    "countries": true,
+    "breath": true
+  },
+  "failed": [],
+  "url": "http://localhost:4175/esd-onevoice27/",
+  "reduced": true,
+  "stand": {
+    "channel": "chrome",
+    "headless": false,
+    "playwright": "1.63.0-alpha-2026-08-31",
+    "playwrightFrom": "/Users/thevladoss/.npm/_npx/9833c18b2d85bc59/node_modules/playwright/index.js",
+    "deviceScaleFactor": 1,
+    "cpuThrottling": 1,
+    "mobileEmulation": false
+  },
+  "recordedAt": "2026-09-06T16:31:41.438Z"
+}
