@@ -17,6 +17,9 @@ const TITLE = "<title>Единый голос 27 — Евро-Азиатский
 const OG_URL = 'property="og:url" content="https://thevladoss.github.io/esd-onevoice27/"';
 const SECTION_IDS = ["hero", "map", "light-form", "about", "involve", "news", "resources", "quote"];
 const ALLOWED_HOSTS = ["fonts.googleapis.com", "fonts.gstatic.com", "thevladoss.github.io"];
+const HERO_VIDEO = ["hero-globe.webm", "hero-globe.mp4"];
+/** Файлы в public весят 1,9 и 2,9 МБ: порог ловит усечённую копию. */
+const MIN_VIDEO_BYTES = 1024 * 1024;
 /** Минификатор перекладывает строковые литералы в кавычки любого вида, включая обратные. */
 const QUOTES = ['"', "'", "`"];
 
@@ -57,6 +60,13 @@ function jsAssets(distDir) {
   return readdirSync(dir)
     .filter((name) => name.endsWith(".js"))
     .sort();
+}
+
+/** Весь JS билда одной строкой: имена чанков хешируются, искать нужно по содержимому. */
+function bundleText(distDir) {
+  return jsAssets(distDir)
+    .map((name) => readFileSync(join(distDir, "assets", name), "utf8"))
+    .join("\n");
 }
 
 function urlsOf(html) {
@@ -155,9 +165,7 @@ function checkJsSize(distDir) {
 }
 
 function checkSectionIds(distDir) {
-  const bundle = jsAssets(distDir)
-    .map((name) => readFileSync(join(distDir, "assets", name), "utf8"))
-    .join("\n");
+  const bundle = bundleText(distDir);
   const missing = SECTION_IDS.filter(
     (id) => !QUOTES.some((quote) => bundle.includes(`${quote}${id}${quote}`)),
   );
@@ -165,6 +173,36 @@ function checkSectionIds(distDir) {
     name: `id секций в бандле, всего ${SECTION_IDS.length}`,
     ok: missing.length === 0,
     detail: missing.length === 0 ? "" : `не найдены: ${missing.join(", ")}`,
+  };
+}
+
+/*
+ * Видео hero: Vite копирует public/ в корень dist, а ссылка из Hero.tsx через
+ * import.meta.env.BASE_URL после сборки становится строкой с именем файла.
+ */
+function checkHeroVideo(distDir) {
+  const bundle = bundleText(distDir);
+  const problems = [];
+  const sizes = [];
+  for (const name of HERO_VIDEO) {
+    const path = join(distDir, name);
+    if (!existsSync(path)) {
+      problems.push(`${name} — нет файла в ${distDir}`);
+      continue;
+    }
+    const { size } = statSync(path);
+    sizes.push(`${name} — ${kb(size)}`);
+    if (size < MIN_VIDEO_BYTES) {
+      problems.push(`${name} — меньше 1 МБ (${kb(size)})`);
+    }
+    if (!bundle.includes(name)) {
+      problems.push(`${name} — нет ссылки в JS`);
+    }
+  }
+  return {
+    name: `видео глобуса ${HERO_VIDEO.join(", ")} в dist и ссылки в бандле`,
+    ok: problems.length === 0,
+    detail: problems.length === 0 ? sizes.join("; ") : problems.join("; "),
   };
 }
 
@@ -211,6 +249,7 @@ function run(argv) {
     checkVendorMap(distDir),
     checkJsSize(distDir),
     checkSectionIds(distDir),
+    checkHeroVideo(distDir),
     checkNoscript(html),
     checkHosts(html),
   ];

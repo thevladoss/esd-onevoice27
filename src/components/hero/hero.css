@@ -7,90 +7,91 @@
   overflow: hidden;
   display: flex;
   align-items: flex-end;
-  min-height: clamp(600px, 92vh, 820px);
+  min-height: 100svh;
   background: #070210;
   color: #f8f7fb;
 }
 
-/* Звёздное поле */
-.starfield {
+/* Высота секции оригинала: на узком экране первый экран целиком, на планшете и
+   десктопе — 600px при типовой высоте окна (на 1440×900 срабатывает max(600px, 64vh)).
+   Текстовая колонка, кегли, градиент H1 и .hero::after остаются прежними. */
+@media (min-width: 768px) {
+  .hero {
+    min-height: max(600px, 65svh);
+  }
+}
+
+@media (min-width: 1024px) {
+  .hero {
+    min-height: max(600px, 64vh);
+  }
+}
+
+/* Видео глобуса: файл оригинала, кадры декодирует GPU. Стили сняты с onevoice27.org
+   и разложены по трём брейкпоинтам. */
+.hero__video {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: flex-start;
+}
+
+.hero__video > video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  object-fit: cover;
+  object-position: center center;
+  transform: scale(1);
+  transform-origin: center center;
+  filter: saturate(1.18) contrast(1.28) brightness(0.96);
+}
+
+@media (min-width: 40rem) {
+  .hero__video > video {
+    object-position: 72% center;
+    transform-origin: 72% 46%;
+  }
+}
+
+/* От 1280px видео перестаёт быть фоном: при height 100% (600px) и aspect-ratio 16 / 9
+   оно получает 1067px ширины и прижимается вправо вверх, как у оригинала. Левый край и
+   низ растворяет пара масок, пересечённых через mask-composite; -webkit-дубли нужны Safari. */
+@media (min-width: 80rem) {
+  .hero__video > video {
+    width: auto;
+    max-width: min(100%, 1920px);
+    aspect-ratio: 16 / 9;
+    margin-left: auto;
+    object-fit: contain;
+    object-position: right top;
+    mix-blend-mode: screen;
+    -webkit-mask-image:
+      linear-gradient(to right, transparent 0%, rgb(0 0 0 / .35) 4%, black 14%),
+      linear-gradient(black 0%, black 76%, transparent 100%);
+    -webkit-mask-composite: source-in;
+    mask-image:
+      linear-gradient(to right, transparent 0%, rgb(0 0 0 / .35) 4%, black 14%),
+      linear-gradient(black 0%, black 76%, transparent 100%);
+    mask-composite: intersect;
+  }
+}
+
+/* Частицы: canvas порта orig-hero-motion.js (компонент HeroParticles). Прозрачность и
+   режим наложения взяты у оригинала. */
+.hero__particles {
   position: absolute;
   inset: 0;
   z-index: 1;
-  pointer-events: none;
-}
-
-.starfield__layer {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  animation: star-drift 120s linear infinite alternate;
-}
-
-.starfield__layer--a {
-  background-image: radial-gradient(circle, rgb(248 247 251 / .55) 0.5px, transparent 1px);
-  background-size: 180px 180px;
-}
-
-.starfield__layer--b {
-  background-image: radial-gradient(circle, rgb(248 247 251 / .35) 0.75px, transparent 1.25px);
-  background-size: 320px 320px;
-  background-position: 90px 40px;
-  animation-name: star-drift-b;
-}
-
-.starfield__glow {
-  position: absolute;
-  width: clamp(320px, 46vw, 720px);
-  height: clamp(320px, 46vw, 720px);
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-  pointer-events: none;
-}
-
-.starfield__glow--signal {
-  left: 78%;
-  top: 34%;
-  background: radial-gradient(circle, rgb(158 67 154 / .18), transparent 70%);
-}
-
-.starfield__glow--unity-a {
-  left: 26%;
-  top: 18%;
-  background: radial-gradient(circle, rgb(48 63 131 / .22), transparent 70%);
-}
-
-.starfield__glow--unity-b {
-  left: 62%;
-  top: 78%;
-  background: radial-gradient(circle, rgb(48 63 131 / .14), transparent 70%);
-}
-
-@keyframes star-drift {
-  from {
-    background-position: 0 0;
-  }
-  to {
-    background-position: 180px 90px;
-  }
-}
-
-@keyframes star-drift-b {
-  from {
-    background-position: 90px 40px;
-  }
-  to {
-    background-position: -230px 200px;
-  }
-}
-
-/* Глобус */
-.globe-canvas {
-  position: absolute;
-  inset: 0;
   width: 100%;
   height: 100%;
-  z-index: 2;
+  opacity: .72;
   mix-blend-mode: screen;
   pointer-events: none;
 }
