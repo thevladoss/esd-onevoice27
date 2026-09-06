@@ -85,6 +85,7 @@ function liveRegion(): HTMLElement {
 
 function fillValidForm() {
   fireEvent.click(screen.getByRole("radio", { name: /Групповой маяк/ }));
+  fireEvent.change(control("orgName"), { target: { value: "Община Твери" } });
   fireEvent.change(control("firstName"), { target: { value: "Иван" } });
   fireEvent.change(control("lastName"), { target: { value: "Иванов" } });
   fireEvent.change(countrySelect(), { target: { value: "643" } });
@@ -126,15 +127,20 @@ describe("LightForm: структура секции", () => {
     expect(screen.getByRole("heading", { level: 2, name: formCopy.title })).toBeInTheDocument();
     expect(screen.getByText(formCopy.eyebrow)).toBeInTheDocument();
 
-    const individual = screen.getByRole("radio", { name: /Индивидуальный свет/ });
+    expect(screen.getByRole("radiogroup", { name: "Тип света" })).toBeInTheDocument();
+
+    // При загрузке тип не выбран, как в оригинале: посетитель делает выбор сам.
+    const individual = screen.getByRole("radio", { name: /Личный свет/ });
     const group = screen.getByRole("radio", { name: /Групповой маяк/ });
-    expect(individual).toBeChecked();
+    expect(individual).not.toBeChecked();
     expect(group).not.toBeChecked();
     expect(
-      screen.getByText("Я лично посвящаю себя молитве, изучению и миссии там, где живу."),
+      screen.getByText("Я лично посвящаю себя молитве, изучению Библии и миссии там, где живу."),
     ).toBeInTheDocument();
     expect(
-      screen.getByText("Церковь, школа, малая группа, семья или коллектив, которые идут вместе."),
+      screen.getByText(
+        "Церковь, школа, малая группа, семья или коллектив, которые посвящают себя вместе.",
+      ),
     ).toBeInTheDocument();
   });
 
@@ -169,7 +175,7 @@ describe("LightForm: структура секции", () => {
     );
 
     // Подпись и описание ошибки должны вести к своему контролу, а не к первой форме.
-    const names = screen.getAllByLabelText(formCopy.fields.firstName.label);
+    const names = screen.getAllByLabelText(/^Имя/);
     expect(names).toHaveLength(2);
     expect(names[0].id).not.toBe(names[1].id);
 
@@ -177,24 +183,37 @@ describe("LightForm: структура секции", () => {
     const ids = Array.from(document.querySelectorAll("form")).flatMap((form) =>
       Array.from(form.querySelectorAll<HTMLElement>("[id]")).map((node) => node.id),
     );
-    // Девять на форму: две радио-карточки, пять полей, согласие и кнопка отправки.
-    expect(ids).toHaveLength(18);
+    // Одиннадцать на форму: группа типа и её подпись, две радио-карточки,
+    // пять полей, согласие и кнопка отправки.
+    expect(ids).toHaveLength(22);
     expect(new Set(ids).size).toBe(ids.length);
   });
 
   it("связывает каждый контрол с видимой подписью через htmlFor", () => {
     const { container } = renderForm();
 
-    const controls = Array.from(
-      container.querySelectorAll<HTMLInputElement>("form input, form select"),
-    );
-    expect(controls).toHaveLength(8);
+    function labelledControls() {
+      const controls = Array.from(
+        container.querySelectorAll<HTMLInputElement>("form input, form select"),
+      );
 
-    for (const control of controls) {
-      const label = container.querySelector(`label[for="${control.id}"]`);
-      expect(label, `нет подписи для контрола #${control.id}`).not.toBeNull();
-      expect(label?.textContent?.trim()).not.toBe("");
+      for (const node of controls) {
+        const label = container.querySelector(`label[for="${node.id}"]`);
+        expect(label, `нет подписи для контрола #${node.id}`).not.toBeNull();
+        expect(label?.textContent?.trim()).not.toBe("");
+      }
+
+      return controls;
     }
+
+    fireEvent.click(screen.getByRole("radio", { name: /Личный свет/ }));
+    expect(labelledControls()).toHaveLength(8);
+
+    fireEvent.click(screen.getByRole("radio", { name: /Групповой маяк/ }));
+    expect(labelledControls()).toHaveLength(9);
+
+    const orgLabel = container.querySelector(`label[for="${control("orgName").id}"]`);
+    expect(orgLabel?.textContent?.trim().startsWith("Название организации")).toBe(true);
   });
 
   it("не отправляет форму по сети: без action и method", () => {
@@ -208,15 +227,15 @@ describe("LightForm: структура секции", () => {
 });
 
 describe("LightForm: валидация", () => {
-  it("на пустой отправке показывает шесть ошибок и уводит фокус на имя", () => {
+  it("на пустой отправке показывает шесть ошибок и уводит фокус на группу типа", () => {
     renderForm();
     clickSubmit();
 
     expect(errorNodes().map((node) => node.textContent)).toEqual([
+      "Выберите тип света",
       "Введите имя",
       "Введите фамилию",
       "Выберите страну",
-      "Укажите город",
       "Введите корректный email",
       "Нужно согласие на обработку данных",
     ]);
@@ -227,8 +246,65 @@ describe("LightForm: валидация", () => {
       expect(node.getAttribute("aria-describedby")).toBe(`${node.id}-error`);
     }
 
-    expect(document.activeElement).toBe(control("firstName"));
+    expect(document.activeElement).toBe(screen.getByRole("radiogroup"));
     expect(screen.getByTestId("probe-groups")).toHaveTextContent("248");
+  });
+
+  it("выбор типа гасит ошибку группы и не приносит поле организации", () => {
+    renderForm();
+    clickSubmit();
+    expect(errorNodes()).toHaveLength(6);
+
+    fireEvent.click(screen.getByRole("radio", { name: /Личный свет/ }));
+
+    expect(screen.queryByText("Выберите тип света")).toBeNull();
+    expect(errorNodes()).toHaveLength(5);
+    expect(document.querySelector('[name="orgName"]')).toBeNull();
+  });
+
+  it("групповой маяк требует название организации", () => {
+    renderForm();
+
+    fireEvent.click(screen.getByRole("radio", { name: /Групповой маяк/ }));
+    expect(control("orgName")).toHaveAttribute("placeholder", "Например, община в Твери");
+
+    clickSubmit();
+
+    expect(errorNodes().map((node) => node.textContent)).toEqual([
+      "Укажите название организации",
+      "Введите имя",
+      "Введите фамилию",
+      "Выберите страну",
+      "Введите корректный email",
+      "Нужно согласие на обработку данных",
+    ]);
+    expect(document.activeElement).toBe(control("orgName"));
+  });
+
+  it("возврат к личному свету убирает поле организации вместе с ошибкой", () => {
+    renderForm();
+
+    fireEvent.click(screen.getByRole("radio", { name: /Групповой маяк/ }));
+    clickSubmit();
+    expect(errorFor("orgName")).toHaveTextContent("Укажите название организации");
+
+    fireEvent.click(screen.getByRole("radio", { name: /Личный свет/ }));
+
+    expect(document.querySelector('[name="orgName"]')).toBeNull();
+    expect(screen.queryByText("Укажите название организации")).toBeNull();
+  });
+
+  it("повторный выбор группы даёт пустое поле организации", () => {
+    renderForm();
+
+    fireEvent.click(screen.getByRole("radio", { name: /Групповой маяк/ }));
+    fireEvent.change(control("orgName"), { target: { value: "Община" } });
+    expect(control("orgName").value).toBe("Община");
+
+    fireEvent.click(screen.getByRole("radio", { name: /Личный свет/ }));
+    fireEvent.click(screen.getByRole("radio", { name: /Групповой маяк/ }));
+
+    expect(control("orgName").value).toBe("");
   });
 
   it("уводит фокус на согласие, когда всё остальное заполнено", () => {
@@ -289,6 +365,7 @@ describe("LightForm: успешная отправка", () => {
     expect(liveRegion()).toHaveTextContent("Ваш свет зажжён! Огонёк уже на карте.");
     expect(toastCard()).toHaveTextContent("Ваш свет зажжён! Огонёк уже на карте.");
 
+    expect(control("orgName").value).toBe("");
     expect(control("firstName").value).toBe("");
     expect(control("lastName").value).toBe("");
     expect(control("city").value).toBe("");
@@ -464,8 +541,9 @@ describe("LightForm: подсказка ошибки и счётчики кар�
     );
   }
 
-  /** Индивидуальный свет: тип по умолчанию, поэтому радио не трогаем. */
+  /** Личный свет: тип при загрузке не выбран, поэтому карточку жмём первым делом. */
   function fillIndividual() {
+    fireEvent.click(screen.getByRole("radio", { name: /Личный свет/ }));
     fireEvent.change(control("firstName"), { target: { value: "Анна" } });
     fireEvent.change(control("lastName"), { target: { value: "Петрова" } });
     fireEvent.change(countrySelect(), { target: { value: "398" } });
@@ -476,6 +554,8 @@ describe("LightForm: подсказка ошибки и счётчики кар�
 
   it("ведёт от невалидного поля к тексту ошибки и держит на нём фокус", () => {
     renderForm();
+    // Тип выбран, поэтому первым невалидным полем оказывается имя, а не группа карточек.
+    fireEvent.click(screen.getByRole("radio", { name: /Личный свет/ }));
     clickSubmit();
 
     const firstName = control("firstName");

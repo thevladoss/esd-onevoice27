@@ -80,6 +80,13 @@ export function LightForm() {
 
   function updateField(field: LightFormField, value: string | boolean) {
     const next = { ...values, [field]: value } as LightFormValues;
+
+    // Переход на личный свет стирает организацию: её поля больше нет в разметке,
+    // и старое значение не должно вернуться вместе с повторным выбором группы.
+    if (field === "type" && value !== "group") {
+      next.orgName = "";
+    }
+
     setValues(next);
     setFailed(false);
 
@@ -89,7 +96,20 @@ export function LightForm() {
 
     // Набор текста только гасит ошибку поля, новых не зажигает.
     const fresh = validateLightForm(next);
-    setErrors((prev) => (prev[field] && !fresh[field] ? withoutField(prev, field) : prev));
+    setErrors((prev) => {
+      let updated = prev;
+
+      if (updated[field] && !fresh[field]) {
+        updated = withoutField(updated, field);
+      }
+
+      // Смена типа уносит и ошибку организации: требование ушло вместе с полем.
+      if (field === "type" && updated.orgName && !fresh.orgName) {
+        updated = withoutField(updated, "orgName");
+      }
+
+      return updated;
+    });
   }
 
   function revalidateField(field: LightFormField) {
@@ -119,11 +139,17 @@ export function LightForm() {
       return;
     }
 
+    // Пустой тип уже отсечён валидацией: проверка нужна только компилятору.
+    const lightType = values.type;
+    if (lightType === "") {
+      return;
+    }
+
     setSubmitting(true);
     setFailed(false);
     submitTimer.current = setTimeout(() => {
       submitTimer.current = null;
-      const lit = addLight({ type: toLightType(values.type), countryId: Number(values.countryId) });
+      const lit = addLight({ type: toLightType(lightType), countryId: Number(values.countryId) });
       setSubmitting(false);
       returnFocus.current = true;
 
@@ -161,11 +187,37 @@ export function LightForm() {
             {/* Пока идёт отправка, поля заблокированы: иначе набор за эти 1200 мс стёрся бы сбросом. */}
             <fieldset className="lf-fields" disabled={submitting}>
               <LightTypeChoice
+                id={fieldId("type")}
                 value={values.type}
-                onChange={(type) => setValues((prev) => ({ ...prev, type }))}
+                error={errors.type}
+                onChange={(next) => updateField("type", next)}
               />
 
               <div className="lf-grid">
+                {/* Организацию спрашивает только групповой маяк. Поле не прячется, а
+                    исчезает из разметки: скрытое поле путало бы фокус и aria. */}
+                {values.type === "group" ? (
+                  <FormField
+                    id={fieldId("orgName")}
+                    label={formCopy.fields.orgName.label}
+                    error={errors.orgName}
+                    className="lf-span"
+                  >
+                    {(control) => (
+                      <input
+                        {...control}
+                        type="text"
+                        name="orgName"
+                        autoComplete="organization"
+                        placeholder={formCopy.fields.orgName.placeholder}
+                        value={values.orgName}
+                        onChange={(event) => updateField("orgName", event.target.value)}
+                        onBlur={() => revalidateField("orgName")}
+                      />
+                    )}
+                  </FormField>
+                ) : null}
+
                 <FormField
                   id={fieldId("firstName")}
                   label={formCopy.fields.firstName.label}
@@ -177,7 +229,6 @@ export function LightForm() {
                       type="text"
                       name="firstName"
                       autoComplete="given-name"
-                      placeholder={formCopy.fields.firstName.placeholder}
                       value={values.firstName}
                       onChange={(event) => updateField("firstName", event.target.value)}
                       onBlur={() => revalidateField("firstName")}
@@ -196,7 +247,6 @@ export function LightForm() {
                       type="text"
                       name="lastName"
                       autoComplete="family-name"
-                      placeholder={formCopy.fields.lastName.placeholder}
                       value={values.lastName}
                       onChange={(event) => updateField("lastName", event.target.value)}
                       onBlur={() => revalidateField("lastName")}
