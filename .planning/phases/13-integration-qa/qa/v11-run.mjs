@@ -111,6 +111,26 @@ async function openPage(page, url, anchor, attempts) {
   return { ok: false, errors };
 }
 
+/**
+ * Баннер согласия на cookie у оригинала (base-ui portal) держит поверх страницы
+ * подложку `bg-black/25` с перехватом кликов: она мешает и клику по карточке, и
+ * замеру цвета пикселей. Жмём «Allow selected» — согласие только на необходимые
+ * cookie; кнопку нажимаем через DOM, потому что подложка ловит указатель.
+ */
+async function dismissConsent(page) {
+  return page.evaluate(async () => {
+    const portal = document.querySelector("[data-base-ui-portal]");
+    if (!portal) return "нет баннера";
+    const button = Array.from(portal.querySelectorAll("button")).find((node) =>
+      /allow selected|allow everything|accept|принять/i.test(node.textContent ?? ""),
+    );
+    if (!button) return "кнопка не найдена";
+    button.click();
+    await new Promise((done) => setTimeout(done, 700));
+    return `нажата: ${button.textContent.trim()}`;
+  });
+}
+
 const opts = parseArgs(process.argv.slice(2));
 
 const loaded = await loadPlaywright();
@@ -150,6 +170,7 @@ try {
   } else {
     await page.waitForLoadState("load").catch(() => {});
     await page.bringToFront();
+    const consent = await dismissConsent(page);
     // Прокрутка до низа и обратно: reveal-обёртки открыты, ленивые картинки новостей
     // загружены, счётчики досчитаны.
     await page.evaluate(async () => {
@@ -171,6 +192,7 @@ try {
       channel: process.env.PW_CHANNEL ?? "chrome",
       url: opts.url,
       attempt: opened.attempt,
+      consent,
       takenAt: new Date().toISOString(),
     };
     const text = JSON.stringify(result, null, 2) + "\n";

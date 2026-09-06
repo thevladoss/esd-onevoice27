@@ -166,7 +166,29 @@ async function open(page, url, selector) {
   await page.goto(url, { waitUntil: "commit", timeout: 120_000 });
   await page.waitForSelector(selector, { timeout: 120_000, state: "attached" });
   await page.waitForLoadState("load").catch(() => {});
+  await dismissConsent(page);
 }
+
+/**
+ * Баннер согласия на cookie у оригинала (base-ui portal) держит поверх страницы
+ * подложку `bg-black/25` с перехватом кликов: она мешает и клику по карточке, и
+ * замеру цвета пикселей. Жмём «Allow selected» — согласие только на необходимые
+ * cookie; кнопку нажимаем через DOM, потому что подложка ловит указатель.
+ */
+async function dismissConsent(page) {
+  return page.evaluate(async () => {
+    const portal = document.querySelector("[data-base-ui-portal]");
+    if (!portal) return "нет баннера";
+    const button = Array.from(portal.querySelectorAll("button")).find((node) =>
+      /allow selected|allow everything|accept|принять/i.test(node.textContent ?? ""),
+    );
+    if (!button) return "кнопка не найдена";
+    button.click();
+    await new Promise((done) => setTimeout(done, 700));
+    return `нажата: ${button.textContent.trim()}`;
+  });
+}
+
 
 async function runCover(context, opts) {
   const page = await context.newPage();

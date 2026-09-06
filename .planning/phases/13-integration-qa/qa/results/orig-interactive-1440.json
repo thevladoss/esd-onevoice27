@@ -1,0 +1,121 @@
+{
+  "meta": {
+    "site": "orig",
+    "url": "https://onevoice27.org/",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    }
+  },
+  "consent": "нажата: Allow everything",
+  "panelOpen": {
+    "present": true,
+    "className": "relative z-[1] flex flex-col flex-nowrap gap-0 ov-resources-panels is-open",
+    "visibility": "visible",
+    "position": "fixed",
+    "zIndex": "10000",
+    "beforeDuration": "0.62s",
+    "beforeTiming": "cubic-bezier(0.22, 1, 0.36, 1)",
+    "beforeTransform": "matrix(1, 0, 0, 1, 0, 0)",
+    "afterDelay": "0.09s",
+    "panelDelay": "0.18s",
+    "panelOpacity": "1",
+    "panelTransform": "matrix(1, 0, 0, 1, 0, 0)",
+    "htmlLocked": true,
+    "bodyLocked": true,
+    "htmlClass": "theme-alps color-theme-customTheme-rtli60cj typography-theme-noto max-w-full scroll-smooth dark ov-resources-panel-locked",
+    "activeClass": "whitespace-no-wrap inline-flex shrink-0 grow-0 select-none items-center justify-center font-sans font-bold uppercase cursor-pointer outline-1 outline-offset-2 focus:outline-dashed active:outline-dashed transition-all duration-500 text-[--btn-label] hover:text-[--btn-label-hover] dark:text-[--btn-dark-label] dark:hover:text-[--btn-dark-label-hover] bg-[--btn-bg] hover:bg-[--btn-bg-hover] focus:bg-[--btn-bg-hover] active:bg-[--btn-bg-hover] dark:bg-[--btn-dark-bg] dark:hover:bg-[--btn-dark-bg-hover] dark:focus:bg-[--btn-dark-bg-hover] dark:active:bg-[--btn-dark-bg-hover] border-[--btn-border] outline-[--btn-border-hover] hover:border-[--btn-border-hover] focus:border-[--btn-border-hover] active:border-[--btn-border-hover] dark:border-[--btn-dark-border] dark:outline-[--btn-dark-border-hover] dark:hover:border-[--btn-dark-border-hover] dark:focus:border-[--btn-dark-border-hover] dark:active:border-[--btn-dark-border-hover] rounded-[3.25rem] border gap-2 text-base min-h-[2.5rem] px-4 py-2 ov-resources-back-action",
+    "activeTag": "a",
+    "activeText": "Back",
+    "activeIsBack": true,
+    "coversHeader": true,
+    "scrollY": 6371,
+    "earlyClassName": "relative z-[1] flex flex-col flex-nowrap gap-0 ov-resources-panels is-open",
+    "scrollYBefore": 6371,
+    "scrollYAfter": 6371
+  },
+  "panelEscape": {
+    "closingSeen": true,
+    "closingClass": "relative z-[1] flex flex-col flex-nowrap gap-0 ov-resources-panels is-closing",
+    "containerGone": false,
+    "containerHidden": true,
+    "lockCleared": true,
+    "activeClass": "whitespace-no-wrap inline-flex shrink-0 grow-0 select-none items-center justify-center font-sans font-bold uppercase cursor-pointer outline-1 outline-offset-2 focus:outline-dashed active:outline-dashed transition-all duration-500 text-[--btn-label] hover:text-[--btn-label-hover] dark:text-[--btn-dark-label] dark:hover:text-[--btn-dark-label-hover] bg-[--btn-bg] hover:bg-[--btn-bg-hover] focus:bg-[--btn-bg-hover] active:bg-[--btn-bg-hover] dark:bg-[--btn-dark-bg] dark:hover:bg-[--btn-dark-bg-hover] dark:focus:bg-[--btn-dark-bg-hover] dark:active:bg-[--btn-dark-bg-hover] border-[--btn-border] outline-[--btn-border-hover] hover:border-[--btn-border-hover] focus:border-[--btn-border-hover] active:border-[--btn-border-hover] dark:border-[--btn-dark-border] dark:outline-[--btn-dark-border-hover] dark:hover:border-[--btn-dark-border-hover] dark:focus:border-[--btn-dark-border-hover] dark:active:border-[--btn-dark-border-hover] rounded-[3.25rem] border gap-2 text-base min-h-[2.5rem] px-4 py-2 ov-resources-panel-trigger",
+    "activeText": "Explore materials",
+    "focusOnCard": true,
+    "ariaExpanded": null
+  },
+  "panelBack": {
+    "closingSeen": true,
+    "closingClass": "relative z-[1] flex flex-col flex-nowrap gap-0 ov-resources-panels is-closing",
+    "containerGone": false,
+    "containerHidden": true,
+    "lockCleared": true,
+    "activeClass": "whitespace-no-wrap inline-flex shrink-0 grow-0 select-none items-center justify-center font-sans font-bold uppercase cursor-pointer outline-1 outline-offset-2 focus:outline-dashed active:outline-dashed transition-all duration-500 text-[--btn-label] hover:text-[--btn-label-hover] dark:text-[--btn-dark-label] dark:hover:text-[--btn-dark-label-hover] bg-[--btn-bg] hover:bg-[--btn-bg-hover] focus:bg-[--btn-bg-hover] active:bg-[--btn-bg-hover] dark:bg-[--btn-dark-bg] dark:hover:bg-[--btn-dark-bg-hover] dark:focus:bg-[--btn-dark-bg-hover] dark:active:bg-[--btn-dark-bg-hover] border-[--btn-border] outline-[--btn-border-hover] hover:border-[--btn-border-hover] focus:border-[--btn-border-hover] active:border-[--btn-border-hover] dark:border-[--btn-dark-border] dark:outline-[--btn-dark-border-hover] dark:hover:border-[--btn-dark-border-hover] dark:focus:border-[--btn-dark-border-hover] dark:active:border-[--btn-dark-border-hover] rounded-[3.25rem] border gap-2 text-base min-h-[2.5rem] px-4 py-2 ov-resources-panel-trigger",
+    "activeText": "Explore materials",
+    "focusOnCard": true,
+    "ariaExpanded": null
+  },
+  "videoPanel": {
+    "count": 0,
+    "ratios": [],
+    "ratioMin": null,
+    "ratioMax": null,
+    "objectFit": null,
+    "objectPosition": null,
+    "naturalWidth": null,
+    "naturalHeight": null,
+    "fileCards": 0
+  },
+  "formGroup": {
+    "orgVisible": true,
+    "orgName": "ORG_NAME",
+    "orgBeforeFirstName": true,
+    "orgSpan": false,
+    "labelText": "Organization name",
+    "requiredMark": false,
+    "fields": [
+      "LIGHT_TYPE",
+      "LIGHT_TYPE",
+      "ORG_NAME",
+      "FIRSTNAME",
+      "LASTNAME",
+      "base-ui-_R_6lellikql6_",
+      "email",
+      "terms"
+    ],
+    "fieldsGroup": [
+      "LIGHT_TYPE",
+      "LIGHT_TYPE",
+      "ORG_NAME",
+      "FIRSTNAME",
+      "LASTNAME",
+      "base-ui-_R_6lellikql6_",
+      "email",
+      "terms"
+    ],
+    "fieldsIndividual": [
+      "LIGHT_TYPE",
+      "LIGHT_TYPE",
+      "FIRSTNAME",
+      "LASTNAME",
+      "base-ui-_R_6lellikql6_",
+      "email",
+      "terms"
+    ]
+  },
+  "fps": {
+    "runs": [
+      120.4,
+      120.3,
+      120.2
+    ],
+    "median": 120.3
+  },
+  "probe": {
+    "playwright": "1.63.0-alpha-2026-08-31",
+    "channel": "chrome",
+    "attempt": 1,
+    "takenAt": "2026-09-06T10:04:42.252Z"
+  }
+}

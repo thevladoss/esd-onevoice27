@@ -1,0 +1,133 @@
+{
+  "meta": {
+    "site": "prod",
+    "url": "https://thevladoss.github.io/esd-onevoice27/",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    }
+  },
+  "panelOpen": {
+    "present": true,
+    "className": "resources-panels is-open",
+    "visibility": "visible",
+    "position": "fixed",
+    "zIndex": "10000",
+    "beforeDuration": "0.62s",
+    "beforeTiming": "cubic-bezier(0.22, 1, 0.36, 1)",
+    "beforeTransform": "matrix(1, 0, 0, 1, 0, 0)",
+    "afterDelay": "0.09s",
+    "panelDelay": "0.18s, 0.18s",
+    "panelOpacity": "1",
+    "panelTransform": "matrix(1, 0, 0, 1, 0, 0)",
+    "htmlLocked": true,
+    "bodyLocked": true,
+    "htmlClass": "resources-panel-locked",
+    "activeClass": "resources-panel__back",
+    "activeTag": "button",
+    "activeText": "Назад",
+    "activeIsBack": true,
+    "coversHeader": true,
+    "scrollY": 6204,
+    "earlyClassName": "resources-panels is-open",
+    "scrollYBefore": 6204,
+    "scrollYAfter": 6204
+  },
+  "panelEscape": {
+    "closingSeen": true,
+    "closingClass": "resources-panels is-closing",
+    "containerGone": true,
+    "containerHidden": null,
+    "lockCleared": true,
+    "activeClass": "absolute inset-0 rounded-card focus-visible:outline-2 focus-visible:-outline-offset-3 focus-visible:outline-[color:var(--accent)]",
+    "activeText": "",
+    "focusOnCard": true,
+    "ariaExpanded": "false"
+  },
+  "panelBack": {
+    "closingSeen": true,
+    "closingClass": "resources-panels is-closing",
+    "containerGone": true,
+    "containerHidden": null,
+    "lockCleared": true,
+    "activeClass": "absolute inset-0 rounded-card focus-visible:outline-2 focus-visible:-outline-offset-3 focus-visible:outline-[color:var(--accent)]",
+    "activeText": "",
+    "focusOnCard": true,
+    "ariaExpanded": "false"
+  },
+  "deepLink": {
+    "kind": "materials",
+    "expanded": "true",
+    "groups": 5,
+    "esdOpen": true,
+    "esdLinks": 4
+  },
+  "videoPanel": {
+    "count": 16,
+    "ratios": [
+      1.7778,
+      1.7778,
+      1.7778,
+      1.7778,
+      1.7778,
+      1.7778,
+      1.7778,
+      1.7778,
+      1.7778,
+      1.7778,
+      1.7778,
+      1.7778,
+      1.7778,
+      1.7778,
+      1.7778,
+      1.7778
+    ],
+    "ratioMin": 1.7778,
+    "ratioMax": 1.7778,
+    "objectFit": "cover",
+    "objectPosition": "50% 50%",
+    "naturalWidth": 480,
+    "naturalHeight": 360,
+    "fileCards": 1
+  },
+  "formGroup": {
+    "orgVisible": true,
+    "orgName": "orgName",
+    "orgBeforeFirstName": true,
+    "orgSpan": true,
+    "labelText": "Название организации обязательно",
+    "requiredMark": true,
+    "fields": [
+      "lightType",
+      "lightType",
+      "orgName",
+      "firstName",
+      "lastName",
+      "countryId",
+      "city",
+      "email",
+      "consent"
+    ],
+    "emptyError": "Укажите название организации",
+    "orgGoneAfterIndividual": true
+  },
+  "fps": {
+    "runs": [
+      68.8,
+      69.2,
+      68.8
+    ],
+    "median": 68.8
+  },
+  "reducedMotion": {
+    "firstClass": "resources-panels is-open",
+    "layerDuration": "1e-05s",
+    "panelOpacity": "1"
+  },
+  "probe": {
+    "playwright": "1.63.0-alpha-2026-08-31",
+    "channel": "chrome",
+    "attempt": 1,
+    "takenAt": "2026-09-06T10:02:33.617Z"
+  }
+}
