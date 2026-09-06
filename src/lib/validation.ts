@@ -5,8 +5,12 @@ import type { LightType as MapLightType } from "../data/lights";
 /** Тип света в форме: карточка выбора. На карте он превращается в person или group. */
 export type LightType = "individual" | "group";
 
+/** Значение поля типа: пустая строка означает «карточка ещё не выбрана». */
+export type LightTypeValue = LightType | "";
+
 export interface LightFormValues {
-  type: LightType;
+  type: LightTypeValue;
+  orgName: string;
   firstName: string;
   lastName: string;
   countryId: string;
@@ -15,13 +19,15 @@ export interface LightFormValues {
   consent: boolean;
 }
 
-export type LightFormField = Exclude<keyof LightFormValues, "type">;
+export type LightFormField = keyof LightFormValues;
 export type LightFormErrors = Partial<Record<LightFormField, string>>;
 
 export const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 /** Порядок полей в разметке: по нему ищется первое невалидное поле для фокуса. */
 export const LIGHT_FORM_FIELD_ORDER: readonly LightFormField[] = [
+  "type",
+  "orgName",
   "firstName",
   "lastName",
   "countryId",
@@ -31,7 +37,8 @@ export const LIGHT_FORM_FIELD_ORDER: readonly LightFormField[] = [
 ];
 
 export const initialLightFormValues: LightFormValues = {
-  type: "individual",
+  type: "",
+  orgName: "",
   firstName: "",
   lastName: "",
   countryId: "",
@@ -49,6 +56,16 @@ const MIN_TEXT_LENGTH = 2;
 /** Чистая проверка: ни DOM, ни сети, аргумент не меняется. Пустой объект означает «валидно». */
 export function validateLightForm(values: LightFormValues): LightFormErrors {
   const errors: LightFormErrors = {};
+
+  if (values.type === "") {
+    errors.type = formCopy.errors.type;
+  }
+
+  // Организацию спрашиваем только у группового маяка: при личном свете поля нет в разметке,
+  // и безусловная проверка не дала бы отправить форму вообще никогда.
+  if (values.type === "group" && values.orgName.trim().length < MIN_TEXT_LENGTH) {
+    errors.orgName = formCopy.errors.orgName;
+  }
 
   if (values.firstName.trim().length < MIN_TEXT_LENGTH) {
     errors.firstName = formCopy.errors.firstName;
@@ -69,9 +86,7 @@ export function validateLightForm(values: LightFormValues): LightFormErrors {
     errors.countryId = formCopy.errors.countryId;
   }
 
-  if (values.city.trim().length < MIN_TEXT_LENGTH) {
-    errors.city = formCopy.errors.city;
-  }
+  // Город не проверяется: в спецификации он идёт без звёздочки, значит и без обязательности.
 
   if (!EMAIL_RE.test(values.email.trim())) {
     errors.email = formCopy.errors.email;
