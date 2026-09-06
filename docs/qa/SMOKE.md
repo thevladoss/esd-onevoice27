@@ -199,6 +199,7 @@ curl -sI https://thevladoss.github.io/esd-onevoice27/ | head -1   # ожидае
 | `node scripts/check-dist.mjs` | `OK: 11 проверок` |
 | Прогон workflow | 34027051932 на `05a0e07` — success |
 | Побайтная сверка прода | 4 из 4: `index.html` `62cd6845a9bf…`, `index-DyXKCQ9Z.js` `7ec892292a81…`, `index-gb-e5VHG.css` `982a2dddca7d…`, `vendor-map-BjCgd77U.js` `ce8d2c48c97b…`; `diff` живого `index.html` и `dist/index.html` пуст. Таблица sha256 — `qa/results/prod-hashes.txt` |
+| Повторная сверка после пуша документов | прогон [34027528339](https://github.com/thevladoss/esd-onevoice27/actions/runs/34027528339) на `bffc58b` — success; те же четыре sha256, имена ассетов не изменились: правка документов больше не задевает бандл |
 
 Тесты QA-01, закрепляющие правки v1.1: `LightForm.test.tsx` (состояния individual / group и появление
 `orgName`), `ResourcePanel.test.tsx` и `Resources.test.tsx` (фокус на «Назад», Escape, scroll lock, вход
