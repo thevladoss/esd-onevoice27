@@ -202,6 +202,7 @@ export function LightForm() {
                     label={formCopy.fields.orgName.label}
                     error={errors.orgName}
                     className="lf-span"
+                    required
                   >
                     {(control) => (
                       <input
@@ -222,6 +223,7 @@ export function LightForm() {
                   id={fieldId("firstName")}
                   label={formCopy.fields.firstName.label}
                   error={errors.firstName}
+                  required
                 >
                   {(control) => (
                     <input
@@ -240,6 +242,7 @@ export function LightForm() {
                   id={fieldId("lastName")}
                   label={formCopy.fields.lastName.label}
                   error={errors.lastName}
+                  required
                 >
                   {(control) => (
                     <input
@@ -258,6 +261,7 @@ export function LightForm() {
                   id={fieldId("countryId")}
                   label={formCopy.fields.country.label}
                   error={errors.countryId}
+                  required
                 >
                   {(control) => (
                     <select
@@ -298,6 +302,7 @@ export function LightForm() {
                   label={formCopy.fields.email.label}
                   error={errors.email}
                   className="lf-span"
+                  required
                 >
                   {(control) => (
                     <input

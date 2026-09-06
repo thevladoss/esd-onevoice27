@@ -1,4 +1,5 @@
 import { formCopy } from "../../data/copy.form";
+import { RequiredMark } from "./FormField";
 
 /**
  * Согласие на обработку данных: нативный чекбокс скрыт, галочку рисует свой бокс.
@@ -28,6 +29,7 @@ export function ConsentCheckbox({
           type="checkbox"
           name="consent"
           checked={checked}
+          aria-required={true}
           aria-invalid={error ? true : undefined}
           aria-describedby={error ? errorId : undefined}
           onChange={(event) => onChange(event.target.checked)}
@@ -45,7 +47,10 @@ export function ConsentCheckbox({
             />
           </svg>
         </span>
-        <span className="lf-check-text">{formCopy.consent}</span>
+        <span className="lf-check-text">
+          {formCopy.consent}
+          <RequiredMark />
+        </span>
       </label>
       {error ? (
         <p className="lf-error" id={errorId}>

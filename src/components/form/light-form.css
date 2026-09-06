@@ -209,6 +209,22 @@
   font: 700 14px/1.35 var(--font-body);
 }
 
+/* Звёздочка обязательного поля: цвет литералом из спецификации, как остальные значения оригинала. */
+.lf-required {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  margin-inline-start: 4px;
+  vertical-align: -1px;
+  color: rgb(252 165 165);
+}
+
+.lf-required svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
 /* background-color, а не background: иначе стрелка select стирается вместе с фоном */
 .lf-control {
   width: 100%;

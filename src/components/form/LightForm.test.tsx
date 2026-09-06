@@ -586,3 +586,50 @@ describe("LightForm: подсказка ошибки и счётчики кар�
     expect(liveRegion().textContent).toMatch(/^Ваш свет зажжён/);
   });
 });
+
+describe("LightForm: пометка обязательных полей", () => {
+  function labelFor(name: string): HTMLElement {
+    const label = document.querySelector<HTMLElement>(`label[for="${control(name).id}"]`);
+    if (!label) {
+      throw new Error(`Нет подписи для контрола ${name}`);
+    }
+
+    return label;
+  }
+
+  function expectRequired(name: string) {
+    const label = labelFor(name);
+    const mark = label.querySelector<HTMLElement>(".lf-required");
+
+    expect(mark, `нет звёздочки у поля ${name}`).not.toBeNull();
+    expect(mark).toHaveAttribute("title", "Обязательно");
+    expect(mark).toHaveAttribute("aria-hidden", "true");
+    expect(mark?.querySelector("svg")).not.toBeNull();
+    // Слово для скринридера стоит сразу за значком, через пробел.
+    expect(label.querySelector(".lf-required + .sr-only")).toHaveTextContent("обязательно");
+    expect(control(name)).toHaveAttribute("aria-required", "true");
+  }
+
+  it("ставит звёздочку у каждого обязательного поля и у согласия", () => {
+    renderForm();
+    fireEvent.click(screen.getByRole("radio", { name: /Групповой маяк/ }));
+
+    for (const name of ["orgName", "firstName", "lastName", "countryId", "email", "consent"]) {
+      expectRequired(name);
+    }
+  });
+
+  it("оставляет город без пометки", () => {
+    renderForm();
+
+    expect(labelFor("city").querySelector(".lf-required")).toBeNull();
+    expect(control("city")).not.toHaveAttribute("aria-required");
+  });
+
+  it("добавляет «обязательно» в доступное имя поля", () => {
+    renderForm();
+
+    expect(screen.getByRole("textbox", { name: "Имя обязательно" })).toBe(control("firstName"));
+    expect(screen.getByRole("combobox", { name: "Страна обязательно" })).toBe(countrySelect());
+  });
+});
