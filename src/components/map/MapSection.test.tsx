@@ -48,13 +48,21 @@ describe("MapSection", () => {
     }
   });
 
-  it("держит скошенную подложку внутри секции", () => {
+  it("не несёт собственной подложки: скос рисует лента", () => {
     renderSection();
-    const skew = document.querySelectorAll("#map .map-section__skew");
-    expect(skew).toHaveLength(1);
-    // Подложка декоративная: содержимое секции лежит рядом с ней, а не внутри.
-    expect(skew[0].children).toHaveLength(0);
-    expect(skew[0]).toHaveAttribute("aria-hidden", "true");
+    // Подложка переехала на `.map-band`: две непрозрачные секции давали вторую
+    // прямую линию на стыке карты и формы.
+    expect(document.querySelectorAll("#map .map-section__skew")).toHaveLength(0);
+  });
+
+  it("рисует контейнер карты прямым ребёнком .map-shell без inline-стилей", () => {
+    renderSection();
+    const shell = document.querySelector(".map-shell") as HTMLElement;
+
+    expect(shell.children).toHaveLength(1);
+    expect(shell.firstElementChild).toHaveClass("map-container");
+    // Обёртка появления ставила контейнеру opacity 0, и огоньки пропадали при прокрутке.
+    expect(shell.firstElementChild?.getAttribute("style")).toBeNull();
   });
 
   it("выносит карту из колонки 72rem, а чипы и счётчики оставляет в ней", () => {
