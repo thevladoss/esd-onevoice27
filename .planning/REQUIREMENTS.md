@@ -32,7 +32,7 @@
 
 ### Мобильная адаптация (MOB)
 
-- [ ] **MOB-01**: Ссылки футера — цели касания ≥ 44px: `.site-footer__links a { display: inline-flex; align-items: center; min-height: 44px; padding-inline: 8px }`, интервал списка уменьшен на ту же величину, столбец выглядит как раньше
+- [ ] **MOB-01**: Ссылки футера — цели касания ≥ 44px: `.site-footer__links a { display: inline-flex; align-items: center; min-height: 44px; padding-inline: 8px }`, у списка `gap: 0`; шаг столбца растёт с 30,4px до 44px, боксы ссылок не перекрываются, текст центрирован в боксе
 - [ ] **MOB-02**: Чекбокс согласия (`ConsentCheckbox.tsx`): label `min-height: 44px; display: flex; align-items: center; gap: 12px`, input 20×20 с `margin: 0`, нажатие по всей label
 - [ ] **MOB-03**: Превью новостей (`NewsCard.tsx`): все `<img>` с `width="480" height="360"` и `decoding="async"`; первая карточка `loading="eager"` и `fetchPriority="high"`, остальные `lazy`; `object-fit: cover` и `coverZoom` без изменений
 - [ ] **MOB-04**: Подпись логотипа «МИССИЯ ДЛЯ ВСЕХ» в шапке на узком экране .625rem вместо .5625rem, `letter-spacing` прежний

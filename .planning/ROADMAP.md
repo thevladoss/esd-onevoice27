@@ -129,7 +129,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Requirements**: MOB-01, MOB-02, MOB-03, MOB-04
 **Success Criteria** (what must be TRUE):
 
-  1. На 390×844 каждая ссылка `.site-footer__links a` имеет высоту ≥ 44px (`display: inline-flex; align-items: center; min-height: 44px; padding-inline: 8px`), интервал списка уменьшен на ту же величину, и столбец ссылок визуально стоит как в v1.1: расстояние между базовыми линиями соседних ссылок не изменилось (MOB-01)
+  1. На 390×844 каждая ссылка `.site-footer__links a` имеет высоту ≥ 44px (`display: inline-flex; align-items: center; min-height: 44px; padding-inline: 8px`), список с `gap: 0`: шаг столбца 44px вместо 30,4px, боксы соседних ссылок не перекрываются (касание по краю бокса не уходит в соседнюю ссылку), текст центрирован в боксе (MOB-01)
   2. Label чекбокса согласия высотой ≥ 44px (`min-height: 44px; display: flex; align-items: center; gap: 12px`), input 20×20 с `margin: 0`; клик по тексту согласия переключает чекбокс, тест на это зелёный, ошибка валидации «согласие» показывается как раньше (MOB-02)
   3. Все `<img>` карточек новостей несут `width="480" height="360"` и `decoding="async"`; первая карточка ленты на первой странице пагинации `loading="eager"` и `fetchPriority="high"`, остальные `loading="lazy"`; `object-fit: cover`, `coverZoom` и `coverPosition` не изменились (MOB-03)
   4. Подпись «МИССИЯ ДЛЯ ВСЕХ» в шапке на узком экране `font-size: .625rem` (10px) с прежним `letter-spacing: .16em`; десктопное значение .625rem и вордмарк футера не изменились (MOB-04)

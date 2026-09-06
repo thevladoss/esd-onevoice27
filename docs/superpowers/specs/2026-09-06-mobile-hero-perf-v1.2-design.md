@@ -111,8 +111,9 @@ GPU) плюс лёгкий canvas на 30 fps, а огоньки живут в W
 цели касания и вёрстка картинок.
 
 - MOB-01. Ссылки футера (`.site-footer__links a`): `display: inline-flex; align-items: center;
-  min-height: 44px; padding-inline: 8px`, интервал списка уменьшается на ту же величину, чтобы
-  визуальный ритм столбца не менялся.
+  min-height: 44px; padding-inline: 8px`, у списка `gap: 0`. Шаг столбца растёт с 30,4px до 44px:
+  сохранить прежний шаг при боксе 44px нельзя без перекрытия боксов, а перекрытие уводит касание в
+  соседнюю ссылку.
 - MOB-02. Чекбокс согласия (`ConsentCheckbox.tsx`): label `min-height: 44px; display: flex;
   align-items: center; gap: 12px`, сам input 20×20 с `margin: 0`; область нажатия — вся label.
 - MOB-03. Превью новостей (`NewsCard.tsx`): все `<img>` получают `width="480" height="360"` и
