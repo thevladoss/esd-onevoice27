@@ -118,7 +118,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - `src/App.seams.test.tsx` (только блок карты: атрибуты canvas и константы `lightsCanvas.ts` вместо `.light-bucket` и `map.css`)
 
 **Не трогать**: `src/styles/global.css` (правила `[data-anim="pulse"] circle`, `.light-halo` и `[data-anim="new-light"]` в блоке reduce остаются no-op), `src/state/lights.tsx` (`isNew` уже есть), `src/test/setup.ts`, `src/components/map/Counters.tsx`, `CountryChips.tsx`, `MapBand.tsx`, `MapSection.tsx`, `src/components/form/*`, `src/components/hero/*`; в `App.seams.test.tsx` проверки `light-form.css` (строки про `.lf-section`) не менять.
-**Plans**: TBD
+**Plans**: 3 plans — 15-01-PLAN.md (чистый модуль lightsCanvas.ts: константы, дыхание, спрайты, кадр), 15-02-PLAN.md (LightsCanvas.tsx, интеграция в EsdMap, чистка SVG/CSS, перевод тестов), 15-03-PLAN.md (зонд fps и бюджет LIGHT-07)
 **UI hint**: yes
 
 ### Phase 16: Мобильная адаптация
