@@ -10,8 +10,11 @@ export type MaterialItem = {
   kind: MaterialKind;
 };
 
-/** Материалы дивизиона: реальные адреса esd.onevoice27.org и файловых хранилищ. */
-export const materials: readonly MaterialItem[] = [
+/**
+ * Материалы дивизиона: реальные адреса esd.onevoice27.org и файловых хранилищ.
+ * Из этого набора собирается группа «Материалы ЕАД (на русском)» в панели материалов.
+ */
+export const esdMaterials: readonly MaterialItem[] = [
   {
     id: "project-description",
     title: "Описание проекта (на русском)",
@@ -40,11 +43,16 @@ export const materials: readonly MaterialItem[] = [
     href: "https://esd.onevoice27.org/materials/wallpapers",
     kind: "phone",
   },
-  {
-    id: "english",
-    title: "Материалы (на английском)",
-    caption: "SharePoint, английский",
-    href: "https://gcsda.sharepoint.com/:f:/s/digitalmediateam/EtNk5tgXbZRMiJ7Nk1nOlRsBhAq-Xx8Oc7vfWiJzI86OJA?e=sSsYtg",
-    kind: "folder",
-  },
 ] as const;
+
+/** Папка SharePoint с материалами глобального проекта: замыкает группу «English resources». */
+export const englishFolder: MaterialItem = {
+  id: "english",
+  title: "Материалы (на английском)",
+  caption: "SharePoint, английский",
+  href: "https://gcsda.sharepoint.com/:f:/s/digitalmediateam/EtNk5tgXbZRMiJ7Nk1nOlRsBhAq-Xx8Oc7vfWiJzI86OJA?e=sSsYtg",
+  kind: "folder",
+};
+
+/** Читают MaterialsList и Resources.test, снимает план 11-03. */
+export const materials: readonly MaterialItem[] = [...esdMaterials, englishFolder] as const;
