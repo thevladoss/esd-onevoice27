@@ -11,12 +11,12 @@
 
 ### Стекло (GLASS)
 
-- [ ] **GLASS-01**: Посетитель видит стеклянные карточки с полупрозрачной поверхностью оригинала: утилита `glass` и токены `--glass-surface`, `--glass-border`, `--shadow-card` дают `linear-gradient(145deg, rgb(255 255 255 / .045), transparent 30%), linear-gradient(180deg, rgb(49 41 77 / .44), rgb(18 12 52 / .62))`, рамку `1px solid rgb(239 237 245 / .18)`, тень `inset 0 1px 0 rgb(255 255 255 / .035), 0 20px 46px rgb(3 2 18 / .24)`, `backdrop-filter: blur(14px) saturate(112%)`, ховер с рамкой `rgb(143 157 214 / .34)`
-- [ ] **GLASS-02**: Карточки шагов About используют поверхность GLASS-01 без переопределения фона, сохраняя акцентную линию и разделитель
-- [ ] **GLASS-03**: Карточки ресурсов используют поверхность оригинала `linear-gradient(180deg, rgb(255 255 255 / .075), transparent 34%), linear-gradient(145deg, rgb(49 41 77 / .44), rgb(18 12 52 / .62))` и `blur(14px) saturate(125%)`
-- [ ] **GLASS-04**: Триптих Involve: рамка без размытия, карточки с поверхностью `rgb(33 26 62 / .48)`, швом `1px solid rgb(239 237 245 / .15)`, тенью рамки оригинала и ховером `rgb(49 41 77 / .54)`
-- [ ] **GLASS-05**: Счётчики карты не меняются (уже совпадают с оригиналом)
-- [ ] **GLASS-06**: Заголовки секций плоские `rgb(239 237 245)`, градиентный только About (`linear-gradient(104deg, rgb(227 175 210) 2%, rgb(143 157 214) 52%, rgb(123 194 199))`); hero h1 остаётся градиентным
+- [x] **GLASS-01**: Посетитель видит стеклянные карточки с полупрозрачной поверхностью оригинала: утилита `glass` и токены `--glass-surface`, `--glass-border`, `--shadow-card` дают `linear-gradient(145deg, rgb(255 255 255 / .045), transparent 30%), linear-gradient(180deg, rgb(49 41 77 / .44), rgb(18 12 52 / .62))`, рамку `1px solid rgb(239 237 245 / .18)`, тень `inset 0 1px 0 rgb(255 255 255 / .035), 0 20px 46px rgb(3 2 18 / .24)`, `backdrop-filter: blur(14px) saturate(112%)`, ховер с рамкой `rgb(143 157 214 / .34)`
+- [x] **GLASS-02**: Карточки шагов About используют поверхность GLASS-01 без переопределения фона, сохраняя акцентную линию и разделитель
+- [x] **GLASS-03**: Карточки ресурсов используют поверхность оригинала `linear-gradient(180deg, rgb(255 255 255 / .075), transparent 34%), linear-gradient(145deg, rgb(49 41 77 / .44), rgb(18 12 52 / .62))` и `blur(14px) saturate(125%)`
+- [x] **GLASS-04**: Триптих Involve: рамка без размытия, карточки с поверхностью `rgb(33 26 62 / .48)`, швом `1px solid rgb(239 237 245 / .15)`, тенью рамки оригинала и ховером `rgb(49 41 77 / .54)`
+- [x] **GLASS-05**: Счётчики карты не меняются (уже совпадают с оригиналом)
+- [x] **GLASS-06**: Заголовки секций плоские `rgb(239 237 245)`, градиентный только About (`linear-gradient(104deg, rgb(227 175 210) 2%, rgb(143 157 214) 52%, rgb(123 194 199))`); hero h1 остаётся градиентным
 
 ### Карта (MAP)
 
@@ -85,12 +85,12 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| GLASS-01 | Phase 7 | Pending |
-| GLASS-02 | Phase 7 | Pending |
-| GLASS-03 | Phase 7 | Pending |
-| GLASS-04 | Phase 7 | Pending |
-| GLASS-05 | Phase 7 | Pending |
-| GLASS-06 | Phase 7 | Pending |
+| GLASS-01 | Phase 7 | Complete |
+| GLASS-02 | Phase 7 | Complete |
+| GLASS-03 | Phase 7 | Complete |
+| GLASS-04 | Phase 7 | Complete |
+| GLASS-05 | Phase 7 | Complete |
+| GLASS-06 | Phase 7 | Complete |
 | MAP-01 | Phase 8 | Pending |
 | MAP-02 | Phase 8 | Pending |
 | MAP-03 | Phase 8 | Pending |
