@@ -1,7 +1,6 @@
 import { geoPath } from "d3-geo";
 import type { ZoomTransform } from "d3-zoom";
 import { zoomIdentity } from "d3-zoom";
-import type { CSSProperties } from "react";
 import {
   useCallback,
   useEffect,
@@ -16,6 +15,10 @@ import { mapCopy } from "../../data/copy.map";
 import type { Light } from "../../data/lights";
 import { featureById, isEsd, makeProjection, worldFeatures } from "../../lib/geo";
 import { usePrefersReducedMotion } from "../../lib/useReducedMotion";
+// Расширение обязательно: без него путь на файловой системе macOS ложится
+// в чистый модуль lightsCanvas.ts, а не в компонент.
+import { LightsCanvas, type LightsCanvasHandle } from "./LightsCanvas.tsx";
+import type { LightPoint } from "./lightsCanvas";
 import { ZOOM_MAX, ZOOM_MIN, movedAway, useMapZoom } from "./useMapZoom";
 import "./map.css";
 
@@ -32,14 +35,6 @@ export interface EsdMapProps {
   /** Растёт на каждый выбор страны: повторный клик по активному чипу снова уводит к ней камеру. */
   flightKey?: number;
 }
-
-export const LIGHT_CORE_RADIUS = 2.2;
-export const LIGHT_HALO_RADIUS = 6;
-/**
- * Пять фазовых корзин, как пять glow-слоёв Mapbox у оригинала: корзина огонька
- * равна `index % LIGHT_BUCKETS`, где index — позиция в `points`.
- */
-export const LIGHT_BUCKETS = 5;
 
 /** Опорная точка проверки проекции: Москва. */
 const PROBE: [number, number] = [37.6, 55.7];
@@ -60,6 +55,7 @@ export function EsdMap({
   const containerRef = useRef<HTMLDivElement>(null);
   const svgRef = useRef<SVGSVGElement>(null);
   const viewportRef = useRef<SVGGElement>(null);
+  const lightsRef = useRef<LightsCanvasHandle>(null);
   const [measured, setMeasured] = useState<Size | null>(null);
   const titleId = useId();
   const descId = useId();
@@ -122,7 +118,7 @@ export function EsdMap({
 
   const points = useMemo(() => {
     if (!projection) return [];
-    const placed: { light: Light; x: number; y: number }[] = [];
+    const placed: LightPoint[] = [];
     for (const light of lights) {
       const xy = projection([light.lon, light.lat]);
       if (!xy || !Number.isFinite(xy[0]) || !Number.isFinite(xy[1])) continue;
@@ -130,19 +126,6 @@ export function EsdMap({
     }
     return placed;
   }, [projection, lights]);
-
-  // Раскладка ореолов по корзинам: каждая дышит со своей фазой, поэтому поле
-  // светится волной, а не мигает всеми огоньками разом.
-  const buckets = useMemo(() => {
-    const rows: { light: Light; x: number; y: number }[][] = Array.from(
-      { length: LIGHT_BUCKETS },
-      () => [],
-    );
-    points.forEach((point, index) => {
-      rows[index % LIGHT_BUCKETS].push(point);
-    });
-    return rows;
-  }, [points]);
 
   const counts = useMemo(() => {
     let people = 0;
@@ -179,13 +162,12 @@ export function EsdMap({
   );
 
   // Кадр жеста и полёта пишется прямо в атрибуты группы вьюпорта: React на этом
-  // пути не участвует, поэтому огоньки не пересобираются по 60 раз в секунду.
+  // пути не участвует, поэтому карта не пересобирается по 60 раз в секунду.
+  // Огоньки получают тот же трансформ в том же вызове и не отстают от стран;
+  // состояние `transform` из useMapZoom остаётся источником при рендере React.
   const handleFrame = useCallback((next: ZoomTransform) => {
-    const node = viewportRef.current;
-    if (!node) return;
-
-    node.setAttribute("transform", next.toString());
-    node.style.setProperty("--zoom-k", String(next.k));
+    viewportRef.current?.setAttribute("transform", next.toString());
+    lightsRef.current?.draw(next);
   }, []);
 
   const { transform, dragging, zoomTo } = useMapZoom(svgRef, {
@@ -250,10 +232,6 @@ export function EsdMap({
     zoomTo(target, !reduced && selectionChanged);
   }, [projection, selectedCountryId, flightKey, width, height, reduced, zoomTo]);
 
-  // Радиусы огоньков делятся на масштаб вьюпорта: на любом зуме точка одного экранного размера.
-  const coreRadius = LIGHT_CORE_RADIUS / transform.k;
-  const haloRadius = LIGHT_HALO_RADIUS / transform.k;
-
   if (hasError) {
     return (
       <div className="esd-map" ref={containerRef}>
@@ -280,40 +258,7 @@ export function EsdMap({
             preserveAspectRatio="xMidYMid meet"
           >
             <title id={titleId}>{mapCopy.mapTitle}</title>
-            {/* Свечение огонька — радиальный градиент от цвета в центре к прозрачному
-                краю: так у оригинала выглядят слои awe-pin-lights-glow с circle-blur: 1.
-                Цвет приходит из currentColor, его задаёт CSS на самом градиенте.
-                Идентификаторы литеральные: карта на странице одна. */}
-            <defs>
-              <radialGradient
-                id="light-halo-person"
-                className="light-halo-def light-halo-def--person"
-              >
-                <stop offset="0" stopColor="currentColor" stopOpacity="0.9" />
-                <stop offset="1" stopColor="currentColor" stopOpacity="0" />
-              </radialGradient>
-              <radialGradient
-                id="light-halo-group"
-                className="light-halo-def light-halo-def--group"
-              >
-                <stop offset="0" stopColor="currentColor" stopOpacity="0.9" />
-                <stop offset="1" stopColor="currentColor" stopOpacity="0" />
-              </radialGradient>
-            </defs>
-            <g
-              ref={viewportRef}
-              className="map-viewport"
-              transform={transform.toString()}
-              // Радиусы огоньков считает CSS из этих переменных: атрибут r остаётся
-              // запасным для движков без геометрических свойств.
-              style={
-                {
-                  "--zoom-k": String(transform.k),
-                  "--light-core-r": `${LIGHT_CORE_RADIUS}px`,
-                  "--light-halo-r": `${LIGHT_HALO_RADIUS}px`,
-                } as CSSProperties
-              }
-            >
+            <g ref={viewportRef} className="map-viewport" transform={transform.toString()}>
               <g className="map-countries" aria-hidden="true">
                 {countries.map((country) => {
                   const selected = selectedCountryId === country.id;
@@ -334,54 +279,19 @@ export function EsdMap({
                   );
                 })}
               </g>
-              {/* Два слоя: ореолы разложены по корзинам, потому что дышит группа
-                  целиком (opacity и --halo-k на пяти узлах вместо 942), а ядра
-                  живут отдельным слоем и не тускнеют вместе со свечением —
-                  так же, как слой awe-pin-lights-core у оригинала. */}
-              <g className="map-lights" aria-hidden="true">
-                {buckets.map((bucket, index) => (
-                  <g
-                    key={index}
-                    className="light-bucket"
-                    data-bucket={index}
-                    data-anim="pulse"
-                  >
-                    {bucket.map(({ light, x, y }) => (
-                      <circle
-                        key={light.id}
-                        className="light-halo"
-                        cx={x}
-                        cy={y}
-                        r={haloRadius}
-                        fill={`url(#light-halo-${light.type})`}
-                      />
-                    ))}
-                  </g>
-                ))}
-                <g className="light-cores">
-                  {points.map(({ light, x, y }) => (
-                    <g
-                      key={light.id}
-                      className={
-                        "light light--" + light.type + (light.isNew ? " is-new" : "")
-                      }
-                    >
-                      <circle className="light-core" cx={x} cy={y} r={coreRadius} />
-                      {light.isNew ? (
-                        <circle
-                          className="light-ring"
-                          data-anim="new-light"
-                          cx={x}
-                          cy={y}
-                          r={haloRadius}
-                        />
-                      ) : null}
-                    </g>
-                  ))}
-                </g>
-              </g>
             </g>
           </svg>
+          {/* Огоньки лежат поверх SVG отдельным холстом: по map.css он занимает
+              тот же прямоугольник, логическая сетка равна viewBox, поэтому
+              transform.apply даёт те же экранные координаты, что и трансформ
+              группы стран. Кликов слой не ловит, жесты уходят в SVG под ним. */}
+          <LightsCanvas
+            ref={lightsRef}
+            points={points}
+            transform={transform}
+            width={width}
+            height={height}
+          />
           <p id={descId} className="sr-only">
             {mapCopy.srDescription(counts.people, counts.groups)}
           </p>

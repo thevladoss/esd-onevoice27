@@ -103,7 +103,9 @@ describe("реестр data-anim", () => {
 
   it("проставлен на всех декоративных слоях оболочки, hero и карты", () => {
     // particles и atmosphere проставляет план 05-04 в секции ресурсов.
-    for (const value of ["stars", "globe", "beam", "pulse", "new-light", "wave", "halo"]) {
+    // new-light остаётся в реестре ради селектора блока reduce в global.css,
+    // но кольцо нового огонька с фазы 15 рисует canvas: узла в DOM нет.
+    for (const value of ["stars", "globe", "beam", "pulse", "wave", "halo"]) {
       expect(used).toContain(value);
     }
   });
