@@ -163,7 +163,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - точечные правки в любых файлах при дефектах стыка (у фазы нет параллельных соседей)
 - `.planning/*` по итогам приёмки (аудит, архив, PROJECT.md, MILESTONES.md)
 
-**Plans**: TBD
+**Plans**: 2 plans — 17-01-PLAN.md (интеграция, стыки, гейт, деплой, sha256 прода), 17-02-PLAN.md (Playwright-приёмка против оригинала, таблица fps, SMOKE.md)
 
 ## Progress
 
