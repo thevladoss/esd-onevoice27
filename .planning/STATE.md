@@ -3,7 +3,7 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Дизайн-правки по оригиналу
 status: ready_to_plan
-last_updated: 2026-09-06T08:56:17.821Z
+last_updated: 2026-09-06T09:03:23.036Z
 last_activity: 2026-09-06
 progress:
   total_phases: 7
@@ -11,7 +11,7 @@ progress:
   total_plans: 0
   completed_plans: 11
   percent: 0
-stopped_at: Phase 11 complete (3/3) — ready to discuss Phase 12
+stopped_at: Phase 8 complete (2/2) — ready to discuss Phase 09
 ---
 
 # Project State
@@ -21,11 +21,11 @@ stopped_at: Phase 11 complete (3/3) — ready to discuss Phase 12
 See: .planning/PROJECT.md (updated 2026-09-06)
 
 **Core value:** Посетитель открывает страницу и видит красивый, живой лендинг уровня оригинала onevoice27.org, но про ЕАД: узнаёт, что такое «Единый голос 27», видит карту движения по дивизиону и может «зажечь свой свет».
-**Current focus:** Phase 12 — footer column
+**Current focus:** Phase 09 — form original
 
 ## Current Position
 
-Phase: 12
+Phase: 09
 Plan: Not started
 Status: Ready to plan
 Last activity: 2026-09-06
@@ -36,7 +36,7 @@ Last activity: 2026-09-06
 
 **Velocity:**
 
-- Total plans completed: 43
+- Total plans completed: 45
 - Average duration: - min
 - Total execution time: 0 hours
 
@@ -55,6 +55,7 @@ Last activity: 2026-09-06
 | 7 | 2 | - | - |
 | 9 | 2 | - | - |
 | 11 | 3 | - | - |
+| 8 | 2 | - | - |
 
 **Recent Trend:**
 
