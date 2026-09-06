@@ -10,8 +10,8 @@ import { VIEWPORT_ROOT_MARGIN } from "./heroParticles";
 import { HeroParticles } from "./HeroParticles.tsx";
 
 /*
- * Хелперы повторяют GlobeCanvas.test.tsx: тот файл удаляет план 14-02, поэтому они
- * скопированы, а не импортированы.
+ * Мок 2d-контекста, размера canvas и reduced motion объявлены здесь локально: общего
+ * хелпера для canvas-тестов в проекте нет, LightsCanvas.test.tsx фазы 15 держит свой.
  */
 function mockContext() {
   return {

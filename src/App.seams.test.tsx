@@ -25,6 +25,23 @@ function renderApp() {
   );
 }
 
+/* Карта строит проекцию только по измеренному контейнеру, а jsdom отдаёт нули: без
+   подменённого прямоугольника SVG не рендерится. Подмена узкая — её видят только div
+   с классом esd-map — и снимается в finally, как в тесте карты блока v1.1. */
+function renderMeasuredApp() {
+  const realRect = HTMLDivElement.prototype.getBoundingClientRect;
+  HTMLDivElement.prototype.getBoundingClientRect = function measured(this: HTMLDivElement) {
+    if (!this.classList.contains("esd-map")) return realRect.call(this);
+    return new DOMRect(0, 0, 1200, 700);
+  };
+
+  try {
+    return renderApp();
+  } finally {
+    HTMLDivElement.prototype.getBoundingClientRect = realRect;
+  }
+}
+
 /* vitest настроен с css: false, вычисленных стилей в jsdom нет: значения свойств
    читаются из текста файла тем же приёмом, что в About.test.tsx и MapBand.test.tsx. */
 const read = (path: string) => readFileSync(resolve(process.cwd(), path), "utf8");
@@ -34,6 +51,8 @@ const MAP_CSS = read("src/components/map/map.css");
 const GLOBAL_CSS = read("src/styles/global.css");
 const PRIMITIVES_CSS = read("src/components/layout/primitives.css");
 const VIDEO_EMBED_CSS = read("src/components/about/video-embed.css");
+const HERO_CSS = read("src/components/hero/hero.css");
+const FOOTER_CSS = read("src/components/layout/Footer.css");
 
 /** Схлопывает пробельные последовательности в один пробел. */
 const flat = (css: string) => css.replace(/\s+/g, " ");
@@ -193,5 +212,123 @@ describe("стыки фаз v1.1", () => {
     expect(LIGHT_BUCKETS).toBe(5);
     expect([HALO_RADIUS_MIN, HALO_RADIUS_MAX]).toEqual([7, 12]);
     expect([HALO_ALPHA_MIN, HALO_ALPHA_MAX]).toEqual([0.3, 0.6]);
+  });
+});
+
+describe("стыки фаз v1.2", () => {
+  it("hero складывает видео оригинала и canvas частиц (14)", () => {
+    renderApp();
+
+    const hero = document.querySelector("section#hero");
+    expect(hero).not.toBeNull();
+    const children = Array.from((hero as HTMLElement).children);
+
+    // Порядок слоёв задаёт z-index: видео под частицами, текст над обоими.
+    expect(children[0]).toHaveClass("hero__video");
+    const particles = (hero as HTMLElement).querySelector(
+      'canvas.hero__particles[data-anim="stars"][aria-hidden="true"]',
+    );
+    expect(particles).not.toBeNull();
+    expect(children[1]).toBe(particles);
+    expect(children[2]).toHaveClass("hero__content");
+
+    const video = children[0].querySelector<HTMLVideoElement>('video[data-anim="globe"]');
+    expect(video).not.toBeNull();
+    for (const attribute of ["autoplay", "loop", "playsinline"]) {
+      expect(video).toHaveAttribute(attribute);
+    }
+    expect(video).toHaveAttribute("preload", "auto");
+    expect(video).toHaveAttribute("aria-hidden", "true");
+    expect(video).toHaveAttribute("tabindex", "-1");
+
+    const sources = (video as HTMLVideoElement).querySelectorAll("source");
+    expect(sources).toHaveLength(2);
+    // webm первым: он вдвое легче mp4.
+    expect(sources[0]).toHaveAttribute("type", "video/webm");
+    expect(sources[0].getAttribute("src")).toMatch(/hero-globe\.webm$/);
+    expect(sources[1]).toHaveAttribute("type", "video/mp4");
+    expect(sources[1].getAttribute("src")).toMatch(/hero-globe\.mp4$/);
+
+    const particlesCss = block(HERO_CSS, ".hero__particles {");
+    expect(particlesCss).toContain("mix-blend-mode: screen");
+    expect(particlesCss).toContain("opacity: .72");
+    expect(block(HERO_CSS, ".hero__video {")).toContain("z-index: 0");
+  });
+
+  it("карта рисует огоньки на canvas, а SVG держит только страны (15 + 8)", () => {
+    renderMeasuredApp();
+
+    const canvas = document.querySelector(".esd-map > canvas.map-lights-canvas");
+    expect(canvas).not.toBeNull();
+    expect(canvas).toHaveAttribute("data-anim", "pulse");
+    expect(canvas).toHaveAttribute("aria-hidden", "true");
+    expect(canvas).toHaveAttribute("data-light-count", "942");
+    expect(canvas).toHaveAttribute("data-people", "694");
+    expect(canvas).toHaveAttribute("data-groups", "248");
+    expect(canvas).toHaveAttribute("data-new", "0");
+    // Холст лежит сразу за картой стран, поэтому огоньки рисуются поверх неё.
+    expect(canvas?.previousElementSibling?.tagName.toLowerCase()).toBe("svg");
+
+    expect(
+      document.querySelectorAll(
+        ".esd-map svg circle, .esd-map svg defs, .map-lights, .light-bucket, .light-core, .light-ring",
+      ),
+    ).toHaveLength(0);
+    expect(document.querySelectorAll(".esd-map svg path").length).toBeGreaterThanOrEqual(177);
+
+    // Структурная половина LIGHT-07: без 942 огоньков в SVG дерево остаётся мелким.
+    expect(document.querySelectorAll("svg, svg *").length).toBeLessThan(1300);
+  });
+
+  it("форма и футер держат цели касания 44px (16 + 9)", () => {
+    renderApp();
+
+    const consent = document.querySelector("#light-form label.lf-check");
+    expect(consent).not.toBeNull();
+    expect(consent?.querySelector('input.lf-checkbox[type="checkbox"]')).not.toBeNull();
+    expect(consent?.querySelector("span.lf-check-text")).not.toBeNull();
+
+    expect(block(LIGHT_FORM_CSS, ".lf-check {")).toContain("min-height: 44px");
+    const checkbox = block(LIGHT_FORM_CSS, ".lf-checkbox {");
+    expect(checkbox).toContain("width: 20px");
+    expect(checkbox).toContain("margin: 0");
+
+    expect(document.querySelectorAll(".site-footer__links a")).toHaveLength(2);
+    const link = block(FOOTER_CSS, ".site-footer__links a {");
+    expect(link).toContain("min-height: 44px");
+    expect(link).toContain("inline-flex");
+    // Высоту строки списка задаёт сама ссылка, поэтому зазор между пунктами нулевой.
+    expect(block(FOOTER_CSS, ".site-footer__links ul {")).toContain("gap: 0");
+  });
+
+  it("реестр data-anim в DOM после слияния (14 + 15)", () => {
+    renderMeasuredApp();
+
+    const used = new Set(
+      Array.from(document.querySelectorAll("[data-anim]")).map((node) =>
+        node.getAttribute("data-anim"),
+      ),
+    );
+    // new-light из реестра в DOM не приходит: кольцо нового огонька рисует canvas.
+    expect([...used].sort()).toEqual([
+      "atmosphere",
+      "beam",
+      "globe",
+      "halo",
+      "particles",
+      "pulse",
+      "stars",
+      "wave",
+    ]);
+
+    for (const [value, tag] of [
+      ["stars", "CANVAS"],
+      ["globe", "VIDEO"],
+      ["pulse", "CANVAS"],
+    ] as const) {
+      const nodes = document.querySelectorAll(`[data-anim="${value}"]`);
+      expect(nodes, `узлов с data-anim="${value}"`).toHaveLength(1);
+      expect(nodes[0].tagName).toBe(tag);
+    }
   });
 });

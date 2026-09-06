@@ -26,6 +26,13 @@ window.matchMedia = vi.fn((query: string) => ({
 HTMLCanvasElement.prototype.getContext = (() =>
   null) as unknown as HTMLCanvasElement["getContext"];
 
+/* jsdom не реализует медиа: без заглушек каждый рендер App с <video> печатает
+   «Not implemented: HTMLMediaElement's play() method». Обычные функции, а не vi.fn:
+   состояние мока копилось бы между тестами. Hero.test.tsx кладёт поверх свои
+   vi.spyOn и снимает их через restoreAllMocks, поэтому подсчёт вызовов там прежний. */
+HTMLMediaElement.prototype.play = () => Promise.resolve();
+HTMLMediaElement.prototype.pause = () => {};
+
 Element.prototype.scrollIntoView = vi.fn();
 window.scrollTo = vi.fn() as unknown as typeof window.scrollTo;
 
