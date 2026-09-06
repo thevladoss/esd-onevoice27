@@ -35,8 +35,11 @@ export interface EsdMapProps {
 
 export const LIGHT_CORE_RADIUS = 2.2;
 export const LIGHT_HALO_RADIUS = 6;
-/** Пульсирует каждый двадцать четвёртый огонёк: около сорока анимаций на всю карту. */
-export const PULSE_EVERY = 24;
+/**
+ * Пять фазовых корзин, как пять glow-слоёв Mapbox у оригинала: корзина огонька
+ * равна `index % LIGHT_BUCKETS`, где index — позиция в `points`.
+ */
+export const LIGHT_BUCKETS = 5;
 
 /** Опорная точка проверки проекции: Москва. */
 const PROBE: [number, number] = [37.6, 55.7];
@@ -127,6 +130,19 @@ export function EsdMap({
     }
     return placed;
   }, [projection, lights]);
+
+  // Раскладка ореолов по корзинам: каждая дышит со своей фазой, поэтому поле
+  // светится волной, а не мигает всеми огоньками разом.
+  const buckets = useMemo(() => {
+    const rows: { light: Light; x: number; y: number }[][] = Array.from(
+      { length: LIGHT_BUCKETS },
+      () => [],
+    );
+    points.forEach((point, index) => {
+      rows[index % LIGHT_BUCKETS].push(point);
+    });
+    return rows;
+  }, [points]);
 
   const counts = useMemo(() => {
     let people = 0;
@@ -264,6 +280,26 @@ export function EsdMap({
             preserveAspectRatio="xMidYMid meet"
           >
             <title id={titleId}>{mapCopy.mapTitle}</title>
+            {/* Свечение огонька — радиальный градиент от цвета в центре к прозрачному
+                краю: так у оригинала выглядят слои awe-pin-lights-glow с circle-blur: 1.
+                Цвет приходит из currentColor, его задаёт CSS на самом градиенте.
+                Идентификаторы литеральные: карта на странице одна. */}
+            <defs>
+              <radialGradient
+                id="light-halo-person"
+                className="light-halo-def light-halo-def--person"
+              >
+                <stop offset="0" stopColor="currentColor" stopOpacity="0.9" />
+                <stop offset="1" stopColor="currentColor" stopOpacity="0" />
+              </radialGradient>
+              <radialGradient
+                id="light-halo-group"
+                className="light-halo-def light-halo-def--group"
+              >
+                <stop offset="0" stopColor="currentColor" stopOpacity="0.9" />
+                <stop offset="1" stopColor="currentColor" stopOpacity="0" />
+              </radialGradient>
+            </defs>
             <g
               ref={viewportRef}
               className="map-viewport"
@@ -298,28 +334,38 @@ export function EsdMap({
                   );
                 })}
               </g>
+              {/* Два слоя: ореолы разложены по корзинам, потому что дышит группа
+                  целиком (opacity и --halo-k на пяти узлах вместо 942), а ядра
+                  живут отдельным слоем и не тускнеют вместе со свечением —
+                  так же, как слой awe-pin-lights-core у оригинала. */}
               <g className="map-lights" aria-hidden="true">
-                {points.map(({ light, x, y }, index) => {
-                  const pulse = light.isNew || index % PULSE_EVERY === 0;
-                  return (
+                {buckets.map((bucket, index) => (
+                  <g
+                    key={index}
+                    className="light-bucket"
+                    data-bucket={index}
+                    data-anim="pulse"
+                  >
+                    {bucket.map(({ light, x, y }) => (
+                      <circle
+                        key={light.id}
+                        className="light-halo"
+                        cx={x}
+                        cy={y}
+                        r={haloRadius}
+                        fill={`url(#light-halo-${light.type})`}
+                      />
+                    ))}
+                  </g>
+                ))}
+                <g className="light-cores">
+                  {points.map(({ light, x, y }) => (
                     <g
                       key={light.id}
                       className={
-                        "light light--" +
-                        light.type +
-                        (pulse ? " pulse" : "") +
-                        (light.isNew ? " is-new" : "")
-                      }
-                      // Пульсация живёт на группе огонька, а не на кругах
-                      // внутри неё: под reduce гаснет одна анимация вместо трёх.
-                      data-anim={pulse ? "pulse" : undefined}
-                      style={
-                        pulse
-                          ? { animationDelay: `${((index / PULSE_EVERY) % 12) * 200}ms` }
-                          : undefined
+                        "light light--" + light.type + (light.isNew ? " is-new" : "")
                       }
                     >
-                      <circle className="light-halo" cx={x} cy={y} r={haloRadius} />
                       <circle className="light-core" cx={x} cy={y} r={coreRadius} />
                       {light.isNew ? (
                         <circle
@@ -331,8 +377,8 @@ export function EsdMap({
                         />
                       ) : null}
                     </g>
-                  );
-                })}
+                  ))}
+                </g>
               </g>
             </g>
           </svg>

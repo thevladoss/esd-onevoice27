@@ -1,3 +1,13 @@
+/* Множитель радиуса ореола: анимируется на пяти корзинах и наследуется кругами
+   внутри них. Без регистрации браузер меняет пользовательское свойство только
+   дискретно, поэтому keyframes держат ещё и opacity — дыхание прозрачности
+   остаётся в любом движке, и это и есть fallback без @property. */
+@property --halo-k {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 1;
+}
+
 .esd-map {
   position: relative;
   width: 100%;
@@ -27,12 +37,24 @@
   stroke-width: 1px;
 }
 
-/* Огоньки: свечение рисуется вторым кругом, а не тенью, иначе сотни точек не тянет ни один браузер. */
+/* Огоньки: свечение рисуется отдельным кругом с радиальным градиентом, а не
+   тенью и не фильтром — сотни размытий не тянет ни один браузер. Дышит не
+   каждый двадцать четвёртый огонёк, как раньше, а пять корзин со сдвигом фазы. */
 .light--person {
   color: var(--light-person);
 }
 
 .light--group {
+  color: var(--light-group);
+}
+
+/* Цвет градиента задаётся на самом узле градиента: stop-color: currentColor
+   внутри читает его по наследству. */
+.light-halo-def--person {
+  color: var(--light-person);
+}
+
+.light-halo-def--group {
   color: var(--light-group);
 }
 
@@ -43,14 +65,18 @@
  */
 .light-core {
   fill: currentColor;
-  opacity: .9;
+  stroke: #fff;
+  stroke-width: .9px;
+  stroke-opacity: .5;
+  /* Обводка держит .9px на любом зуме: иначе на k = 8 она стала бы 7px. */
+  vector-effect: non-scaling-stroke;
   r: calc(var(--light-core-r, 2.2px) / var(--zoom-k, 1));
 }
 
+/* Заливку даёт атрибут fill=url(#light-halo-…), любое правило fill перебило бы
+   его; прозрачностью управляет корзина. */
 .light-halo {
-  fill: currentColor;
-  opacity: .22;
-  r: calc(var(--light-halo-r, 6px) / var(--zoom-k, 1));
+  r: calc(var(--light-halo-r, 6px) * var(--halo-k, 1) / var(--zoom-k, 1));
 }
 
 .light-ring {
@@ -61,21 +87,41 @@
   r: calc(var(--light-halo-r, 6px) / var(--zoom-k, 1));
 }
 
-.light.pulse {
-  transform-box: fill-box;
-  transform-origin: center;
-  animation: light-pulse 2.4s ease-in-out infinite;
+/* Корзина ореолов. Своего медиазапроса на бережное движение тут нет: корзина
+   помечена data-anim="pulse", и глобальный блок гасит её анимацию (--halo-k
+   остаётся initial-value 1, радиус 6px, opacity корзины 1), даёт ореолу
+   статичную opacity .22 и прячет кольцо нового огонька целиком. */
+.light-bucket {
+  animation: light-breathe 2.6s ease-in-out infinite;
 }
 
-@keyframes light-pulse {
+/* Отрицательная задержка сдвигает фазу на n/5 периода: поле дышит волной,
+   а не мигает синхронно. */
+.light-bucket[data-bucket="1"] {
+  animation-delay: calc(-2.6s * 1 / 5);
+}
+
+.light-bucket[data-bucket="2"] {
+  animation-delay: calc(-2.6s * 2 / 5);
+}
+
+.light-bucket[data-bucket="3"] {
+  animation-delay: calc(-2.6s * 3 / 5);
+}
+
+.light-bucket[data-bucket="4"] {
+  animation-delay: calc(-2.6s * 4 / 5);
+}
+
+@keyframes light-breathe {
   0%,
   100% {
-    transform: scale(1);
-    opacity: .9;
+    --halo-k: 1;
+    opacity: .3;
   }
   50% {
-    transform: scale(1.8);
-    opacity: .45;
+    --halo-k: 2;
+    opacity: .6;
   }
 }
 
@@ -163,18 +209,21 @@
   color: #f8f7fb;
 }
 
+/* Акценты счётчиков отвязаны от цвета огоньков: у оригинала это signal-400 и
+   horizon-400, они светлее самих точек на карте. Литералы повторяют прежние
+   значения переменных огоньков, поэтому карточки выглядят как до фазы. */
 .counter--people {
   background:
     radial-gradient(circle at 12% 0%, rgb(158 67 154 / .16), transparent 52%),
     linear-gradient(145deg, rgb(48 63 131 / .86), rgb(7 2 16 / .76));
-  --counter-accent: var(--light-person);
+  --counter-accent: rgb(210 142 190);
 }
 
 .counter--groups {
   background:
     radial-gradient(circle at 88% 0%, rgb(84 164 172 / .15), transparent 52%),
     linear-gradient(145deg, rgb(48 63 131 / .82), rgb(7 2 16 / .76));
-  --counter-accent: var(--light-group);
+  --counter-accent: rgb(123 194 199);
 }
 
 .counter__label {
@@ -283,8 +332,8 @@
   --map-atmosphere: clamp(260px, 38vw, 560px);
   --map-transition: clamp(150px, 34vw, 340px);
   /* Семантические алиасы цветов огоньков: палитра проекта их не знает. */
-  --light-person: #d28ebe;
-  --light-group: #7bc2c7;
+  --light-person: rgb(158 67 154);
+  --light-group: rgb(84 164 172);
 
   position: relative;
   isolation: isolate;
