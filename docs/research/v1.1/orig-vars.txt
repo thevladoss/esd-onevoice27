@@ -1,0 +1,239 @@
+--ov-signal-50-rgb: var(--color_bf0jyrdd-50)
+--ov-signal-100-rgb: var(--color_bf0jyrdd-100)
+--ov-signal-200-rgb: var(--color_bf0jyrdd-200)
+--ov-signal-300-rgb: var(--color_bf0jyrdd-300)
+--ov-signal-400-rgb: var(--color_bf0jyrdd-400)
+--ov-signal-500-rgb: var(--color_bf0jyrdd-500)
+--ov-signal-600-rgb: var(--color_bf0jyrdd-600)
+--ov-signal-700-rgb: var(--color_bf0jyrdd-700)
+--ov-signal-800-rgb: var(--color_bf0jyrdd-800)
+--ov-signal-900-rgb: var(--color_bf0jyrdd-900)
+--ov-signal-950-rgb: var(--color_bf0jyrdd-950)
+--ov-unity-50-rgb: var(--color_jpfshcvb-50)
+--ov-unity-100-rgb: var(--color_jpfshcvb-100)
+--ov-unity-200-rgb: var(--color_jpfshcvb-200)
+--ov-unity-300-rgb: var(--color_jpfshcvb-300)
+--ov-unity-400-rgb: var(--color_jpfshcvb-400)
+--ov-unity-500-rgb: var(--color_jpfshcvb-500)
+--ov-unity-600-rgb: var(--color_jpfshcvb-600)
+--ov-unity-700-rgb: var(--color_jpfshcvb-700)
+--ov-unity-800-rgb: var(--color_jpfshcvb-800)
+--ov-unity-900-rgb: var(--color_jpfshcvb-900)
+--ov-unity-950-rgb: var(--color_jpfshcvb-950)
+--ov-horizon-50-rgb: var(--color_a7a2ya3x-50)
+--ov-horizon-100-rgb: var(--color_a7a2ya3x-100)
+--ov-horizon-200-rgb: var(--color_a7a2ya3x-200)
+--ov-horizon-300-rgb: var(--color_a7a2ya3x-300)
+--ov-horizon-400-rgb: var(--color_a7a2ya3x-400)
+--ov-horizon-500-rgb: var(--color_a7a2ya3x-500)
+--ov-horizon-600-rgb: var(--color_a7a2ya3x-600)
+--ov-horizon-700-rgb: var(--color_a7a2ya3x-700)
+--ov-horizon-800-rgb: var(--color_a7a2ya3x-800)
+--ov-horizon-900-rgb: var(--color_a7a2ya3x-900)
+--ov-horizon-950-rgb: var(--color_a7a2ya3x-950)
+--ov-midnight-50-rgb: var(--color_bolhbrje-50)
+--ov-midnight-100-rgb: var(--color_bolhbrje-100)
+--ov-midnight-200-rgb: var(--color_bolhbrje-200)
+--ov-midnight-300-rgb: var(--color_bolhbrje-300)
+--ov-midnight-400-rgb: var(--color_bolhbrje-400)
+--ov-midnight-500-rgb: var(--color_bolhbrje-500)
+--ov-midnight-600-rgb: var(--color_bolhbrje-600)
+--ov-midnight-700-rgb: var(--color_bolhbrje-700)
+--ov-midnight-800-rgb: var(--color_bolhbrje-800)
+--ov-midnight-900-rgb: var(--color_bolhbrje-900)
+--ov-midnight-950-rgb: var(--color_bolhbrje-950)
+--ov-map-form-tail-depth: clamp(140px, 18vw, 280px)
+--ov-map-counters-top: clamp(152px, 21svh, 236px)
+--ov-map-counter-surface: rgb(var(--ov-midnight-950-rgb) / 0.76)
+--ov-map-counter-border: rgb(var(--ov-unity-300-rgb) / 0.22)
+--ov-map-counter-shadow: 0 30px 72px rgb(var(--ov-midnight-950-rgb) / 0.62), 0 10px 24px rgb(var(--ov-midnight-950-rgb) / 0.42), inset 0 1px 0 rgb(var(--ov-midnight-50-rgb) / 0.08)
+--ov-map-form-width: 62rem
+--ov-map-form-gap: 16px
+--ov-map-form-radius: 16px
+--ov-map-field-height: 54px
+--ov-map-field-surface: rgb(var(--ov-midnight-900-rgb) / 0.58)
+--ov-map-field-surface-focus: rgb(var(--ov-midnight-800-rgb) / 0.7)
+--ov-map-field-border: rgb(var(--ov-midnight-100-rgb) / 0.18)
+--ov-map-field-border-hover: rgb(var(--ov-horizon-400-rgb) / 0.46)
+--ov-map-field-copy: rgb(var(--ov-midnight-50-rgb) / 0.94)
+--ov-map-field-placeholder: rgb(var(--ov-midnight-200-rgb) / 0.56)
+--ov-map-option-surface: rgb(var(--ov-midnight-900-rgb) / 0.42)
+--ov-map-option-surface-active: rgb(var(--ov-horizon-800-rgb) / 0.16)
+--ov-map-option-border: rgb(var(--ov-midnight-100-rgb) / 0.16)
+--ov-map-option-border-active: rgb(var(--ov-horizon-400-rgb) / 0.72)
+--ov-map-form-focus: rgb(var(--ov-horizon-300-rgb))
+--ov-about-card-title-weight: 800
+--ov-about-card-radius: 16px
+--ov-about-card-surface-top: rgb(var(--ov-midnight-800-rgb) / 0.44)
+--ov-about-card-surface-bottom: rgb(var(--ov-midnight-950-rgb) / 0.62)
+--ov-about-card-border: rgb(var(--ov-midnight-100-rgb) / 0.18)
+--ov-about-card-inner-highlight: rgb(255 255 255 / 0.075)
+--ov-about-card-inner-shadow: rgb(3 2 18 / 0.30)
+--ov-about-card-hover-border: rgb(var(--ov-unity-200-rgb) / 0.34)
+--ov-about-card-blur: 14px
+--ov-about-card-shadow: 0 1px 0 rgb(255 255 255 / 0.035) inset, 0 20px 46px rgb(3 2 18 / 0.24)
+--ov-about-card-hover-shadow: 0 1px 0 rgb(255 255 255 / 0.055) inset, 0 24px 52px rgb(3 2 18 / 0.30)
+--ov-about-card-accent-start: rgb(var(--ov-signal-300-rgb))
+--ov-about-card-accent-end: rgb(var(--ov-unity-300-rgb))
+--ov-about-card-accent-shadow: rgb(var(--ov-signal-400-rgb) / 0.18)
+--ov-about-card-registration-width: 64px
+--ov-about-card-title-tracking: -0.035em
+--ov-about-card-title-gap: 6px
+--ov-involve-surface: rgb(var(--ov-midnight-900-rgb))
+--ov-involve-surface-deep: rgb(var(--ov-midnight-950-rgb))
+--ov-involve-frame-radius: 18px
+--ov-involve-frame-shadow: 0 34px 76px rgb(2 2 12 / 0.58), 0 0 54px rgb(var(--ov-unity-700-rgb) / 0.22)
+--ov-involve-frame-glow-signal: rgb(var(--ov-signal-400-rgb) / 0.54)
+--ov-involve-frame-glow-unity: rgb(var(--ov-unity-500-rgb) / 0.46)
+--ov-involve-frame-glow-horizon: rgb(var(--ov-horizon-400-rgb) / 0.48)
+--ov-involve-frame-glow-blur: 26px
+--ov-involve-frame-opacity: 1
+--ov-involve-piece-surface: rgb(var(--ov-midnight-900-rgb) / 0.48)
+--ov-involve-piece-surface-hover: rgb(var(--ov-midnight-800-rgb) / 0.54)
+--ov-involve-piece-seam: rgb(var(--ov-midnight-100-rgb) / 0.15)
+--ov-involve-piece-padding: clamp(18px, 2.2vw, 28px)
+--ov-involve-piece-min-content-height: 150px
+--ov-involve-piece-shadow-alpha: 0
+--ov-involve-piece-glow-alpha: 0
+--ov-involve-media-ratio-mobile: 16 / 9
+--ov-involve-media-ratio-desktop: 4 / 3
+--ov-involve-media-overlay: linear-gradient(180deg, transparent 42%, rgb(5 5 14 / 0.44) 100%)
+--ov-involve-media-saturation: 88%
+--ov-news-font-display: "Figtree", sans-serif
+--ov-news-font-body: "Noto Sans", sans-serif
+--ov-news-title-weight: 900
+--ov-news-card-title-weight: 800
+--ov-news-surface: rgb(var(--ov-midnight-950-rgb))
+--ov-news-copy: rgb(var(--ov-midnight-50-rgb) / 0.94)
+--ov-news-copy-muted: rgb(var(--ov-midnight-100-rgb) / 0.74)
+--ov-news-eyebrow: rgb(var(--ov-signal-300-rgb) / 0.92)
+--ov-news-atmosphere-unity: rgb(var(--ov-unity-950-rgb) / 0.34)
+--ov-news-atmosphere-horizon: rgb(var(--ov-horizon-950-rgb) / 0.28)
+--ov-news-card-ratio: 4 / 5
+--ov-news-card-radius: 16px
+--ov-news-card-border: rgb(var(--ov-midnight-100-rgb) / 0.18)
+--ov-news-card-border-active: rgb(var(--ov-unity-200-rgb) / 0.38)
+--ov-news-card-overlay: linear-gradient( 180deg, rgb(var(--ov-signal-950-rgb) / 0.10) 18%, rgb(var(--ov-signal-950-rgb) / 0.52) 62%, rgb(3 3 12 / 0.96) 100% )
+--ov-news-card-panel: rgb(247 239 232 / 0.96)
+--ov-news-card-panel-text: rgb(var(--ov-midnight-950-rgb))
+--ov-news-card-panel-inset: 4px
+--ov-news-card-panel-radius: 12px
+--ov-news-card-padding: clamp(18px, 2.4vw, 28px)
+--ov-news-card-image-scale: 1.035
+--ov-news-card-motion-duration: 760ms
+--ov-news-card-panel-duration: 240ms
+--ov-news-card-easing: cubic-bezier(0.16, 1, 0.3, 1)
+--ov-news-pagination-color: rgb(var(--ov-midnight-50-rgb) / 0.90)
+--ov-news-pagination-active: rgb(var(--ov-signal-300-rgb))
+--ov-news-pagination-surface: rgb(var(--ov-midnight-800-rgb) / 0.72)
+--ov-news-pagination-focus: rgb(var(--ov-horizon-300-rgb))
+--ov-news-pagination-shadow: 0 8px 22px rgb(2 2 12 / 0.28)
+--ov-resources-font-display: "Figtree", sans-serif
+--ov-resources-font-body: "Noto Sans", sans-serif
+--ov-resources-title-weight: 900
+--ov-resources-card-title-weight: 800
+--ov-resources-surface: rgb(var(--ov-midnight-950-rgb))
+--ov-resources-surface-music: rgb(var(--ov-unity-950-rgb))
+--ov-resources-surface-materials: rgb(var(--ov-horizon-950-rgb))
+--ov-resources-surface-video: rgb(var(--ov-signal-950-rgb))
+--ov-resources-copy: rgb(var(--ov-midnight-50-rgb) / 0.94)
+--ov-resources-copy-muted: rgb(var(--ov-midnight-100-rgb) / 0.76)
+--ov-resources-eyebrow: rgb(var(--ov-horizon-300-rgb) / 0.92)
+--ov-resources-padding-top: clamp(88px, 10vw, 144px)
+--ov-resources-padding-bottom: clamp(88px, 10vw, 152px)
+--ov-resources-mobile-card-width: 328px
+--ov-resources-mobile-card-height: 248px
+--ov-resources-music-min-width: 226px
+--ov-resources-music-width: 320px
+--ov-resources-music-height: 296px
+--ov-resources-materials-min-width: 192px
+--ov-resources-materials-width: 272px
+--ov-resources-materials-height: 336px
+--ov-resources-video-min-width: 258px
+--ov-resources-video-width: 368px
+--ov-resources-video-height: 256px
+--ov-resources-copy-min-width: 354px
+--ov-resources-copy-width: 528px
+--ov-resources-copy-height: 523px
+--ov-resources-music-track: 320fr
+--ov-resources-copy-track: 528fr
+--ov-resources-materials-track: 272fr
+--ov-resources-card-radius: var(--ov-about-card-radius)
+--ov-resources-card-padding-mobile: 24px
+--ov-resources-card-padding-desktop: 20px
+--ov-resources-card-surface-top: var(--ov-about-card-surface-top)
+--ov-resources-card-surface-bottom: var(--ov-about-card-surface-bottom)
+--ov-resources-card-border: var(--ov-about-card-border)
+--ov-resources-card-inner-highlight: var(--ov-about-card-inner-highlight)
+--ov-resources-card-shadow: var(--ov-about-card-shadow)
+--ov-resources-card-hover-shadow: var(--ov-about-card-hover-shadow)
+--ov-resources-indicator-size: 16px
+--ov-resources-music-accent: rgb(var(--ov-unity-400-rgb))
+--ov-resources-materials-accent: rgb(var(--ov-horizon-400-rgb))
+--ov-resources-video-accent: rgb(var(--ov-signal-400-rgb))
+--ov-resources-grid-column-gap: 16px
+--ov-resources-grid-row-gap: 16px
+--ov-resources-atmosphere-duration: 1000ms
+--ov-resources-atmosphere-scale: 1.1
+--ov-resources-particles-opacity-low: 0.16
+--ov-resources-particles-opacity-high: 0.3
+--ov-resources-particles-duration: 26s
+--ov-resources-particles-drift-x: 7px
+--ov-resources-particles-drift-x-end: -4px
+--ov-resources-particles-drift-y-mid: -10px
+--ov-resources-particles-drift-y: -18px
+--ov-resources-focus: rgb(var(--ov-horizon-300-rgb))
+--ov-resources-transition-duration: 420ms
+--ov-resources-transition-easing: cubic-bezier(0.22, 1, 0.36, 1)
+--ov-resources-panel-surface: rgb(var(--ov-midnight-950-rgb) / 0.985)
+--ov-resources-panel-copy: rgb(var(--ov-midnight-50-rgb) / 0.96)
+--ov-resources-panel-muted: rgb(var(--ov-midnight-100-rgb) / 0.72)
+--ov-resources-panel-edge: rgb(var(--ov-horizon-300-rgb) / 0.22)
+--ov-resources-panel-radius: 18px
+--ov-resources-panel-padding: clamp(20px, 5vw, 56px)
+--ov-resources-panel-layer-one: rgb(var(--ov-signal-700-rgb))
+--ov-resources-panel-layer-two: rgb(var(--ov-unity-700-rgb))
+--ov-resources-panel-duration: 620ms
+--ov-resources-panel-stagger: 90ms
+--ov-resources-panel-content-exit-duration: 180ms
+--ov-resources-panel-z-index: 10000
+--ov-resources-file-surface: rgb(var(--ov-midnight-800-rgb) / 0.42)
+--ov-resources-file-border: rgb(var(--ov-midnight-100-rgb) / 0.16)
+--ov-resources-file-radius: 14px
+--ov-resources-file-min-width: 17.5rem
+--ov-resources-file-max-width: 23rem
+--ov-resources-file-meta-min-height: 3.3125rem
+--ov-resources-file-type-surface: rgb(var(--ov-midnight-100-rgb) / 0.08)
+--ov-resources-file-type-border: rgb(var(--ov-midnight-100-rgb) / 0.28)
+--ov-resources-file-type-copy: rgb(var(--ov-midnight-50-rgb) / 0.9)
+--ov-resources-download-surface: rgb(var(--ov-midnight-900-rgb) / 0.72)
+--ov-resources-download-border: rgb(var(--ov-horizon-300-rgb) / 0.48)
+--ov-resources-download-hover: rgb(var(--ov-horizon-700-rgb) / 0.42)
+--ov-resources-download-radius: 16px
+--ov-footer-font-display: "Figtree", sans-serif
+--ov-footer-font-body: "Noto Sans", sans-serif
+--ov-footer-statement: "OneVoice27 Mission for all."
+--ov-footer-logo-url: url("https://hope-images.fra1.digitaloceanspaces.com/67054013a60919c92d92c959/wiz1787296917075.svg")
+--ov-footer-logo-width: clamp(190px, 26vw, 300px)
+--ov-footer-logo-height: clamp(72px, 10vw, 108px)
+--ov-footer-surface: rgb(var(--ov-midnight-900-rgb))
+--ov-footer-surface-deep: rgb(var(--ov-midnight-950-rgb))
+--ov-footer-copy: rgb(var(--ov-midnight-50-rgb) / 0.92)
+--ov-footer-copy-muted: rgb(var(--ov-midnight-100-rgb) / 0.66)
+--ov-footer-edge: rgb(var(--ov-unity-300-rgb) / 0.18)
+--ov-footer-signal-halo: rgb(var(--ov-signal-500-rgb) / 0.14)
+--ov-footer-unity-halo: rgb(var(--ov-unity-500-rgb) / 0.13)
+--ov-footer-horizon-halo: rgb(var(--ov-horizon-400-rgb) / 0.10)
+--ov-footer-wave: rgb(var(--ov-midnight-700-rgb) / 0.16)
+--ov-footer-padding-block: clamp(72px, 10vw, 124px)
+--ov-footer-content-gap: clamp(20px, 3vw, 34px)
+--ov-footer-wedge-top-depth: clamp(24px, 3vw, 44px)
+--ov-footer-overlap-guard: 1px
+--ov-footer-wave-duration: 28s
+--ov-footer-halo-duration: 22s
+--ov-map-counter-accent: rgb(var(--ov-signal-500-rgb) / 0.19)
+--ov-map-counter-value: rgb(var(--ov-signal-400-rgb))
+--ov-map-option-beacon: rgb(var(--ov-horizon-300-rgb))
+--ov-map-option-halo: rgb(var(--ov-horizon-500-rgb) / 0.32)
+--ov-resources-card-accent: var(--ov-resources-music-accent)
+--ov-footer-style-loaded: 1
