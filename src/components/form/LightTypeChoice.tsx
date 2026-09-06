@@ -11,6 +11,9 @@ const OPTIONS: readonly { value: LightType; title: string; text: string }[] = [
  * поэтому стрелки клавиатуры и фокус работают как обычно. Подпись связана с контролом
  * явным `htmlFor`: обёртка `label` осталась, но связку держит id, а не вложенность.
  *
+ * Выбор показывает точка-радио справа от названия; маячок слева сверху рисует
+ * `.lf-type::before`, поэтому в разметке его нет.
+ *
  * id и текст ошибки приходят сверху, как у `ConsentCheckbox`: по тому же id форма ищет
  * группу, когда уводит фокус на первое невалидное поле.
  */
@@ -59,9 +62,11 @@ export function LightTypeChoice({
             checked={value === option.value}
             onChange={() => onChange(option.value)}
           />
-          <span className="lf-type-title">{option.title}</span>
+          <span className="lf-type-row">
+            <span className="lf-type-title">{option.title}</span>
+            <span className="lf-type-dot" aria-hidden="true" />
+          </span>
           <span className="lf-type-text">{option.text}</span>
-          <span className="lf-type-dot" aria-hidden="true" />
         </label>
       ))}
       {error ? (

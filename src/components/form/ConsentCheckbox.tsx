@@ -2,8 +2,9 @@ import { formCopy } from "../../data/copy.form";
 import { RequiredMark } from "./FormField";
 
 /**
- * Согласие на обработку данных: нативный чекбокс скрыт, галочку рисует свой бокс.
- * id приходит сверху — тот же источник, по которому форма ищет поле для фокуса.
+ * Согласие на обработку данных: чекбокс нативный и видимый, цвет заливки даёт
+ * `accent-color`, как в оригинале. id приходит сверху — тот же источник, по которому
+ * форма ищет поле для фокуса.
  */
 export function ConsentCheckbox({
   id,
@@ -24,7 +25,7 @@ export function ConsentCheckbox({
     <div className="lf-consent">
       <label className="lf-check" htmlFor={id}>
         <input
-          className="sr-only"
+          className="lf-checkbox"
           id={id}
           type="checkbox"
           name="consent"
@@ -35,18 +36,6 @@ export function ConsentCheckbox({
           onChange={(event) => onChange(event.target.checked)}
           onBlur={onBlur}
         />
-        <span className="lf-check-box" aria-hidden="true">
-          <svg viewBox="0 0 12 12" focusable="false">
-            <path
-              d="M1 6.2 4.4 9.4 11 2.6"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-        </span>
         <span className="lf-check-text">
           {formCopy.consent}
           <RequiredMark />

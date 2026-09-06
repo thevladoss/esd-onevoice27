@@ -216,6 +216,59 @@ describe("LightForm: структура секции", () => {
     expect(orgLabel?.textContent?.trim().startsWith("Название организации")).toBe(true);
   });
 
+  it("стоит на секции без стеклянной карточки", () => {
+    renderForm();
+
+    expect(document.querySelector("#light-form .glass-card")).toBeNull();
+
+    const form = document.querySelector<HTMLFormElement>("#light-form form");
+    expect(form).not.toBeNull();
+    // Форма лежит прямо в обёртке появления: слоя карточки между ними больше нет.
+    expect(form?.parentElement?.className ?? "").not.toContain("glass");
+  });
+
+  it("несёт в карточке типа строку «название + точка»", () => {
+    renderForm();
+
+    const rows = Array.from(document.querySelectorAll(".lf-type .lf-type-row"));
+    expect(rows).toHaveLength(2);
+    for (const row of rows) {
+      expect(row.querySelector(".lf-type-title")).not.toBeNull();
+      expect(row.querySelector('.lf-type-dot[aria-hidden="true"]')).not.toBeNull();
+    }
+
+    const cards = Array.from(document.querySelectorAll<HTMLElement>(".lf-type"));
+    expect(cards.map((card) => card.dataset.type)).toEqual(["individual", "group"]);
+  });
+
+  it("даёт согласию нативный видимый чекбокс", () => {
+    renderForm();
+
+    const consent = control("consent");
+    expect(consent.classList.contains("lf-checkbox")).toBe(true);
+    expect(consent.classList.contains("sr-only")).toBe(false);
+    expect(document.querySelector(".lf-check-box")).toBeNull();
+  });
+
+  it("ставит поля в сетку шести колонок", () => {
+    renderForm();
+
+    const halves = [control("firstName"), control("lastName"), countrySelect(), control("city")];
+    for (const node of halves) {
+      expect(node.closest(".lf-field")).toHaveClass("lf-col-3");
+    }
+    expect(control("email").closest(".lf-field")).toHaveClass("lf-span");
+
+    fireEvent.click(screen.getByRole("radio", { name: /Групповой маяк/ }));
+
+    const orgField = control("orgName").closest(".lf-field");
+    const nameField = control("firstName").closest(".lf-field");
+    expect(orgField).toHaveClass("lf-span");
+    // Организация стоит в разметке раньше имени, как в оригинале.
+    const position = orgField?.compareDocumentPosition(nameField as Node) ?? 0;
+    expect(position & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  });
+
   it("не отправляет форму по сети: без action и method", () => {
     renderForm();
 
