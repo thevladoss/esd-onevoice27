@@ -26,30 +26,23 @@ export function ResourceCard({
   return (
     <div
       data-open={isOpen}
+      data-kind={kind}
       style={{ "--accent": card.accent } as CSSProperties}
-      className="resource-card glass relative flex min-h-64 w-full flex-col justify-between p-6 text-left transition-[transform,border-color] duration-[420ms] ease-header hover:border-[color:var(--accent)] motion-safe:hover:-translate-y-1 data-[open=true]:border-[color:var(--accent)]"
+      className="resource-card glass glass-resource"
     >
-      <p className="flex items-center justify-between">
-        <span className="font-body text-xs font-bold uppercase leading-[1.4] tracking-[0.08em] text-paper/62">
-          {card.label}
-        </span>
-        <span
-          aria-hidden="true"
-          className="resource-card__dot h-3 w-3 rounded-full bg-[color:var(--accent)]"
-        />
+      <p className="resource-card__indicator">
+        <span>{card.label}</span>
+        <span aria-hidden="true" className="resource-card__dot" />
       </p>
 
-      <div>
-        <h3
-          id={titleId}
-          className="font-display text-[22px] font-extrabold leading-[1.15] tracking-[-0.03em] text-paper"
-        >
+      <div className="resource-card__content">
+        <h3 id={titleId} className="resource-card__title">
           {card.title}
         </h3>
-        <p className="mt-2 font-body text-base leading-[1.5] text-paper/78">{card.description}</p>
-        <span className="resource-card__trigger mt-4 inline-block font-body text-xs font-bold uppercase tracking-[0.08em] text-paper">
-          {card.cta}
-        </span>
+        <p className="resource-card__description">{card.description}</p>
+        <div className="resource-card__actions">
+          <span className="resource-card__trigger">{card.cta}</span>
+        </div>
       </div>
 
       {/* Слой во всю карточку: клик по любому месту поверхности раскрывает панель,
