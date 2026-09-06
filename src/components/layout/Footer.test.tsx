@@ -141,7 +141,7 @@ describe("Footer", () => {
     for (const rule of [
       "rgb(170 217 220)",
       "rgb(248 247 251 / .92)",
-      "gap: 8px",
+      "gap: 0;",
       "text-wrap: balance",
       "rgb(239 237 245 / .66)",
       "font-size: .75rem",
@@ -152,5 +152,34 @@ describe("Footer", () => {
     expect(FOOTER_CSS).not.toContain("border-top");
     // Политика reduced motion живёт единственным блоком в global.css.
     expect(FOOTER_CSS).not.toContain("prefers-reduced-motion");
+  });
+
+  it("даёт ссылкам цель касания 44px без перекрытия боксов", () => {
+    const link = FOOTER_CSS.match(/\.site-footer__links a \{([^}]*)\}/)?.[1];
+    expect(link).toBeDefined();
+
+    for (const declaration of [
+      "display: inline-flex",
+      "align-items: center",
+      "min-height: 44px",
+      "padding-inline: 8px",
+      "font-size: .875rem",
+      "line-height: 1.6",
+    ]) {
+      expect(link, `в правиле ссылки нет ${declaration}`).toContain(declaration);
+    }
+
+    // Отрицательные отступы вернули бы шаг 30,4px и перекрытие соседних боксов.
+    for (const forbidden of ["inline-block", "margin-block", "margin-top", "margin-bottom"]) {
+      expect(link, `в правиле ссылки остался ${forbidden}`).not.toContain(forbidden);
+    }
+
+    const list = FOOTER_CSS.match(/\.site-footer__links ul \{([^}]*)\}/)?.[1];
+    expect(list).toContain("gap: 0;");
+    expect(list).toContain("flex-direction: column");
+    expect(FOOTER_CSS).not.toContain("gap: 8px");
+
+    // Подпись вордмарка футера остаётся на прежнем кегле: её меняет только шапка.
+    expect(FOOTER_CSS).toContain("clamp(.625rem, 1.1vw, .8125rem)");
   });
 });

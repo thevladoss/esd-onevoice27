@@ -31,8 +31,8 @@ const EXPECTED_DECLARATIONS = [
 /** Адрес обложки: постер ролика на YouTube, 480×360 с чёрными полосами по 12,5%. */
 const HQDEFAULT_RE = /^https:\/\/img\.youtube\.com\/vi\/[\w%-]+\/hqdefault\.jpg$/;
 
-function renderCard(item = news[0]) {
-  return render(<NewsCard item={item} />);
+function renderCard(item = news[0], priority = false) {
+  return render(<NewsCard item={item} priority={priority} />);
 }
 
 describe("NewsCard", () => {
@@ -156,5 +156,39 @@ describe("NewsCard: упавшая обложка", () => {
     expect(within(article).getByText("Обложка недоступна")).toBeInTheDocument();
     expect(within(article).getByRole("link")).toHaveAttribute("rel", "noopener noreferrer");
     expect(within(article).getByRole("heading", { level: 3, name: news[0].title })).toBeInTheDocument();
+  });
+});
+
+describe("NewsCard: атрибуты обложки", () => {
+  it("несёт размеры постера и грузит обложку лениво по умолчанию", () => {
+    const standard = news.find((item) => item.id === "kaminsky");
+    if (!standard) throw new Error("ожидалась запись kaminsky");
+
+    const { container } = renderCard(standard);
+    const image = container.querySelector("img");
+
+    // Пропорция 480×360 известна браузеру до загрузки, поэтому кадр не прыгает.
+    expect(image).toHaveAttribute("width", "480");
+    expect(image).toHaveAttribute("height", "360");
+    expect(image).toHaveAttribute("decoding", "async");
+    expect(image).toHaveAttribute("loading", "lazy");
+    expect(image).not.toHaveAttribute("fetchpriority");
+    expect(image?.getAttribute("style")).toBeNull();
+  });
+
+  it("грузит приоритетную обложку сразу и не теряет кроп", () => {
+    const wide = news.find((item) => item.id === "day-of-prayer");
+    if (!wide) throw new Error("ожидалась запись day-of-prayer");
+
+    const { container } = renderCard(wide, true);
+    const image = container.querySelector("img");
+
+    expect(image).toHaveAttribute("loading", "eager");
+    expect(image).toHaveAttribute("fetchpriority", "high");
+    expect(image).toHaveAttribute("width", "480");
+    expect(image).toHaveAttribute("height", "360");
+    expect(image).toHaveAttribute("decoding", "async");
+    expect(image?.style.transform).toBe("scale(1.45)");
+    expect(image?.style.objectPosition).toBe("50% 65%");
   });
 });

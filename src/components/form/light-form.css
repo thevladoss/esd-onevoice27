@@ -339,19 +339,21 @@ select.lf-control option {
   font: 400 13px/1.35 var(--font-body);
 }
 
-/* Согласие */
+/* Согласие. Label целиком служит целью касания не ниже 44px, чекбокс центрируется
+   по тексту, поэтому собственных отступов у него нет. */
 .lf-check {
+  min-height: 44px;
   display: flex;
-  align-items: flex-start;
-  gap: 8px;
+  align-items: center;
+  gap: 12px;
   cursor: pointer;
 }
 
 .lf-checkbox {
-  flex: 0 0 18px;
-  width: 18px;
-  height: 18px;
-  margin: 2px 0 0;
+  flex: 0 0 20px;
+  width: 20px;
+  height: 20px;
+  margin: 0;
   accent-color: rgb(170 217 220);
   cursor: pointer;
 }

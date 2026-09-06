@@ -139,7 +139,6 @@ describe("News", () => {
     for (const article of screen.getAllByRole("article")) {
       const image = article.querySelector("img");
       expect(image).toHaveAttribute("alt", "");
-      expect(image).toHaveAttribute("loading", "lazy");
 
       const heading = within(article).getByRole("heading", { level: 3 });
       expect(heading.textContent?.trim().length ?? 0).toBeGreaterThan(0);
@@ -147,6 +146,37 @@ describe("News", () => {
       const marked = article.querySelectorAll("time, h3");
       expect(marked[0].tagName).toBe("TIME");
       expect(marked[1].tagName).toBe("H3");
+    }
+  });
+
+  it("грузит обложку первой карточки первой страницы с приоритетом", () => {
+    render(<News />);
+
+    screen.getAllByRole("article").forEach((article, index) => {
+      const image = article.querySelector("img");
+      expect(image).toHaveAttribute("width", "480");
+      expect(image).toHaveAttribute("height", "360");
+      expect(image).toHaveAttribute("decoding", "async");
+      expect(image).toHaveAttribute("alt", "");
+
+      if (index === 0) {
+        expect(image).toHaveAttribute("loading", "eager");
+        expect(image).toHaveAttribute("fetchpriority", "high");
+      } else {
+        expect(image).toHaveAttribute("loading", "lazy");
+        expect(image).not.toHaveAttribute("fetchpriority");
+      }
+    });
+
+    // На второй странице обложки лежат ниже первого экрана, приоритет им не нужен.
+    fireEvent.click(screen.getByRole("button", { name: "Страница 2" }));
+
+    const second = screen.getAllByRole("article");
+    expect(second).toHaveLength(3);
+    for (const article of second) {
+      const image = article.querySelector("img");
+      expect(image).toHaveAttribute("loading", "lazy");
+      expect(image).not.toHaveAttribute("fetchpriority");
     }
   });
 

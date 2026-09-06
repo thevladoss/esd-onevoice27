@@ -60,9 +60,11 @@ export function News({ items = news }: { items?: NewsItem[] } = {}) {
             as="ul"
             className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3 lg:gap-8"
           >
-            {result.items.map((item) => (
+            {/* Приоритет достаётся только первой карточке первой страницы: при переходе
+                по пагинации обложки уже ниже первого экрана, и торопиться с ними незачем. */}
+            {result.items.map((item, index) => (
               <RevealItem as="li" key={item.id} className="min-w-0">
-                <NewsCard item={item} />
+                <NewsCard item={item} priority={result.page === 1 && index === 0} />
               </RevealItem>
             ))}
           </RevealGroup>

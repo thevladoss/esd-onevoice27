@@ -28,7 +28,12 @@ export function formatNewsDate(iso: string): string {
   return dateFormatter.format(date).replace(/\s?г\.$/u, "");
 }
 
-export function NewsCard({ item }: { item: NewsItem }) {
+/**
+ * Карточка новости. `priority` получает первая карточка первой страницы ленты:
+ * её обложка — кандидат в LCP, поэтому браузер запрашивает картинку сразу и раньше
+ * остальных. Остальные карточки грузятся лениво.
+ */
+export function NewsCard({ item, priority = false }: { item: NewsItem; priority?: boolean }) {
   const [coverFailed, setCoverFailed] = useState(false);
   const date = formatNewsDate(item.date);
 
@@ -59,7 +64,12 @@ export function NewsCard({ item }: { item: NewsItem }) {
             <img
               src={item.cover}
               alt=""
-              loading="lazy"
+              // Размеры постера hqdefault.jpg: браузер знает пропорцию до загрузки,
+              // а итоговый размер по-прежнему задают классы h-full w-full внутри aspect-video.
+              width={480}
+              height={360}
+              loading={priority ? "eager" : "lazy"}
+              fetchPriority={priority ? "high" : undefined}
               decoding="async"
               onError={() => setCoverFailed(true)}
               className="news-card__image h-full w-full max-w-full object-cover object-center motion-safe:group-hover:scale-[1.035] motion-safe:group-focus-within:scale-[1.035]"
