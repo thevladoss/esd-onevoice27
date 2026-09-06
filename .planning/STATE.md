@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Мобильная адаптация, глобус оригинала и производительность
-status: milestone_complete
-last_updated: 2026-09-06T17:31:31.068Z
-last_activity: 2026-09-06
+status: Awaiting next milestone
+stopped_at: Milestone v1.2 shipped 2026-09-06 (Phase 17 was final phase)
+last_updated: "2026-09-06T17:38:04.122Z"
+last_activity: 2026-09-06 — Milestone v1.2 completed and archived
 progress:
   total_phases: 4
-  completed_phases: 0
-  total_plans: 0
+  completed_phases: 4
+  total_plans: 8
   completed_plans: 8
-  percent: 0
-stopped_at: Milestone complete (Phase 17 was final phase)
+  percent: 100
 ---
 
 # Project State
@@ -21,14 +21,14 @@ stopped_at: Milestone complete (Phase 17 was final phase)
 See: .planning/PROJECT.md (updated 2026-09-06)
 
 **Core value:** Посетитель открывает страницу и видит красивый, живой лендинг уровня оригинала onevoice27.org, но про ЕАД: узнаёт, что такое «Единый голос 27», видит карту движения по дивизиону и может «зажечь свой свет».
-**Current focus:** Milestone complete
+**Current focus:** Milestone v1.2 shipped 2026-09-06; следующий milestone не запланирован (`/bm:new-milestone`)
 
 ## Current Position
 
-Phase: 17
-Plan: Not started
-Status: Milestone complete
-Last activity: 2026-09-06
+Phase: Milestone v1.2 complete
+Plan: —
+Status: Awaiting next milestone
+Last activity: 2026-09-06 — Milestone v1.2 completed and archived
 
 ## Performance Metrics
 
@@ -120,5 +120,4 @@ Resume file: .planning/ROADMAP.md
 
 ## Operator Next Steps
 
-- `/bm:plan-phase 14`, `/bm:plan-phase 15`, `/bm:plan-phase 16` (фазы независимы, исполняются в отдельных worktree)
-- После слияния 14–16: `/bm:plan-phase 17`
+- Start the next milestone with /gsd-new-milestone
